@@ -1,0 +1,33 @@
+# Fichiers internes a ne pas publier dans un depot public.
+**/*corr*
+**/*Corr*
+**/*correction*
+**/*Correction*
+CORRECTIONS_STATUS.md
+
+# Rendus et fichiers personnels d'etudiants.
+seance_*/rendu/
+seance_*/rendus/
+
+# Caches Python.
+__pycache__/
+*.py[cod]
+
+# Fichiers auxiliaires LaTeX.
+*.aux
+*.bcf
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.nav
+*.out
+*.run.xml
+*.snm
+*.synctex.gz
+*.toc
+*.vrb
+
+# Fichiers systeme locaux.
+.DS_Store

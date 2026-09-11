@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TD4 - Python pour économistes</title>
+    <link rel="stylesheet" href="assets/style.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav" aria-label="Navigation principale">
+        <a class="brand" href="index.html">Python pour économistes</a>
+        <div class="nav-links">
+          <a href="index.html">Accueil</a>
+          <a href="index.html#seances" aria-current="page">TD</a>
+          <a href="index.html#cours">Cours</a>
+          <a href="index.html#ressources">Ressources</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <p class="eyebrow">TD4</p>
+      <h1>Graphiques et simulation simple à partir d'OWID</h1>
+      <p class="lead">Construire des figures, simuler des tirages avec <code>random.choice</code> et observer la stabilisation progressive d'une moyenne.</p>
+      <ul class="meta">
+        <li>matplotlib</li>
+        <li>random</li>
+        <li>Boucles imbriquées</li>
+        <li>Simulation</li>
+      </ul>
+
+      <section class="td-layout">
+        <article>
+          <h2>Objectifs</h2>
+          <ul class="plain-list">
+            <li>Tracer un graphique en barres avec axes, titre et fichier de sortie.</li>
+            <li>Répéter des tirages aléatoires dans une boucle.</li>
+            <li>Comparer la moyenne observée et la moyenne simulée.</li>
+            <li>Lire une erreur de syntaxe ou d'indentation dans une boucle.</li>
+          </ul>
+
+          <h2>Déroulé actif</h2>
+          <ol class="plain-list">
+            <li>Créer un extrait de données et calculer une moyenne.</li>
+            <li>Tracer un premier graphique des valeurs observées.</li>
+            <li>Simuler un tirage, puis plusieurs tirages.</li>
+            <li>Compléter le pseudo-code de stabilisation.</li>
+            <li>Tracer la courbe des moyennes simulées.</li>
+          </ol>
+
+          <div class="callout">
+            <strong>Point de vigilance.</strong> La simulation reste volontairement simple : elle sert à comprendre la répétition et la vérification, pas à masquer la logique dans des outils avancés.
+          </div>
+
+          <div class="link-row">
+            <a class="resource-link" href="supports/tp/TP_4_revise.pdf">Ouvrir le PDF étudiant</a>
+            <a class="resource-link" href="supports/livret_exercices_python_revise.pdf">Ouvrir le livret</a>
+          </div>
+        </article>
+
+        <aside class="detail-panel">
+          <img class="td-preview" src="assets/previews/tp4-preview.png" alt="Aperçu du TD4">
+          <h2>À rendre</h2>
+          <p>Un script <code>td4_nom_prenom.py</code>, deux figures <code>.png</code> et une interprétation courte.</p>
+        </aside>
+      </section>
+
+      <nav class="pager" aria-label="Navigation TD">
+        <a href="td3.html">TD précédent</a>
+        <a href="index.html#seances">Retour aux séances</a>
+        <a href="td5.html">TD suivant</a>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">Python pour économistes - Université de Lille - L2 Économie</div>
+    </footer>
+  </body>
+</html>

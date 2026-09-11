@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Python pour économistes - L2</title>
+    <meta name="description" content="Supports de cours et TD du cours Python pour économistes, L2 Économie.">
+    <link rel="stylesheet" href="assets/style.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav" aria-label="Navigation principale">
+        <a class="brand" href="index.html">Python pour économistes</a>
+        <div class="nav-links">
+          <a href="index.html" aria-current="page">Accueil</a>
+          <a href="#installation">Installation</a>
+          <a href="#seances">TD</a>
+          <a href="#cours">Cours</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="intro">
+        <div>
+          <p class="eyebrow">Université de Lille - L2 ESM - 2026-2027</p>
+          <h1>Introduction à Python pour économistes</h1>
+          <p class="lead">
+            Un parcours progressif pour apprendre à écrire, exécuter, lire, déboguer et réutiliser des scripts Python appliqués à des données économiques.
+          </p>
+        </div>
+        <a class="featured-document" href="supports/livret_exercices_python_revise.pdf">
+          <img src="assets/previews/livret-preview.png" alt="Aperçu du livret de TD">
+          <span>
+            <strong>Livret complet</strong>
+            <small>TD1 à TD5 en un seul PDF</small>
+          </span>
+        </a>
+      </section>
+
+      <section id="installation" class="section setup">
+        <div class="section-heading">
+          <p class="eyebrow">Avant le premier TD</p>
+          <h2>Installer Python et VS Code</h2>
+        </div>
+
+        <p class="lead">
+          Pour suivre le cours dans de bonnes conditions, il faut idéalement installer trois éléments : Python, Visual Studio Code et l'extension Python de VS Code.
+        </p>
+
+        <dl class="role-list">
+          <div>
+            <dt>Python</dt>
+            <dd>le langage et le programme qui exécute vos fichiers <code>.py</code>.</dd>
+          </div>
+          <div>
+            <dt>VS Code</dt>
+            <dd>l'éditeur dans lequel vous écrivez, sauvegardez et organisez vos scripts.</dd>
+          </div>
+          <div>
+            <dt>Extension Python</dt>
+            <dd>le module qui aide VS Code à reconnaître Python, choisir l'interpréteur et lancer le fichier.</dd>
+          </div>
+        </dl>
+
+        <p class="setup-note">
+          Sur Windows, cochez l'option <strong>Add Python to PATH</strong> si elle apparaît pendant l'installation. Cela permet de lancer Python depuis le terminal sans réglage supplémentaire.
+        </p>
+
+        <div class="setup-columns">
+          <article>
+            <h3>Windows</h3>
+            <ol>
+              <li>Télécharger Python depuis <a href="https://www.python.org/downloads/">python.org/downloads</a>.</li>
+              <li>Choisir la version stable de Python 3 proposée par le site. En septembre 2026, c'est Python 3.14 ; éviter les versions indiquées comme préversions.</li>
+              <li>Lancer l'installateur, cocher <strong>Add Python to PATH</strong> si l'option apparaît, puis choisir l'installation recommandée.</li>
+              <li>Télécharger VS Code depuis <a href="https://code.visualstudio.com/download">code.visualstudio.com/download</a>.</li>
+              <li>Dans VS Code, ouvrir les extensions, chercher <strong>Python</strong> et installer l'extension Microsoft : <a href="https://marketplace.visualstudio.com/items?itemName=ms-python.python">ms-python.python</a>.</li>
+            </ol>
+          </article>
+
+          <article>
+            <h3>macOS</h3>
+            <ol>
+              <li>Télécharger Python depuis <a href="https://www.python.org/downloads/">python.org/downloads</a> et ouvrir le fichier <code>.pkg</code>.</li>
+              <li>Choisir l'installation standard. Après installation, utiliser plutôt la commande <code>python3</code> que <code>python</code>.</li>
+              <li>Télécharger VS Code depuis <a href="https://code.visualstudio.com/download">code.visualstudio.com/download</a>, puis placer l'application dans le dossier Applications.</li>
+              <li>Installer l'extension Python de Microsoft depuis l'onglet Extensions de VS Code.</li>
+              <li>Si VS Code demande de choisir un interpréteur, sélectionner la version associée à Python 3.</li>
+            </ol>
+          </article>
+
+          <article>
+            <h3>Tablette ou Chromebook</h3>
+            <p>
+              Un ordinateur portable ou un poste de l'université reste la solution recommandée pour l'ensemble du semestre, surtout à partir des TD avec fichiers, graphiques et CSV.
+            </p>
+            <p>
+              Sur tablette, VS Code n'est pas disponible comme application de bureau classique. <a href="https://vscode.dev/">vscode.dev</a> peut servir à lire et écrire des fichiers dans le navigateur, mais il ne remplace pas toujours un environnement Python local.
+            </p>
+            <p>
+              En solution de secours, les premiers exercices peuvent être préparés dans un environnement Python en ligne, par exemple <a href="https://colab.research.google.com/">Google Colab</a>, puis repris sur un ordinateur en TD. Les exercices qui manipulent des dossiers, des fichiers <code>.py</code>, des exports <code>.png</code> ou des CSV seront plus fiables sur ordinateur.
+            </p>
+          </article>
+        </div>
+
+        <div class="setup-check">
+          <h3>Premiers gestes avec VS Code</h3>
+          <ol>
+            <li>Créer un dossier pour le cours, par exemple <code>Python_L2</code>.</li>
+            <li>Ouvrir VS Code, puis choisir <strong>File &gt; Open Folder</strong> et sélectionner ce dossier.</li>
+            <li>Créer un nouveau fichier et l'enregistrer sous <code>test.py</code>. Le suffixe <code>.py</code> indique qu'il s'agit d'un fichier Python.</li>
+            <li>Écrire le code ci-dessous, sauvegarder le fichier, puis l'exécuter.</li>
+          </ol>
+          <pre><code>print("Bonjour Python !")</code></pre>
+          <p>
+            Si tout fonctionne, le message <code>Bonjour Python !</code> apparaît dans le terminal. Sauvegarder et exécuter sont deux actions différentes : sauvegarder écrit les changements dans le fichier, exécuter demande à Python de lire ce fichier.
+          </p>
+        </div>
+
+        <div class="setup-help">
+          <h3>Ça ne fonctionne pas ?</h3>
+          <ul>
+            <li><strong>Python n'est pas détecté.</strong> Fermer puis rouvrir VS Code ; sur Windows, vérifier l'option PATH ou essayer la commande <code>py</code>.</li>
+            <li><strong>VS Code demande un interpréteur.</strong> Choisir une version Python 3 dans la liste.</li>
+            <li><strong>Le fichier ne s'exécute pas.</strong> Vérifier qu'il s'appelle bien <code>test.py</code> et pas <code>test.py.txt</code>.</li>
+            <li><strong>Le fichier est introuvable.</strong> Regarder le dossier ouvert dans VS Code et le dossier où le fichier a été enregistré.</li>
+          </ul>
+          <p>Les cas plus complexes pourront être réglés pendant la première séance.</p>
+        </div>
+      </section>
+
+      <section id="seances" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Progression active</p>
+          <h2>Séances de TD</h2>
+        </div>
+
+        <div class="session-list">
+          <article class="session">
+            <img src="assets/previews/tp1-preview.png" alt="Aperçu du TD1">
+            <div class="session-body">
+              <div class="session-header">
+                <h3>Premiers scripts et statistiques descriptives simples</h3>
+                <span class="session-number">TD1</span>
+              </div>
+              <p>Créer un fichier Python, manipuler variables, types, listes, erreurs simples et premier graphique avec matplotlib.</p>
+              <div class="link-row">
+                <a class="resource-link" href="td1.html">Page du TD</a>
+                <a class="resource-link" href="supports/tp/TP_1_revise.pdf">PDF étudiant</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="session">
+            <img src="assets/previews/tp2-preview.png" alt="Aperçu du TD2">
+            <div class="session-body">
+              <div class="session-header">
+                <h3>Boucles, conditions et proportions avec données OWID</h3>
+                <span class="session-number">TD2</span>
+              </div>
+              <p>Parcourir une liste de dictionnaires, classer des observations, compter une proportion et tracer un graphique CO2.</p>
+              <div class="link-row">
+                <a class="resource-link" href="td2.html">Page du TD</a>
+                <a class="resource-link" href="supports/tp/TP_2_revise.pdf">PDF étudiant</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="session">
+            <img src="assets/previews/tp3-preview.png" alt="Aperçu du TD3">
+            <div class="session-body">
+              <div class="session-header">
+                <h3>Fonctions et comparaison de groupes</h3>
+                <span class="session-number">TD3</span>
+              </div>
+              <p>Écrire des fonctions, distinguer affichage et retour, comparer deux groupes et produire un graphique de synthèse.</p>
+              <div class="link-row">
+                <a class="resource-link" href="td3.html">Page du TD</a>
+                <a class="resource-link" href="supports/tp/TP_3_revise.pdf">PDF étudiant</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="session">
+            <img src="assets/previews/tp4-preview.png" alt="Aperçu du TD4">
+            <div class="session-body">
+              <div class="session-header">
+                <h3>Graphiques et simulation simple à partir d'OWID</h3>
+                <span class="session-number">TD4</span>
+              </div>
+              <p>Construire des figures, simuler des tirages avec random et observer la stabilisation d'une moyenne.</p>
+              <div class="link-row">
+                <a class="resource-link" href="td4.html">Page du TD</a>
+                <a class="resource-link" href="supports/tp/TP_4_revise.pdf">PDF étudiant</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="session">
+            <img src="assets/previews/tp5-preview.png" alt="Aperçu du TD5">
+            <div class="session-body">
+              <div class="session-header">
+                <h3>Mini-projet pandas avec Our World in Data</h3>
+                <span class="session-number">TD5</span>
+              </div>
+              <p>Importer un CSV, inspecter un DataFrame, filtrer, exporter, visualiser et rédiger une interprétation prudente.</p>
+              <div class="link-row">
+                <a class="resource-link" href="td5.html">Page du TD</a>
+                <a class="resource-link" href="supports/tp/TP_5_revise.pdf">PDF étudiant</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="cours" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Repères communs</p>
+          <h2>Supports de cours</h2>
+        </div>
+
+        <div class="grid two">
+          <article class="card">
+            <img src="assets/previews/cours1-preview.png" alt="Aperçu du cours 1">
+            <h3>Cours 1 - Premiers pas avec Python</h3>
+            <p>Ordinateur, script, exécution, variables, types, chemins et premières erreurs.</p>
+            <a class="resource-link" href="supports/cours/py_seance_1_revise.pdf">Ouvrir le PDF</a>
+          </article>
+
+          <article class="card">
+            <img src="assets/previews/cours2-preview.png" alt="Aperçu du cours 2">
+            <h3>Cours 2 - Décrire, comparer, visualiser</h3>
+            <p>Données, tableaux, statistiques descriptives, graphiques et premiers repères pandas.</p>
+            <a class="resource-link" href="supports/cours/py_seance_2_revise.pdf">Ouvrir le PDF</a>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">Python pour économistes - Université de Lille - L2 ESM</div>
+    </footer>
+  </body>
+</html>

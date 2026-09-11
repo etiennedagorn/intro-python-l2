@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TD2 - Python pour économistes</title>
+    <link rel="stylesheet" href="assets/style.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav" aria-label="Navigation principale">
+        <a class="brand" href="index.html">Python pour économistes</a>
+        <div class="nav-links">
+          <a href="index.html">Accueil</a>
+          <a href="index.html#seances" aria-current="page">TD</a>
+          <a href="index.html#cours">Cours</a>
+          <a href="index.html#ressources">Ressources</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <p class="eyebrow">TD2</p>
+      <h1>Boucles, conditions et proportions avec données OWID</h1>
+      <p class="lead">Parcourir une liste de dictionnaires, classer des observations, compter une proportion et construire un graphique CO2 avec <code>matplotlib</code>.</p>
+      <ul class="meta">
+        <li>Boucles</li>
+        <li>Conditions</li>
+        <li>Dictionnaires</li>
+        <li>Graphique CO2</li>
+      </ul>
+
+      <section class="td-layout">
+        <article>
+          <h2>Objectifs</h2>
+          <ul class="plain-list">
+            <li>Comprendre comment une observation peut être représentée par un dictionnaire.</li>
+            <li>Utiliser une boucle <code>for</code> pour appliquer la même action à plusieurs pays.</li>
+            <li>Écrire une condition et calculer une proportion.</li>
+            <li>Préparer deux listes pour tracer un graphique sans notion nouvelle inutile.</li>
+          </ul>
+
+          <h2>Déroulé actif</h2>
+          <ol class="plain-list">
+            <li>Observer un dictionnaire, puis une liste de dictionnaires.</li>
+            <li>Prédire et modifier les affichages.</li>
+            <li>Compléter une classification avec <code>if/elif/else</code>.</li>
+            <li>Utiliser un compteur, puis représenter les valeurs avec <code>plt.bar</code>.</li>
+            <li>Déboguer des erreurs d'indentation et de compteur.</li>
+          </ol>
+
+          <div class="callout">
+            <strong>Point de vigilance.</strong> Le graphique réutilise exactement la boucle déjà travaillée : construire une liste de pays, construire une liste de valeurs, puis tracer.
+          </div>
+
+          <div class="link-row">
+            <a class="resource-link" href="supports/tp/TP_2_revise.pdf">Ouvrir le PDF étudiant</a>
+            <a class="resource-link" href="supports/livret_exercices_python_revise.pdf">Ouvrir le livret</a>
+          </div>
+        </article>
+
+        <aside class="detail-panel">
+          <img class="td-preview" src="assets/previews/tp2-preview.png" alt="Aperçu du TD2">
+          <h2>À rendre</h2>
+          <p>Un script <code>td2_nom_prenom.py</code>, une figure <code>co2_td2.png</code>, une proportion et une courte interprétation.</p>
+        </aside>
+      </section>
+
+      <nav class="pager" aria-label="Navigation TD">
+        <a href="td1.html">TD précédent</a>
+        <a href="index.html#seances">Retour aux séances</a>
+        <a href="td3.html">TD suivant</a>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">Python pour économistes - Université de Lille - L2 Économie</div>
+    </footer>
+  </body>
+</html>
