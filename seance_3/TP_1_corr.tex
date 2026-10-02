@@ -1,0 +1,393 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{fancyhdr}
+\usepackage{tcolorbox}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{eurosym}
+\usepackage{hyperref}
+
+% Entête et pied de page
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Université de Lille - L2 Économie}
+\lhead{TP Python — Corrigé détaillé}
+\cfoot{\thepage}
+
+% Hyperref (liens discrets)
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=blue
+}
+
+% Style listings
+\lstdefinelanguage{terminal}{
+  morekeywords={ls,cd,pwd,mkdir,python,python3,code,dir,type,echo,py,conda,pip},
+  sensitive=true
+}
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{gray!10},
+  frame=single,
+  language=Python,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray!70!black},
+  stringstyle=\color{teal},
+  showstringspaces=false,
+  breaklines=true,
+  columns=fullflexible
+}
+
+% Interligne
+\onehalfspacing
+
+% Couleur boîtes
+\tcbset{
+  colback=blue!5!white,
+  colframe=blue!30!white,
+  fonttitle=\bfseries,
+  coltitle=black,
+  boxrule=0.5pt,
+  arc=2pt,
+  left=6pt,
+  right=6pt,
+  top=4pt,
+  bottom=4pt,
+  before skip=10pt,
+  after skip=10pt,
+}
+
+% Petites boîtes d'alerte/astuce
+\newtcolorbox{AlerteBox}{colback=red!5!white,colframe=red!40!black,title=\textbf{Attention}}
+\newtcolorbox{AstuceBox}{colback=green!5!white,colframe=green!40!black,title=\textbf{Astuce}}
+
+\title{\textbf{Premiers pas en Python — Corrigé détaillé}}
+\author{Université de Lille — L2 Économie}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{tcolorbox}[title=\large Objectifs du TP (version corrigée pour révision)]
+\begin{itemize}
+  \item Vérifier votre installation de \textbf{Python 3} et de \textbf{VS Code}, savoir ouvrir un dossier et lancer un script.
+  \item Comprendre la différence entre \textbf{terminal}, \textbf{interpréteur} et \textbf{script}.
+  \item Manipuler les \textbf{types de base} (\texttt{int}, \texttt{float}, \texttt{str}, \texttt{bool}) et les \textbf{listes}.
+  \item Maîtriser les \textbf{opérations arithmétiques}, l’\textbf{ordre des opérations} et les \textbf{conversions de types}.
+  \item Savoir \textbf{indexer/slicer} des chaînes, \textbf{formater} l’affichage et raisonner avec des \textbf{booléens}.
+\end{itemize}
+\end{tcolorbox}
+
+\section*{Installer Python et VS Code (rappel rapide)}
+\begin{itemize}
+  \item \textbf{Windows} : télécharger \href{https://www.python.org/downloads/}{python.org}, cocher \texttt{Add Python to PATH}, puis vérifier :
+\begin{lstlisting}[language=terminal]
+python --version
+# ou
+py -3 --version
+\end{lstlisting}
+  \item \textbf{macOS} : installer le \texttt{.pkg} puis :
+\begin{lstlisting}[language=terminal]
+python3 --version
+\end{lstlisting}
+  \item \textbf{Linux (Debian/Ubuntu)} :
+\begin{lstlisting}[language=terminal]
+sudo apt update
+sudo apt install -y python3 python3-pip
+python3 --version
+\end{lstlisting}
+  \item \textbf{VS Code} : installer \textit{Python (Microsoft)} et \textit{Jupyter} (facultatif).
+\end{itemize}
+\begin{AlerteBox}
+Si \texttt{python3} ne fonctionne pas sous Windows, essayez \texttt{python}. Évitez Python~2 (\texttt{2.x}).
+\end{AlerteBox}
+
+\newpage
+\begin{tcolorbox}[title=Interpréteur vs Script Python]
+Quand vous travaillez avec Python, il existe deux manières de lancer du code :
+
+\begin{enumerate}
+  \item \textbf{L’interpréteur interactif} (dans le terminal, après avoir tapé \texttt{python3}).  
+  Vous obtenez alors un prompt \texttt{>>>} qui vous permet de tester des instructions une par une.  
+  Exemple :  
+\begin{lstlisting}
+>>> 2 + 3
+5
+>>> print("Bonjour")
+Bonjour
+\end{lstlisting}  
+C’est idéal pour expérimenter rapidement et comprendre une erreur, comme une calculatrice évoluée.
+
+  \item \textbf{Le script Python} (fichier \texttt{.py}).  
+  Vous écrivez plusieurs lignes de code dans un fichier, par exemple \texttt{tp1.py}, puis vous l’exécutez en une fois :  
+\begin{lstlisting}[language=terminal]
+python3 tp1.py
+\end{lstlisting}  
+Le script conserve vos instructions : vous pouvez le modifier, le relancer, le partager. C’est ce mode qui doit être utilisé pour vos rendus.
+
+\end{enumerate}
+
+\textbf{Conseil pratique :} utilisez l’interpréteur pour tester et comprendre, puis recopiez vos solutions dans un fichier \texttt{.py} qui servira de rendu. Ainsi, vous profitez du meilleur des deux mondes.
+\end{tcolorbox}
+
+%==========================
+\section*{Exercice 1 — Organisation (corrigé)}
+\textbf{Commandes attendues :}
+\begin{lstlisting}[language=terminal]
+cd ~/Bureau           # (macOS/Linux) - sous Windows, aller dans le dossier choisi
+mkdir Python_L2
+cd Python_L2
+mkdir TP1 data scripts notes
+ls      # macOS/Linux
+# dir   # Windows
+\end{lstlisting}
+Ouvrir le dossier dans VS Code :
+\begin{lstlisting}[language=terminal]
+code .
+\end{lstlisting}
+\textbf{Questions :}
+\begin{itemize}
+  \item Revenir en arrière : \texttt{cd ..}
+  \item \texttt{ls} (Unix/macOS) $\approx$ \texttt{dir} (Windows) : liste le contenu.
+\end{itemize}
+\begin{AstuceBox}
+\texttt{code .} ouvre le dossier courant dans VS Code (ne pas oublier l’espace avant le point).
+\end{AstuceBox}
+
+%==========================
+\section*{Exercice 2 — Script vs Interpréteur (corrigé)}
+\textbf{Script} \texttt{scripts/hello.py} :
+\begin{lstlisting}
+print("Bonjour Python !")
+\end{lstlisting}
+\textbf{Exécution dans le terminal} :
+\begin{lstlisting}[language=terminal]
+python3 scripts/hello.py
+# Sortie attendue :
+# Bonjour Python !
+\end{lstlisting}
+\textbf{Interpréteur (REPL)} :
+\begin{lstlisting}[language=terminal]
+python3
+>>> print("Bonjour")
+Bonjour
+\end{lstlisting}
+\textbf{À retenir} :
+\begin{itemize}
+  \item \textbf{Interpréteur} : tests rapides, ligne par ligne.
+  \item \textbf{Script} : code réutilisable, partageable, versionnable.
+\end{itemize}
+
+%==========================
+\section*{Exercice 3 — Python comme calculatrice (corrigé)}
+\begin{lstlisting}
+2 + 5      # 7
+10 - 3     # 7
+4 * 7      # 28
+20 / 6     # 3.3333333333333335  -> division "réelle" (toujours float)
+20 // 6    # 3                    -> division entière (quotient)
+20 % 6     # 2                    -> reste
+2 ** 5     # 32                   -> puissance
+\end{lstlisting}
+\textbf{Piège} : \texttt{/} renvoie \emph{toujours} un \texttt{float}, même si le résultat tombe « juste ».
+
+%==========================
+\section*{Exercice 4 — Ordre des opérations (corrigé)}
+\begin{lstlisting}
+2 + 3 * 4     # 14  (priorité à la multiplication)
+(2 + 3) * 4   # 20  (parenthèses d'abord)
+\end{lstlisting}
+\textbf{Règle} : parenthèses $>$ puissances $>$ multiplications/divisions $>$ additions/soustractions.
+
+%==========================
+\section*{Exercice 5 — Chaînes de caractères (corrigé)}
+\begin{lstlisting}
+"Bonjour" + " le monde"   # "Bonjour le monde"
+"Python" * 3              # "PythonPythonPython"
+len("Université de Lille")# 21 (espaces comptent)
+\end{lstlisting}
+Indexation :
+\begin{lstlisting}
+s = "Python"
+s[0]    # 'P'  (première lettre)
+s[-1]   # 'n'  (dernière lettre)
+\end{lstlisting}
+\textbf{À retenir} : les chaînes se comportent comme des séquences de caractères.
+
+%==========================
+\section*{Exercice 6 — Variables (corrigé)}
+\begin{lstlisting}
+nom = "Alice"      # str
+age = 22           # int
+revenu = 1450.75   # float
+etudiant = True    # bool
+\end{lstlisting}
+\textbf{Types} :
+\begin{lstlisting}
+type(nom), type(age), type(revenu), type(etudiant)
+# <class 'str'>, <class 'int'>, <class 'float'>, <class 'bool'>
+\end{lstlisting}
+\textbf{int vs float} : \texttt{22} (entier), \texttt{22.0} (réel). \texttt{22 == 22.0} vaut \texttt{True} mais les \textbf{types} diffèrent.
+
+%==========================
+\section*{Exercice 7 — Conversions (corrigé)}
+\begin{lstlisting}
+age_str = "22"
+int(age_str) + 3        # 25
+str(22) + " ans"        # "22 ans"
+
+int("3.14")             # ValueError (impossible de convertir "3.14" en int)
+float("3.14")           # 3.14 (conversion OK en float)
+\end{lstlisting}
+\textbf{Leçon} : toujours convertir explicitement avant d’opérer.
+
+%==========================
+\section*{Exercice 8 — Affichage formaté (corrigé)}
+\begin{lstlisting}
+nom, age = "Alice", 22
+print(nom, "a", age, "ans")     # ajoute des espaces automatiquement
+print(f"{nom} a {age} ans")     # f-string : clair et puissant
+revenu = 1450.756
+print(f"Revenu: {revenu:.2f} €")# Revenu: 1450.76 €
+\end{lstlisting}
+
+%==========================
+\section*{Exercice 9 — Listes (corrigé)}
+\begin{lstlisting}
+notes = [12, 15, 9]
+notes[0]          # 12
+notes.append(14)  # [12, 15, 9, 14]
+notes[0] = 20     # [20, 15, 9, 14]
+moyenne = sum(notes) / len(notes)  # 14.5
+\end{lstlisting}
+\textbf{Attention} : les listes sont \emph{mutables} (on peut modifier leurs éléments).
+
+%==========================
+\section*{Exercice 10 — Indexation de chaînes (corrigé)}
+\begin{lstlisting}
+mot = "Python"
+mot[0]     # 'P'
+mot[-1]    # 'n'
+mot[0:3]   # 'Pyt'        (début inclus, fin exclue)
+mot[2:]    # 'thon'       (du 3e caractère à la fin)
+mot[-3:]   # 'hon'        (les 3 derniers caractères)
+mot[::-1]  # 'nohtyP'     (chaîne inversée)
+\end{lstlisting}
+
+%==========================
+\section*{Exercice 11 — Mise à jour de variable (corrigé)}
+\begin{lstlisting}
+x = 5
+x = x + 1   # 6
+x += 1      # 7 (raccourci équivalent)
+\end{lstlisting}
+
+%==========================
+\section*{Exercice 12 — Booléens simples (corrigé)}
+\begin{lstlisting}
+x = 10
+x > 5     # True
+x == 10   # True  (égalité)
+x != 8    # True  (différent)
+x < 5     # False
+\end{lstlisting}
+\textbf{Important} : \texttt{=} affecte, \texttt{==} compare.
+
+%==========================
+\section*{Exercice 13 — Opérateurs logiques (corrigé)}
+\begin{lstlisting}
+a, b = True, False
+a and b   # False
+a or b    # True
+not a     # False
+\end{lstlisting}
+\textbf{Tables de vérité} :
+\begin{itemize}
+  \item \texttt{and} : True si \emph{les deux} sont True.
+  \item \texttt{or}  : True si \emph{au moins un} est True.
+  \item \texttt{not} : inverse True/False.
+\end{itemize}
+
+%==========================
+\section*{Exercice 14 — Booléens implicites (corrigé)}
+\begin{lstlisting}
+bool(0)        # False
+bool(42)       # True
+bool("")       # False   (chaîne vide)
+bool(" ")      # True    (un espace = non vide)
+bool([])       # False   (liste vide)
+bool([1,2,3])  # True
+\end{lstlisting}
+\textbf{Règle} : les \emph{conteneurs vides} valent \texttt{False}, les non vides \texttt{True}.
+
+%==========================
+\section*{Exercice 15 — Mini-défis (corrigé)}
+\begin{enumerate}
+  \item Variables et opérations :
+\begin{lstlisting}
+x, y = 8, 3
+print(x + y)   # 11
+print(x - y)   # 5
+print(x * y)   # 24
+print(x / y)   # 2.6666666666666665
+print(x // y)  # 2
+print(x % y)   # 2
+\end{lstlisting}
+
+  \item \texttt{input()} :
+\begin{lstlisting}
+prenom = input("Votre prénom : ")
+print("Bonjour", prenom)
+# ou
+print(f"Bonjour {prenom}")
+\end{lstlisting}
+
+  \item Listes :
+\begin{lstlisting}
+prenoms = ["Lucie", "Amine", "Sara"]
+print(prenoms[1])  # "Amine"
+len(prenoms)       # 3
+\end{lstlisting}
+
+  \item Types et conversions :
+\begin{lstlisting}
+"2" + 3          # TypeError
+int("2") + 3     # 5
+"2" * 3          # "222"
+\end{lstlisting}
+\end{enumerate}
+
+%==========================
+\section*{Messages d'erreur fréquents (et comment les lire)}
+\begin{itemize}
+  \item \texttt{SyntaxError: invalid syntax} — parenthèse, guillemet, deux-points manquants\dots
+  \item \texttt{NameError: name 'x' is not defined} — variable non définie/typo/ordre d'exécution.
+  \item \texttt{TypeError: can only concatenate str (not "int") to str} — mélange \texttt{str} et \texttt{int} sans conversion.
+  \item \texttt{ModuleNotFoundError: No module named 'xxx'} — paquet non installé (\texttt{pip install xxx}) ou environnement incorrect.
+\end{itemize}
+\begin{AstuceBox}
+Lisez le \textbf{dernier bloc} de l’erreur : il pointe l’endroit exact et la nature du problème.
+\end{AstuceBox}
+
+%==========================
+\section*{Annexe — Lancer un script dans VS Code}
+\begin{enumerate}
+  \item Ouvrir un dossier (\texttt{Fichier} $\rightarrow$ \texttt{Ouvrir le dossier}).
+  \item Créer \texttt{tp1.py} et y écrire du code.
+  \item Installer l’extension \textit{Python (Microsoft)} si nécessaire.
+  \item Sélectionner \textbf{l’interpréteur} Python (barre d’état en bas à droite).
+  \item Lancer \texttt{Run} (triangle vert) ou utiliser le terminal intégré :
+\begin{lstlisting}[language=terminal]
+python3 tp1.py   # macOS/Linux
+python tp1.py    # Windows
+\end{lstlisting}
+\end{enumerate}
+
+\end{document}

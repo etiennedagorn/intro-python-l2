@@ -1,5 +1,4 @@
 # Fichiers internes a ne pas publier dans un depot public.
-**/*corr*
 **/*correction*
 **/*Correction*
 CORRECTIONS_STATUS.md
