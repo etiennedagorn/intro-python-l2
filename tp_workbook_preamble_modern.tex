@@ -1,0 +1,235 @@
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage[a4paper,top=1.75cm,bottom=1.9cm,left=1.85cm,right=1.85cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{eurosym}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{lmodern}
+\usepackage{inconsolata}
+\usepackage{listings}
+\usepackage{microtype}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{titlesec}
+\usepackage{xcolor}
+
+\renewcommand{\familydefault}{\sfdefault}
+
+\definecolor{ink}{HTML}{202124}
+\definecolor{muted}{HTML}{5F6368}
+\definecolor{line}{HTML}{DADCE0}
+\definecolor{paper}{HTML}{F8F9FA}
+\definecolor{panel}{HTML}{FFFFFF}
+\definecolor{accent}{HTML}{8A1538}
+\definecolor{accentsoft}{HTML}{F8EEF2}
+\definecolor{green}{HTML}{0B6B57}
+\definecolor{greensoft}{HTML}{E6F4EF}
+\definecolor{amber}{HTML}{9A5B00}
+\definecolor{ambersoft}{HTML}{FFF7E6}
+\definecolor{blue}{HTML}{245B8E}
+\definecolor{bluesoft}{HTML}{EAF2FA}
+\definecolor{rose}{HTML}{A84D77}
+\definecolor{rosesoft}{HTML}{FAF0F5}
+\definecolor{codeback}{HTML}{F8F9FA}
+\definecolor{codemark}{HTML}{DADCE0}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=accent,
+  urlcolor=green,
+  pdfborder={0 0 0}
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlist[itemize]{leftmargin=1.35em,itemsep=2pt,topsep=2pt}
+\setlist[enumerate]{leftmargin=1.55em,itemsep=3pt,topsep=3pt}
+\setlist[enumerate,1]{label=\textbf{\alph*.}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\sffamily\footnotesize Python pour économistes}
+\fancyhead[R]{\sffamily\footnotesize Université de Lille -- L2 Économie}
+\fancyfoot[C]{\sffamily\footnotesize\color{muted}\thepage}
+\renewcommand{\headrulewidth}{0.2pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{line}\leaders\hrule height \headrulewidth\hfill}}
+\setlength{\headheight}{22pt}
+
+\titleformat{\section}
+  {\sffamily\Large\bfseries\color{ink}}
+  {}{0pt}{}
+  [\vspace{-0.25em}{\color{accent}\titlerule[0.7pt]}]
+\titleformat{\subsection}
+  {\sffamily\large\bfseries\color{ink}}
+  {}{0pt}{}
+
+\lstdefinelanguage{terminal}{
+  morekeywords={ls,cd,pwd,mkdir,python,python3,code,dir,type,echo},
+  sensitive=true
+}
+
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  backgroundcolor=\color{codeback},
+  frame=single,
+  framesep=5pt,
+  framerule=0.25pt,
+  rulecolor=\color{codemark},
+  language=Python,
+  keywordstyle=\color{accent}\bfseries,
+  commentstyle=\color{muted},
+  stringstyle=\color{green},
+  numberstyle=\scriptsize\color{muted},
+  numbers=left,
+  numbersep=8pt,
+  showstringspaces=false,
+  breaklines=true,
+  aboveskip=0.7em,
+  belowskip=0.7em,
+  xleftmargin=1.1em,
+  framexleftmargin=1em,
+  columns=fullflexible,
+  keepspaces=true,
+  upquote=true,
+  literate=
+   {à}{{\`a}}1 {â}{{\^a}}1 {ä}{{\"a}}1
+   {ç}{{\c c}}1
+   {é}{{\'e}}1 {è}{{\`e}}1 {ê}{{\^e}}1 {ë}{{\"e}}1
+   {î}{{\^\i}}1 {ï}{{\"\i}}1
+   {ô}{{\^o}}1 {ö}{{\"o}}1
+   {ù}{{\`u}}1 {û}{{\^u}}1 {ü}{{\"u}}1
+   {À}{{\`A}}1 {Â}{{\^A}}1 {Ä}{{\"A}}1
+   {Ç}{{\c C}}1
+   {É}{{\'E}}1 {È}{{\`E}}1 {Ê}{{\^E}}1 {Ë}{{\"E}}1
+   {Î}{{\^I}}1 {Ï}{{\"I}}1
+   {Ô}{{\^O}}1 {Ö}{{\"O}}1
+   {Ù}{{\`U}}1 {Û}{{\^U}}1 {Ü}{{\"U}}1
+   {œ}{{\oe}}1 {Œ}{{\OE}}1
+   {–}{{--}}1 {—}{{---}}1
+}
+
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\pp}{\,points de pourcentage}
+\newcommand{\taglabel}[1]{\scriptsize\sffamily\bfseries #1}
+
+\newcounter{exercise}
+\newcounter{extension}
+\newcounter{logic}
+
+\newcommand{\workbooktitle}[4]{%
+  \setcounter{exercise}{0}%
+  \setcounter{extension}{0}%
+  \setcounter{logic}{0}%
+  \fancyhead[L]{\sffamily\footnotesize #1 -- #2}%
+  \begingroup\raggedright
+  {\sffamily\Large\bfseries\color{ink}#1 -- #2\par}
+  \vspace{0.25em}
+  {\sffamily\small\color{muted}Python pour économistes -- Université de Lille, L2 Économie\par}
+  \vspace{0.85em}
+  {\sffamily\bfseries\color{accent}Question fil rouge.} #3\par
+  \vspace{0.35em}
+  {\sffamily\bfseries\color{green}Livrables.} #4\par
+  \vspace{0.9em}
+  {\color{line}\hrule height 0.45pt}
+  \vspace{0.85em}
+  \endgroup
+}
+
+\newenvironment{objectivebox}[1]{%
+  \subsection*{#1}
+  \vspace{-0.55em}
+}{\vspace{0.15em}}
+
+\newenvironment{routebox}[1]{%
+  \subsection*{#1}
+  \vspace{-0.45em}
+}{\vspace{0.15em}}
+
+\newenvironment{deliverablebox}[1]{%
+  \subsection*{#1}
+  \vspace{-0.45em}
+}{\vspace{0.15em}}
+
+\newenvironment{methodbox}[1]{%
+  \subsection*{#1}
+  \vspace{-0.45em}
+}{\vspace{0.15em}}
+
+\newenvironment{pathwaybox}[1]{%
+  \par\addvspace{0.8em}
+  {\sffamily\bfseries\color{blue}#1\par}
+  \vspace{-0.25em}
+  \begingroup\leftskip=0.85em\relax
+  \noindent\color{ink}
+}{\par\endgroup\addvspace{0.25em}}
+
+\newenvironment{pseudocodeexercise}[1]{%
+  \refstepcounter{logic}%
+  \begin{tcolorbox}[
+    enhanced,breakable,
+    title={Logique \thelogic{} -- #1 \hfill\taglabel{PSEUDO-CODE}},
+    colback=bluesoft,
+    colframe=blue!55!black,
+    coltitle=ink,
+    colbacktitle=bluesoft,
+    fonttitle=\sffamily\bfseries,
+    boxrule=0.35pt,
+    arc=0pt,
+    left=10pt,right=10pt,top=7pt,bottom=7pt,
+    before skip=8pt,after skip=8pt,
+    borderline west={3pt}{0pt}{blue}
+  ]%
+}{\end{tcolorbox}}
+
+\newenvironment{mandatoryexercise}[1]{%
+  \refstepcounter{exercise}%
+  \par\addvspace{1.05em}
+  {\color{line}\hrule height 0.35pt}
+  \vspace{0.55em}
+  {\sffamily\large\bfseries\color{ink}Exercice \theexercise{} -- #1\par}
+  {\taglabel{OBLIGATOIRE}\par}
+  \vspace{0.25em}
+}{\par\addvspace{0.65em}}
+
+\newenvironment{extensionexercise}[1]{%
+  \refstepcounter{extension}%
+  \begin{tcolorbox}[
+    enhanced,breakable,
+    title={Pour aller plus loin \theextension{} -- #1},
+    colback=ambersoft,
+    colframe=amber!65!black,
+    coltitle=ink,
+    colbacktitle=ambersoft,
+    fonttitle=\sffamily\bfseries,
+    boxrule=0.35pt,
+    arc=0pt,
+    left=10pt,right=10pt,top=8pt,bottom=8pt,
+    before skip=8pt,after skip=8pt,
+    borderline west={3pt}{0pt}{amber}
+  ]%
+}{\end{tcolorbox}}
+
+\newenvironment{checkpointbox}[1]{%
+  \subsection*{#1}
+  \vspace{-0.45em}
+}{\vspace{0.15em}}
+
+\newtcolorbox{takeawaybox}[1]{
+  enhanced,breakable,
+  title={#1},
+  colback=greensoft,
+  colframe=green,
+  coltitle=ink,
+  colbacktitle=greensoft,
+  fonttitle=\sffamily\bfseries,
+  boxrule=0.35pt,
+  arc=0pt,
+  left=10pt,right=10pt,top=8pt,bottom=8pt,
+  before skip=10pt,after skip=8pt,
+  borderline west={3pt}{0pt}{green}
+}

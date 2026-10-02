@@ -1,0 +1,260 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{textcomp}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{fancyhdr}
+\setlength{\headheight}{14.2pt}
+\usepackage{tcolorbox}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{eurosym}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{inconsolata}
+\usepackage{multicol}
+\def\checkmark{\tikz\fill[scale=0.4](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;} 
+
+% Entête et pied de page
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Université de Lille - L2 Économie}
+\lhead{TP Python}
+\cfoot{\thepage}
+
+% Style listings
+\lstdefinelanguage{terminal}{
+  morekeywords={ls,cd,pwd,mkdir,python,python3,code,dir,type,echo},
+  sensitive=true
+}
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{gray!10},
+  frame=single,
+  language=Python,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray!70!black},
+  stringstyle=\color{teal},
+  showstringspaces=false,
+  breaklines=true
+}
+
+% Interligne
+\onehalfspacing
+
+% Couleur exercices
+\tcbset{
+  colback=blue!5!white,
+  colframe=blue!30!white,
+  fonttitle=\bfseries,
+  coltitle=black,
+  boxrule=0.5pt,
+  arc=2pt,
+  left=6pt,
+  right=6pt,
+  top=4pt,
+  bottom=4pt,
+  before skip=10pt,
+  after skip=10pt,
+}
+
+\title{\textbf{Premiers pas en Python: \\ Exercices complémentaires}}
+\author{Etienne Dagorn\thanks{\href{mailto:etienne.dagorn@univ-lille.fr}{{etienne.dagorn@univ-lille.fr}}}}
+\date{}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+
+\newpage
+
+
+
+\newpage
+\section{Exercices Complémentaires} 
+
+\subsection*{Fusion de dictionnaires}
+Deux paniers contiennent des quantités :
+\begin{lstlisting}
+p1 = {"pomme": 2, "pain": 1, "riz": 1}
+p2 = {"pomme": 1, "yaourt": 4, "riz": 2}
+\end{lstlisting}
+\begin{itemize}
+    \item Fusionne \texttt{p1} et \texttt{p2} en \texttt{p\_total} en \textbf{additionnant} les quantités lorsqu'une clé existe dans les deux.
+    \item Trie \texttt{p\_total} par quantité décroissante (affichage).
+\end{itemize}
+\begin{tcolorbox}[title=Aide]
+Crée un nouveau dict, copie \texttt{p1}, puis parcours \texttt{p2}: si la clé existe déjà, additionne.\\
+Tri d'affichage : \texttt{sorted(p\_total.items(), key=lambda kv: -kv[1])}.
+\end{tcolorbox}
+\begin{tcolorbox}[title=Bonus -- Aide]
+Dans \texttt{fusion(p,q, mode)}, gère trois cas: \texttt{"somme"} (addition), \texttt{"droite"} (remplace par \texttt{q}), \texttt{"gauche"} (garde \texttt{p}).
+\end{tcolorbox}
+
+\subsection*{Fréquence des lettres}
+Demande un mot à l'utilisateur et affiche combien de fois chaque lettre apparaît (ex : \texttt{banana $\Rightarrow$ b:1, a:3, n:2}).
+\begin{itemize}
+    \item Affiche les lettres triées par fréquence décroissante.
+\end{itemize}
+\begin{tcolorbox}[title=Aide]
+Parcours caractère par caractère, garde seulement les lettres (\texttt{.isalpha()}), normalise en minuscules.\\
+Compteur: \texttt{d[c] = d.get(c, 0) + 1}. Tri: \texttt{sorted(d.items(), key=lambda kv: -kv[1])}.
+\end{tcolorbox}
+\begin{tcolorbox}[title=Bonus -- Aide]
+Ignore les caractères non alphabétiques avant le comptage; filtre \texttt{a--z} via \texttt{.isalpha()} et \texttt{.lower()}.
+\end{tcolorbox}
+
+\subsection*{Classement de notes}
+À partir d'un dictionnaire \texttt{\{"Alice": 14, "Bob": 10, "Clara": 16\}}, affiche :
+\begin{itemize}
+    \item Les noms triés par note décroissante.
+    \item Le/la premier.ère et le/la dernier.ère.
+\end{itemize}
+\begin{tcolorbox}[title=Aide]
+Trie les \texttt{items()} du dictionnaire par la \emph{valeur} décroissante: \texttt{key=lambda kv: -kv[1]}.\\
+Le premier et le dernier sont accessibles par indices \texttt{[0]} et \texttt{[-1]}.
+\end{tcolorbox}
+\begin{tcolorbox}[title=Bonus -- Aide]
+Écris \texttt{top\_k(d, k)} qui trie puis renvoie les \texttt{k} premiers éléments via un \emph{slicing} \texttt{[:k]}.
+\end{tcolorbox}
+
+% ======================================================
+% BLOC 2 : EXERCICES APPLICATION / PETITS CAS RÉALISTES
+
+\subsection*{Inventaire simple (prix \& stock)}
+On représente un inventaire par :
+\begin{lstlisting}
+inventaire = {
+  "pomme": {"prix": 0.5, "stock": 20},
+  "pain":  {"prix": 1.2, "stock": 10},
+  "riz":   {"prix": 2.0, "stock": 5}
+}
+\end{lstlisting}
+\begin{itemize}
+    \item Calcule la valeur totale de l'inventaire (\texttt{prix * stock}, somme).
+    \item Vends une commande \texttt{\{"pomme": 3, "riz": 2\}} si le stock est suffisant ; mets à jour les stocks.
+    \item Ajoute une remise de 10\% sur \texttt{"riz"} et recalcule la valeur totale.
+\end{itemize}
+\begin{tcolorbox}[title=Aide]
+Somme totale: parcours \texttt{inventaire.items()} et ajoute \texttt{prix * stock}.\\
+Avant la vente: vérifie que chaque \texttt{stock} est suffisant, puis décrémente.\\
+Remise: multiplie le \texttt{prix} par \texttt{0.9}, puis recalcule la somme.
+\end{tcolorbox}
+\begin{tcolorbox}[title=Bonus -- Aide]
+Pour trier par \emph{valeur de stock} (\texttt{prix * stock}), trie \texttt{inventaire.items()} avec \texttt{key=lambda kv: -(kv[1]["prix"]*kv[1]["stock"])}.
+\end{tcolorbox}
+
+\subsection*{Petites ``stats'' sur transactions}
+On dispose d'une liste de transactions :
+\begin{lstlisting}
+tx = [
+  {"nom":"Alice","montant":12.5},
+  {"nom":"Bob","montant":7.0},
+  {"nom":"Alice","montant":3.5},
+  {"nom":"Clara","montant":20.0}
+]
+\end{lstlisting}
+\begin{itemize}
+    \item Calcule la dépense totale par personne (dictionnaire \texttt{nom $\rightarrow$ total}).
+    \item Qui a le plus dépensé ? Affiche le classement.
+\end{itemize}
+\begin{tcolorbox}[title=Aide]
+Cumule dans un dict: \texttt{totaux[nom] = totaux.get(nom,0) + montant}.\\
+Classement: \texttt{sorted(totaux.items(), key=lambda kv: -kv[1])}.
+\end{tcolorbox}
+\begin{tcolorbox}[title=Bonus -- Aide]
+Stocke pour chaque nom \texttt{nb} d'achats et \texttt{total}; la moyenne est \texttt{total/nb}.
+\end{tcolorbox}
+
+\subsection*{Fonctions utilitaires (liste de nombres)}
+Écris des fonctions :
+\begin{itemize}
+    \item \texttt{moyenne(L)}, \texttt{mediane(L)} (liste triée/tri à faire), \texttt{mode(L)} (valeur la plus fréquente).
+    \item Teste sur plusieurs listes (\texttt{[1,2,2,3]}, \texttt{[10]}, \texttt{[]}).
+\end{itemize}
+\begin{tcolorbox}[title=Aide]
+\textbf{Moyenne} : \texttt{sum/len} avec test liste vide.\\
+\textbf{Médiane} : trie une \emph{copie}; pair $\Rightarrow$ moyenne des deux centraux.\\
+\textbf{Mode} : dict de fréquences, \texttt{max()} sur les valeurs; si ex aequo, renvoyer une liste.
+\end{tcolorbox}
+\begin{tcolorbox}[title=Bonus -- Aide]
+Pense à tester les cas limites: liste vide, un seul élément, multimodal.
+\end{tcolorbox}
+
+\subsection*{Groupements simples (sans pandas)}
+On dispose d'un catalogue \texttt{[{catégorie, produit, prix}]} (liste de dicts).
+\begin{itemize}
+    \item Calcule, par \textbf{catégorie}, le \textbf{nombre} de produits et le \textbf{prix moyen}.
+    \item Affiche les catégories triées par prix moyen décroissant.
+\end{itemize}
+\begin{tcolorbox}[title=Aide]
+Crée un dict \texttt{groupes[cat] = \{nb, somme\}} en parcourant le catalogue.\\
+Puis calcule \texttt{prix\_moy = somme/nb} et regroupe dans une liste de tuples à trier.
+\end{tcolorbox}
+
+\subsection*{Nettoyage léger}
+À partir d'une liste de prénoms \texttt{[" alice ", "Bob", "ALICE", "bob ", "  clara"]} :
+\begin{itemize}
+    \item Supprime espaces superflus, harmonise en \texttt{Nom propre} (majuscule initiale seulement).
+    \item Produit une liste \texttt{unique} triée.
+\end{itemize}
+\begin{tcolorbox}[title=Aide]
+Écris une petite fonction de nettoyage: \texttt{strip()}, \texttt{lower()}, \texttt{capitalize()}.\\
+Construis la liste \emph{unique} en testant \texttt{if x not in ...} puis trie avec \texttt{sorted()}.
+\end{tcolorbox}
+
+\newpage
+
+\subsection*{Sauvegarder les résultats dans un fichier (100\% Python)}
+
+Dans cet exercice, vous allez apprendre à \textbf{enregistrer automatiquement les résultats de vos exercices précédents dans un fichier texte} en utilisant uniquement Python, sans passer par le terminal.
+
+\begin{itemize}
+    \item Créez un nouveau script nommé \texttt{tp2\_solutions.py}.
+    \item En haut du script, importez le module \texttt{datetime} et ouvrez un fichier texte pour y écrire les résultats :
+\begin{lstlisting}[language=Python]
+from datetime import datetime
+
+# Création (ou écrasement) du fichier de résultats
+fichier_resultats = open("resultats_tp2.txt", "w", encoding="utf-8")
+
+# Fonction utilitaire : écrit à l'écran et dans le fichier
+def log(texte):
+    print(texte)
+    fichier_resultats.write(str(texte) + "\n")
+
+log("=== Résumé des exercices du TP2 ===")
+log("Exécuté le : " + str(datetime.now()))
+log("")  # ligne vide
+\end{lstlisting}
+
+    \item Pour chaque exercice du TP2 (1 à 15), ajoutez au moins un exemple dont le résultat sera enregistré dans le fichier en utilisant \texttt{log()} :
+\begin{lstlisting}[language=Python]
+# Exemple : Exercice 2
+notes = [12, 14, 10, 8]
+moyenne = sum(notes) / len(notes)
+log("Ex2 – Moyenne des notes : " + str(round(moyenne, 1)))
+\end{lstlisting}
+
+    \item Une fois tous les résultats enregistrés, n'oubliez pas de fermer le fichier pour le sauvegarder :
+\begin{lstlisting}[language=Python]
+fichier_resultats.close()
+\end{lstlisting}
+
+\end{itemize}
+
+\begin{tcolorbox}[title=À retenir]
+Après exécution de \texttt{tp2\_solutions.py}, un fichier \texttt{resultats\_tp2.txt} sera créé automatiquement dans le même dossier.  
+Il contiendra toutes les sorties principales de vos exercices.  
+Vous n'avez pas besoin d'utiliser le terminal : tout se fait directement en Python.
+\end{tcolorbox}
+
+
+
+\end{document}

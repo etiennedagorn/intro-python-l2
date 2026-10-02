@@ -1,0 +1,264 @@
+\documentclass[11pt,a4paper]{article}
+\input{../tp_workbook_preamble_modern.tex}
+
+\begin{document}
+
+\workbooktitle
+  {TD2}
+  {Boucles, conditions et proportions avec données OWID}
+  {Comment utiliser des boucles et des conditions pour classer des observations économiques simples ?}
+  {Un fichier \code{td2\_nom\_prenom.py} contenant une boucle, une condition, une proportion, un graphique \code{co2\_td2.png} et une interprétation économique courte.}
+
+\begin{objectivebox}{Objectifs du TD}
+\begin{itemize}
+  \item Lire une liste de dictionnaires représentant des observations.
+  \item Utiliser une boucle \code{for} pour répéter une opération.
+  \item Écrire une condition \code{if/elif/else} et compter une proportion.
+  \item Construire un graphique simple avec \code{matplotlib} à partir d'une boucle.
+  \item Repérer les erreurs fréquentes de boucle, compteur et indentation.
+\end{itemize}
+\end{objectivebox}
+
+\begin{checkpointbox}{Progression du TD}
+Les exercices 1 à 13 sont obligatoires. La notion statistique principale est la proportion. Les seuils utilisés sont pédagogiques : ils servent à apprendre \code{if}, \code{for} et les compteurs, sans aller trop vite vers un programme complet.
+\end{checkpointbox}
+
+\begin{checkpointbox}{Source des données}
+Les valeurs de CO$_2$ par habitant sont des extraits pédagogiques arrondis issus d'Our World in Data.
+\begin{lstlisting}[language=terminal]
+https://ourworldindata.org/grapher/co-emissions-per-capita.csv
+\end{lstlisting}
+\end{checkpointbox}
+
+\begin{pseudocodeexercise}{Classer des observations}
+\begin{lstlisting}
+# Objectif : classer des pays selon un indicateur
+# Entree : liste de pays et valeurs de CO2 par habitant
+# Pour chaque pays :
+#     lire la valeur
+#     comparer la valeur a un seuil
+#     afficher une categorie
+# Compter combien de pays sont dans chaque categorie
+# Sortie : effectifs, proportions, interpretation
+\end{lstlisting}
+\end{pseudocodeexercise}
+
+\section*{A. Représenter les données}
+
+\begin{mandatoryexercise}{Observer un dictionnaire seul}
+Avant de manipuler plusieurs observations, lire une seule observation.
+\begin{lstlisting}
+obs = {"pays": "France", "co2_pc": 4.7}
+
+print(obs["pays"])
+print(obs["co2_pc"])
+\end{lstlisting}
+Avant d'exécuter, prédire les deux affichages. Modifier ensuite la valeur de \code{co2\_pc} à \code{5.1} et vérifier que seul le résultat affiché change.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Identifier une clé de dictionnaire}
+Lire le fragment suivant avant de l'exécuter.
+\begin{lstlisting}
+obs = {"pays": "France", "co2_pc": 4.7}
+
+print(obs["pays"])
+print(obs["population"])
+\end{lstlisting}
+Prédire quelle ligne fonctionne et quelle ligne produit une erreur. Exécuter ensuite le fragment, noter le type d'erreur en commentaire, puis remplacer \code{"population"} par une clé réellement présente dans le dictionnaire.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Créer une liste de dictionnaires}
+Créer la liste suivante. Chaque dictionnaire représente une observation.
+\begin{lstlisting}
+donnees = [
+    {"pays": "France", "co2_pc": 4.7},
+    {"pays": "Germany", "co2_pc": 7.9},
+    {"pays": "Spain", "co2_pc": 5.0},
+    {"pays": "Poland", "co2_pc": 8.4},
+    {"pays": "United States", "co2_pc": 14.9},
+    {"pays": "India", "co2_pc": 2.0},
+    {"pays": "China", "co2_pc": 8.0},
+    {"pays": "World", "co2_pc": 4.7}
+]
+\end{lstlisting}
+Afficher le nombre d'observations et la première observation.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Ajouter une observation courte}
+Ajouter à la fin de \code{donnees} une observation pour \code{"Brazil"} avec \code{co2\_pc = 2.3}. Relancer ensuite seulement deux contrôles :
+\begin{enumerate}
+  \item \code{print(len(donnees))} ;
+  \item \code{print(donnees[-1])}.
+\end{enumerate}
+Vérifier que le reste du script pourra utiliser cette nouvelle observation sans modifier les boucles.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Parcourir les observations}
+Avec une boucle \code{for}, afficher une phrase par pays :
+\begin{lstlisting}
+for obs in donnees:
+    print(f"{obs['pays']} : {obs['co2_pc']} tonnes par habitant")
+\end{lstlisting}
+Observer que \code{obs} prend successivement la valeur de chaque dictionnaire de la liste. Modifier ensuite l'affichage pour arrondir à une décimale.
+\end{mandatoryexercise}
+
+\section*{B. Conditions et proportions}
+
+\begin{mandatoryexercise}{Classer avec une condition}
+On utilise trois catégories pédagogiques :
+\begin{itemize}
+  \item \code{faible} si \code{co2\_pc < 5} ;
+  \item \code{intermediaire} si \code{5 <= co2\_pc < 10} ;
+  \item \code{eleve} si \code{co2\_pc >= 10}.
+\end{itemize}
+Compléter la boucle suivante pour afficher la catégorie de chaque pays.
+\begin{lstlisting}
+for obs in donnees:
+    pays = obs["pays"]
+    co2 = obs["co2_pc"]
+    if co2 < 5:
+        categorie = ...
+    elif ...:
+        categorie = ...
+    else:
+        categorie = ...
+    print(pays, categorie)
+\end{lstlisting}
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Tester les seuils avant la boucle complète}
+Avant d'appliquer le classement à tous les pays, tester quatre valeurs isolées : \code{4.9}, \code{5.0}, \code{9.9} et \code{10.0}. Pour chacune, écrire en commentaire la catégorie attendue, puis vérifier avec quelques lignes utilisant \code{if/elif/else}.
+
+Expliquer en une phrase pourquoi le cas \code{5.0} doit être classé \code{intermediaire} et non \code{faible}.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Compter une proportion}
+Compter le nombre de pays dont les émissions dépassent 5 tonnes par habitant. Calculer ensuite la proportion :
+\[
+\frac{\text{nombre de pays au-dessus du seuil}}{\text{nombre total de pays}} \times 100.
+\]
+Compléter d'abord ce squelette :
+\begin{lstlisting}
+compteur = 0
+for obs in donnees:
+    if obs["co2_pc"] > 5:
+        compteur = compteur + 1
+
+proportion = ...
+\end{lstlisting}
+Afficher une phrase du type : \code{62.5 \% des observations sont au-dessus du seuil.}
+\end{mandatoryexercise}
+
+\begin{pseudocodeexercise}{Préparer des listes pour un graphique}
+\begin{lstlisting}
+# Objectif : tracer une valeur par pays
+# Entree : liste de dictionnaires
+# 1. Creer une liste vide pour les noms de pays
+# 2. Creer une liste vide pour les valeurs de CO2
+# 3. Parcourir les observations une par une
+# 4. Ajouter le pays et la valeur dans les deux listes
+# 5. Tracer puis sauvegarder un graphique
+# Sortie : figure png
+\end{lstlisting}
+\end{pseudocodeexercise}
+
+\begin{mandatoryexercise}{Graphique des émissions par habitant}
+Construire deux listes avec une boucle, puis tracer un graphique en barres.
+\begin{lstlisting}
+import matplotlib.pyplot as plt
+
+noms_pays = []
+valeurs_co2 = []
+
+for obs in donnees:
+    noms_pays.append(obs["pays"])
+    valeurs_co2.append(obs["co2_pc"])
+
+plt.figure()
+plt.bar(noms_pays, valeurs_co2)
+plt.ylabel("Tonnes de CO2 par habitant")
+plt.title("Emissions de CO2 par habitant - extrait OWID")
+plt.xticks(rotation=45, ha="right")
+plt.tight_layout()
+plt.savefig("co2_td2.png", dpi=300)
+\end{lstlisting}
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Créer une fonction de classement}
+Compléter la fonction \code{classe\_co2(valeur)}. Elle doit renvoyer \code{"faible"}, \code{"intermediaire"} ou \code{"eleve"}.
+\begin{lstlisting}
+def classe_co2(valeur):
+    if valeur < 5:
+        return ...
+    elif valeur < 10:
+        return ...
+    else:
+        return ...
+\end{lstlisting}
+La tester d'abord avec \code{classe\_co2(4.7)}, \code{classe\_co2(7.9)} et \code{classe\_co2(14.9)}, puis l'utiliser dans une boucle pour afficher le classement de tous les pays.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Débogage : boucle, compteur, indentation}
+Les trois fragments suivants contiennent une erreur fréquente. Pour chacun, identifier le type d'erreur probable ou le résultat logique faux, puis proposer une correction.
+\begin{lstlisting}
+# Fragment A
+for obs in donnees:
+print(obs["pays"])
+
+# Fragment B
+compteur = compteur + 1
+
+# Fragment C
+compteur = 0
+for obs in donnees:
+    if obs["co2_pc"] > 5:
+    compteur = compteur + 1
+\end{lstlisting}
+Ne pas intégrer ces fragments fautifs au script final.
+\end{mandatoryexercise}
+
+\section*{C. Interpréter}
+
+\begin{mandatoryexercise}{Question économique}
+Ajouter quatre commentaires à la fin du script :
+\begin{enumerate}
+  \item quel pays de l'extrait a la valeur la plus élevée ?
+  \item la France est-elle au-dessus ou au-dessous de la valeur mondiale ?
+  \item quelle proportion de l'extrait dépasse 5 tonnes par habitant ?
+  \item pourquoi ne faut-il pas confondre CO$_2$ par habitant et CO$_2$ total ?
+\end{enumerate}
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Contrôle final}
+Le script doit contenir au minimum : une liste de dictionnaires, une boucle \code{for}, une condition \code{if/elif/else}, un compteur, une proportion, une fonction, un graphique \code{matplotlib} et une interprétation.
+\end{mandatoryexercise}
+
+\section*{D. Entraînement facultatif}
+
+\begin{extensionexercise}{Dix petits entraînements}
+Choisir au moins deux questions si le parcours obligatoire est terminé.
+\begin{enumerate}
+  \item Changer le seuil de 5 à 7 tonnes et recalculer la proportion.
+  \item Créer une liste contenant seulement les pays classés \code{eleve}.
+  \item Calculer la moyenne de \code{co2\_pc} avec une boucle, sans \code{sum()}.
+  \item Ajouter un pays et vérifier que le code fonctionne encore.
+  \item Afficher les pays au-dessous de la valeur mondiale.
+  \item Compter séparément les pays \code{faible}, \code{intermediaire} et \code{eleve}.
+  \item Écrire une fonction \code{au\_dessus\_seuil(valeur, seuil)}.
+  \item Trier manuellement deux pays : lequel a la valeur la plus élevée ?
+  \item Écrire une phrase sur la limite d'un classement par seuil.
+  \item Expliquer pourquoi une proportion dépend de l'échantillon choisi.
+\end{enumerate}
+\end{extensionexercise}
+
+\begin{takeawaybox}{À retenir}
+\begin{itemize}
+  \item Une boucle \code{for} permet d'appliquer la même logique à chaque observation.
+  \item Une condition transforme une comparaison booléenne en décision.
+  \item Un compteur doit être initialisé avant la boucle, puis modifié au bon niveau d'indentation.
+  \item Un graphique peut se préparer en construisant explicitement les listes à afficher.
+  \item Une proportion dépend toujours de l'ensemble d'observations choisi.
+\end{itemize}
+\end{takeawaybox}
+
+\end{document}

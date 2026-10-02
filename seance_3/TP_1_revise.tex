@@ -1,0 +1,239 @@
+\documentclass[11pt,a4paper]{article}
+\input{../tp_workbook_preamble_modern.tex}
+
+\begin{document}
+
+\workbooktitle
+  {TD1}
+  {Premiers scripts et statistiques descriptives simples}
+  {Comment écrire un premier script Python pour décrire quelques indicateurs économiques et sociaux issus d'Our World in Data ?}
+  {Un fichier \code{td1\_nom\_prenom.py} qui s'exécute sans erreur, affiche des statistiques simples, crée \code{esperance\_vie\_td1.png} et contient trois phrases d'interprétation.}
+
+\begin{objectivebox}{Objectifs du TD}
+\begin{itemize}
+  \item Créer, sauvegarder et exécuter un fichier Python \code{.py}.
+  \item Utiliser \code{print()}, des variables, des types simples et des listes.
+  \item Produire un premier graphique très guidé avec \code{matplotlib}.
+  \item Lire un premier message d'erreur et formuler une correction.
+  \item Produire une statistique descriptive simple, un graphique et une courte interprétation.
+\end{itemize}
+\end{objectivebox}
+
+\begin{checkpointbox}{Progression du TD}
+Les exercices 1 à 12 sont obligatoires. Le but principal est Python : variables, types, listes, calculs, affichage lisible, commentaires, premier graphique et premier débogage guidé. La statistique sert seulement de support.
+\end{checkpointbox}
+
+\begin{checkpointbox}{Source des données}
+Les valeurs utilisées dans ce TD sont des extraits pédagogiques arrondis de graphiques Our World in Data. Pour l'instant, elles sont écrites directement dans le script afin de ne pas dépendre de \code{pandas}.
+\begin{lstlisting}[language=terminal]
+https://ourworldindata.org/grapher/life-expectancy.csv
+https://ourworldindata.org/grapher/population.csv
+\end{lstlisting}
+\end{checkpointbox}
+
+\begin{pseudocodeexercise}{Décrire une petite liste d'indicateurs}
+Compléter la logique avant d'écrire le code.
+\begin{lstlisting}
+# Objectif : decrire une liste de valeurs OWID
+# Entree : une liste de pays et une liste de valeurs
+# 1. Afficher les donnees de depart
+# 2. Calculer le nombre d'observations
+# 3. Calculer la moyenne
+# 4. Reperer la valeur minimale et maximale
+# 5. Afficher une phrase avec une unite
+# Sortie : statistiques + interpretation courte
+\end{lstlisting}
+\end{pseudocodeexercise}
+
+\section*{A. Dossier, script, exécution}
+
+\begin{mandatoryexercise}{Préparer un dossier de travail}
+Créer un dossier \code{TD1} contenant un script \code{td1\_nom\_prenom.py}. Le nom doit se terminer exactement par \code{.py} : c'est l'extension qui indique que le fichier contient du code Python.
+\begin{lstlisting}[language=terminal]
+mkdir TD1
+cd TD1
+pwd
+python3 td1_nom_prenom.py
+\end{lstlisting}
+Procéder dans cet ordre :
+\begin{enumerate}
+  \item créer le fichier \code{td1\_nom\_prenom.py} ;
+  \item écrire \code{print("test TD1")} ;
+  \item sauvegarder le fichier ;
+  \item exécuter le fichier avec la commande ci-dessus ;
+  \item modifier le message, sauvegarder, puis relancer.
+\end{enumerate}
+Dans le script, ajouter un commentaire qui explique la différence entre le dossier courant et le fichier exécuté. Si le terminal répond que le fichier est introuvable, vérifier d'abord le dossier courant avec \code{pwd} et le nom exact du fichier.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Premières variables économiques}
+Dans le script, créer les variables suivantes puis afficher leur valeur et leur type.
+\begin{lstlisting}
+pays = "France"
+annee = 2021
+esperance_vie = 82.5
+population_millions = 67.7
+\end{lstlisting}
+Afficher ensuite une phrase lisible avec une f-string :
+\begin{lstlisting}
+print(type(pays))
+print(type(annee))
+print(type(esperance_vie))
+print(f"En {annee}, {pays} compte environ {population_millions} millions d'habitants.")
+\end{lstlisting}
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Prédire puis modifier une affectation}
+Lire le fragment suivant sans l'exécuter.
+\begin{lstlisting}
+population_millions = 67.7
+population_millions = 68.0
+print(population_millions)
+\end{lstlisting}
+Écrire en commentaire la valeur qui sera affichée, puis exécuter pour vérifier. Modifier ensuite seulement la deuxième ligne pour afficher \code{68.2}. Cet exercice sert à comprendre qu'une nouvelle affectation remplace l'ancienne valeur.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Premier débogage guidé}
+Copier chaque ligne fautive une par une dans le script, exécuter, lire le message, puis corriger. Ne pas laisser de ligne fautive dans le rendu final.
+\begin{lstlisting}
+print("Bonjour"
+print(pay)
+print("Population : " + population_millions)
+\end{lstlisting}
+Pour chaque erreur, noter en commentaire :
+\begin{enumerate}
+  \item le type d'erreur affiché par Python ;
+  \item la ligne indiquée ;
+  \item l'hypothèse de correction.
+\end{enumerate}
+Indice : les trois problèmes portent sur une parenthèse, un nom de variable et un mélange entre texte et nombre.
+\end{mandatoryexercise}
+
+\section*{B. Listes et statistiques simples}
+
+\begin{mandatoryexercise}{Créer un extrait OWID simplifié}
+Créer deux listes alignées :
+\begin{lstlisting}
+pays = ["France", "Germany", "Spain", "Italy", "Poland", "Sweden"]
+esperance_vie = [82.5, 80.6, 83.0, 82.9, 76.5, 83.1]
+\end{lstlisting}
+Les valeurs sont arrondies et exprimées en années. Afficher la première valeur, la dernière valeur et le nombre de pays.
+Avant d'exécuter, prédire ce que renvoient \code{pays[0]}, \code{esperance\_vie[-1]} et \code{esperance\_vie[10]}. Tester ensuite les deux premières expressions. Pour la troisième, expliquer en commentaire pourquoi elle produirait une \code{IndexError}.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Modifier une liste sans la désaligner}
+Ajouter \code{"Japan"} à la liste \code{pays} et \code{84.5} à la liste \code{esperance\_vie}. Afficher ensuite :
+\begin{enumerate}
+  \item le nombre de pays ;
+  \item le nombre de valeurs d'espérance de vie ;
+  \item la phrase \code{Les deux listes ont la même longueur : True} si les deux longueurs sont identiques.
+\end{enumerate}
+Supprimer temporairement la valeur \code{84.5}, relancer, puis expliquer en commentaire pourquoi deux listes alignées doivent toujours avoir la même longueur.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Moyenne, minimum, maximum}
+À partir de la liste \code{esperance\_vie}, calculer :
+\begin{enumerate}
+  \item le nombre d'observations avec \code{len(...)} ;
+  \item la moyenne avec \code{sum(...) / len(...)} ;
+  \item le minimum avec \code{min(...)} ;
+  \item le maximum avec \code{max(...)}.
+\end{enumerate}
+Afficher chaque résultat avec une unité claire : \code{années}.
+\end{mandatoryexercise}
+
+\begin{pseudocodeexercise}{Passer d'une liste à un graphique}
+\begin{lstlisting}
+# Objectif : representer des valeurs par pays
+# Entree : liste de pays, liste de valeurs
+# 1. Creer une figure
+# 2. Tracer une barre par pays
+# 3. Ajouter un titre et une unite sur l'axe vertical
+# 4. Sauvegarder la figure dans un fichier png
+# Sortie : graphique lisible
+\end{lstlisting}
+\end{pseudocodeexercise}
+
+\begin{mandatoryexercise}{Premier graphique avec matplotlib}
+On trace un graphique volontairement simple. Copier le code, l'exécuter, puis modifier le titre.
+\begin{lstlisting}
+import matplotlib.pyplot as plt
+
+plt.figure()
+plt.bar(pays, esperance_vie)
+plt.ylabel("Années")
+plt.title("Espérance de vie - extrait OWID")
+plt.xticks(rotation=45, ha="right")
+plt.tight_layout()
+plt.savefig("esperance_vie_td1.png", dpi=300)
+\end{lstlisting}
+Si Python affiche \code{ModuleNotFoundError: No module named 'matplotlib'}, le script est lisible mais la bibliothèque manque dans l'environnement utilisé.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Modifier le graphique sans changer les données}
+Reprendre le graphique précédent et modifier seulement :
+\begin{enumerate}
+  \item le titre ;
+  \item le nom de l'axe vertical ;
+  \item le nom du fichier sauvegardé, par exemple \code{esperance\_vie\_td1\_version2.png}.
+\end{enumerate}
+Avant de relancer, sauvegarder le script. Vérifier ensuite que deux fichiers \code{.png} distincts existent dans le dossier du TD.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Pourcentage d'évolution}
+Pour la France, on donne un extrait simplifié de l'espérance de vie :
+\begin{lstlisting}
+france_2000 = 79.1
+france_2021 = 82.5
+\end{lstlisting}
+Calculer la variation en années, puis le taux d'évolution en pourcentage :
+\[
+\frac{\text{valeur finale} - \text{valeur initiale}}{\text{valeur initiale}} \times 100.
+\]
+Afficher le résultat avec deux décimales.
+\end{mandatoryexercise}
+
+\section*{C. Interpréter sans surcharger}
+
+\begin{mandatoryexercise}{Phrase d'interprétation}
+Ajouter trois commentaires à la fin du script :
+\begin{enumerate}
+  \item une phrase qui donne la moyenne de l'extrait ;
+  \item une phrase qui compare la France à cette moyenne ;
+  \item une limite : pourquoi six pays ne suffisent pas à décrire le monde ?
+\end{enumerate}
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Contrôle final du script}
+Le script rendu doit contenir au minimum : une variable \code{str}, une variable \code{int}, une variable \code{float}, une liste, une moyenne, un graphique \code{matplotlib}, un pourcentage d'évolution, une f-string et trois phrases d'interprétation.
+\end{mandatoryexercise}
+
+\section*{D. Entraînement facultatif}
+
+\begin{extensionexercise}{Dix petits entraînements OWID}
+Choisir au moins deux questions si le parcours obligatoire est terminé.
+\begin{enumerate}
+  \item Ajouter \code{"Japan"} et une valeur d'espérance de vie dans les deux listes.
+  \item Créer une liste de populations en millions pour les mêmes pays.
+  \item Calculer la population totale de l'extrait.
+  \item Calculer la part de la France dans cette population totale.
+  \item Afficher \code{pays[0]} et \code{esperance\_vie[0]} dans une même phrase.
+  \item Tester \code{esperance\_vie[0] > 80} et interpréter le booléen obtenu.
+  \item Remplacer une valeur par une valeur manquante fictive \code{0}, puis expliquer pourquoi cela fausse la moyenne.
+  \item Créer une variable \code{source = "Our World in Data"} et l'afficher dans les résultats.
+  \item Arrondir la moyenne avec \code{round(moyenne, 1)}.
+  \item Écrire une phrase expliquant pourquoi les unités sont importantes.
+\end{enumerate}
+\end{extensionexercise}
+
+\begin{takeawaybox}{À retenir}
+\begin{itemize}
+  \item Un script Python est un fichier sauvegardé, exécuté depuis un dossier courant.
+  \item Une variable associe un nom à une valeur ; son type détermine les opérations possibles.
+  \item Une liste ordonne plusieurs valeurs et s'utilise avec des indices.
+  \item \code{matplotlib} permet de transformer une liste de valeurs en figure sauvegardée.
+  \item Un message d'erreur se lit en partant du type d'erreur, puis de la ligne indiquée.
+\end{itemize}
+\end{takeawaybox}
+
+\end{document}

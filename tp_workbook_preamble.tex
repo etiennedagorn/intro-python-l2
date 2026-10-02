@@ -1,0 +1,251 @@
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage[a4paper,top=2cm,bottom=2.1cm,left=2.05cm,right=2.05cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{eurosym}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{inconsolata}
+\usepackage{listings}
+\usepackage{microtype}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{titlesec}
+\usepackage{xcolor}
+
+\definecolor{ink}{HTML}{202124}
+\definecolor{muted}{HTML}{5F6368}
+\definecolor{line}{HTML}{DADCE0}
+\definecolor{paper}{HTML}{F8F9FA}
+\definecolor{accent}{HTML}{8A1538}
+\definecolor{accentsoft}{HTML}{F8E8EE}
+\definecolor{green}{HTML}{0B6B57}
+\definecolor{greensoft}{HTML}{E6F4EF}
+\definecolor{amber}{HTML}{9A5B00}
+\definecolor{ambersoft}{HTML}{FFF4D6}
+\definecolor{blue}{HTML}{245B8E}
+\definecolor{bluesoft}{HTML}{EAF2FA}
+\definecolor{violet}{HTML}{5C4D7D}
+\definecolor{violetsoft}{HTML}{F1EEF8}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=accent,
+  urlcolor=green
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlist[itemize]{leftmargin=1.35em,itemsep=2pt,topsep=2pt}
+\setlist[enumerate]{leftmargin=1.55em,itemsep=3pt,topsep=3pt}
+\setlist[enumerate,1]{label=\textbf{\alph*.}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Python pour économistes}
+\fancyhead[R]{Université de Lille -- L2 Économie}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.35pt}
+\setlength{\headheight}{14.5pt}
+
+\titleformat{\section}
+  {\Large\bfseries\color{accent}}
+  {}{0pt}{}
+  [\vspace{-0.25em}\color{line}\titlerule]
+\titleformat{\subsection}
+  {\large\bfseries\color{ink}}
+  {}{0pt}{}
+
+\lstdefinelanguage{terminal}{
+  morekeywords={ls,cd,pwd,mkdir,python,python3,code,dir,type,echo},
+  sensitive=true
+}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{paper},
+  frame=single,
+  framerule=0.35pt,
+  rulecolor=\color{line},
+  language=Python,
+  keywordstyle=\color{accent}\bfseries,
+  commentstyle=\color{muted},
+  stringstyle=\color{green},
+  showstringspaces=false,
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  upquote=true,
+  literate=
+   {à}{{\`a}}1 {â}{{\^a}}1 {ä}{{\"a}}1
+   {ç}{{\c c}}1
+   {é}{{\'e}}1 {è}{{\`e}}1 {ê}{{\^e}}1 {ë}{{\"e}}1
+   {î}{{\^\i}}1 {ï}{{\"\i}}1
+   {ô}{{\^o}}1 {ö}{{\"o}}1
+   {ù}{{\`u}}1 {û}{{\^u}}1 {ü}{{\"u}}1
+   {À}{{\`A}}1 {Â}{{\^A}}1 {Ä}{{\"A}}1
+   {Ç}{{\c C}}1
+   {É}{{\'E}}1 {È}{{\`E}}1 {Ê}{{\^E}}1 {Ë}{{\"E}}1
+   {Î}{{\^I}}1 {Ï}{{\"I}}1
+   {Ô}{{\^O}}1 {Ö}{{\"O}}1
+   {Ù}{{\`U}}1 {Û}{{\^U}}1 {Ü}{{\"U}}1
+   {œ}{{\oe}}1 {Œ}{{\OE}}1
+   {–}{{--}}1 {—}{{---}}1
+}
+
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\pp}{\,points de pourcentage}
+
+\newcounter{exercise}
+\newcounter{extension}
+\newcounter{logic}
+
+\newcommand{\workbooktitle}[4]{%
+  \setcounter{exercise}{0}%
+  \setcounter{extension}{0}%
+  \setcounter{logic}{0}%
+  \fancyhead[L]{#1 -- #2}%
+  {\Large\bfseries\color{ink}#1 -- #2\par}
+  \vspace{0.2em}
+  {\color{muted}Python pour économistes -- Université de Lille, L2 Économie\par}
+  \vspace{0.65em}
+  {\color{accent}\rule{\linewidth}{0.8pt}}
+  \vspace{0.5em}
+  \begin{routebox}{Question fil rouge}
+  #3
+  \end{routebox}
+  \begin{deliverablebox}{Livrables}
+  #4
+  \end{deliverablebox}
+  \begin{methodbox}{Méthode de travail}
+  \begin{tabularx}{\linewidth}{@{}>{\bfseries\color{blue}}p{0.18\linewidth}X@{}}
+  Lire & identifier les données, la question et le livrable attendu.\\
+  Décomposer & écrire les étapes en pseudo-code avant de coder.\\
+  Exécuter & lancer le script complet depuis le bon dossier.\\
+  Vérifier & contrôler les sorties, les fichiers créés et l’interprétation.
+  \end{tabularx}
+  \end{methodbox}
+}
+
+\newtcolorbox{routebox}[1]{
+  enhanced,breakable,
+  title={#1},
+  colback=paper,
+  colframe=line,
+  coltitle=ink,
+  fonttitle=\bfseries,
+  boxrule=0.5pt,
+  arc=2pt,
+  left=8pt,right=8pt,top=7pt,bottom=7pt,
+  borderline west={2.4pt}{0pt}{accent}
+}
+
+\newtcolorbox{deliverablebox}[1]{
+  enhanced,breakable,
+  title={#1},
+  colback=greensoft,
+  colframe=green,
+  coltitle=ink,
+  fonttitle=\bfseries,
+  boxrule=0.6pt,
+  arc=2pt,
+  left=8pt,right=8pt,top=7pt,bottom=7pt,
+  borderline west={2.4pt}{0pt}{accent}
+}
+
+
+\newtcolorbox{methodbox}[1]{
+  enhanced,breakable,
+  title={#1},
+  colback=bluesoft,
+  colframe=blue,
+  coltitle=ink,
+  fonttitle=\bfseries,
+  boxrule=0.55pt,
+  arc=2pt,
+  left=8pt,right=8pt,top=6pt,bottom=6pt,
+  before skip=7pt,after skip=9pt,
+  borderline west={2.4pt}{0pt}{blue}
+}
+
+\newtcolorbox{pathwaybox}[1]{
+  enhanced,breakable,
+  title={#1},
+  colback=violetsoft,
+  colframe=violet,
+  coltitle=ink,
+  fonttitle=\bfseries,
+  boxrule=0.55pt,
+  arc=2pt,
+  left=8pt,right=8pt,top=6pt,bottom=6pt,
+  before skip=8pt,after skip=8pt,
+  borderline west={2.4pt}{0pt}{violet}
+}
+
+\newenvironment{pseudocodeexercise}[1]{%
+  \refstepcounter{logic}%
+  \begin{tcolorbox}[
+    enhanced,breakable,
+    title={Logique \thelogic{} -- #1 \hfill\scriptsize PSEUDO-CODE},
+    colback=bluesoft,
+    colframe=blue,
+    coltitle=ink,
+    fonttitle=\bfseries,
+    boxrule=0.6pt,
+    arc=2pt,
+    left=8pt,right=8pt,top=6pt,bottom=6pt,
+    before skip=8pt,after skip=8pt,
+    borderline west={2.6pt}{0pt}{blue}
+  ]%
+}{\end{tcolorbox}}
+
+\newenvironment{mandatoryexercise}[1]{%
+  \refstepcounter{exercise}%
+  \begin{tcolorbox}[
+    enhanced,breakable,
+    title={Exercice \theexercise{} -- #1 \hfill\scriptsize OBLIGATOIRE},
+    colback=white,
+    colframe=accent,
+    coltitle=ink,
+    fonttitle=\bfseries,
+    boxrule=0.7pt,
+    arc=2pt,
+    left=8pt,right=8pt,top=7pt,bottom=7pt,
+    before skip=9pt,after skip=9pt,
+    borderline west={2.4pt}{0pt}{accent}
+  ]%
+}{\end{tcolorbox}}
+
+\newenvironment{extensionexercise}[1]{%
+  \refstepcounter{extension}%
+  \begin{tcolorbox}[
+    enhanced,breakable,
+    title={Extension \theextension{} -- #1},
+    colback=ambersoft,
+    colframe=amber,
+    coltitle=ink,
+    fonttitle=\bfseries,
+    boxrule=0.55pt,
+    arc=2pt,
+    left=8pt,right=8pt,top=7pt,bottom=7pt,
+    before skip=8pt,after skip=8pt,
+    borderline west={2.4pt}{0pt}{amber}
+  ]%
+}{\end{tcolorbox}}
+
+\newtcolorbox{checkpointbox}[1]{
+  enhanced,breakable,
+  title={#1},
+  colback=accentsoft,
+  colframe=accent,
+  coltitle=ink,
+  fonttitle=\bfseries,
+  boxrule=0.55pt,
+  arc=2pt,
+  left=8pt,right=8pt,top=7pt,bottom=7pt,
+  borderline west={2.4pt}{0pt}{accent}
+}

@@ -1,0 +1,128 @@
+\documentclass[11pt,a4paper]{article}
+\input{../tp_workbook_preamble.tex}
+
+\begin{document}
+
+\workbooktitle
+  {TP3}
+  {Fonctions et comparaison de groupes}
+  {Comment écrire des fonctions Python pour comparer des groupes de pays à partir d'indicateurs OWID ?}
+  {Un fichier \code{tp3\_nom\_prenom.py}, un tableau texte de statistiques descriptives simples et une interprétation de cinq lignes.}
+
+\begin{checkpointbox}{Parcours obligatoire}
+Les exercices 1 à 7 sont obligatoires. Les notions statistiques obligatoires sont : moyenne, médiane, minimum, maximum et proportion. Les quartiles et l'écart-type restent facultatifs.
+\end{checkpointbox}
+
+\begin{checkpointbox}{Source des données}
+Les valeurs de PIB par habitant sont des extraits pédagogiques arrondis d'Our World in Data.
+\begin{lstlisting}[language=terminal]
+https://ourworldindata.org/grapher/gdp-per-capita-worldbank.csv
+\end{lstlisting}
+\end{checkpointbox}
+
+\begin{pseudocodeexercise}{Automatiser une statistique}
+\begin{lstlisting}
+# Objectif : comparer deux listes de valeurs
+# Entrees : liste_groupe_a, liste_groupe_b
+# Definir une fonction moyenne(liste)
+# Definir une fonction mediane(liste)
+# Appliquer les fonctions aux deux groupes
+# Comparer les resultats
+# Sortie : tableau + phrase d'interpretation
+\end{lstlisting}
+\end{pseudocodeexercise}
+
+\section*{A. Données et rappels}
+
+\begin{mandatoryexercise}{Créer deux groupes de pays}
+Créer deux listes de PIB par habitant, exprimées en milliers de dollars internationaux et arrondies pour l'exercice.
+\begin{lstlisting}
+groupe_europe = [46.0, 54.0, 34.0, 38.0, 22.0, 61.0]
+groupe_monde = [46.0, 76.0, 19.0, 10.0, 7.0, 3.0]
+\end{lstlisting}
+Ajouter deux listes de noms pour documenter les valeurs :
+\begin{lstlisting}
+pays_europe = ["France", "Germany", "Spain", "Italy", "Poland", "Sweden"]
+pays_monde = ["France", "United States", "China", "Brazil", "India", "Ethiopia"]
+\end{lstlisting}
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Rappel intuitif}
+Ajouter dans le script trois commentaires :
+\begin{enumerate}
+  \item la moyenne résume un niveau général ;
+  \item la médiane est la valeur centrale après tri ;
+  \item min et max donnent l'étendue des valeurs observées.
+\end{enumerate}
+\end{mandatoryexercise}
+
+\section*{B. Fonctions}
+
+\begin{mandatoryexercise}{Fonction moyenne}
+Écrire une fonction \code{moyenne(valeurs)} qui renvoie la moyenne d'une liste. La tester sur les deux groupes.
+\begin{lstlisting}
+def moyenne(valeurs):
+    return sum(valeurs) / len(valeurs)
+\end{lstlisting}
+Afficher les résultats avec une unité : \code{milliers de dollars par habitant}.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Fonction médiane guidée}
+Pour une liste de longueur paire, on peut prendre la moyenne des deux valeurs centrales. Compléter la fonction :
+\begin{lstlisting}
+def mediane_paire(valeurs):
+    valeurs_triees = sorted(valeurs)
+    n = len(valeurs_triees)
+    milieu_droit = n // 2
+    milieu_gauche = milieu_droit - 1
+    return (valeurs_triees[milieu_gauche] + valeurs_triees[milieu_droit]) / 2
+\end{lstlisting}
+Tester la fonction sur les deux groupes.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Min, max et proportion}
+Pour chaque groupe, calculer :
+\begin{enumerate}
+  \item la valeur minimale ;
+  \item la valeur maximale ;
+  \item la proportion de pays au-dessus de 30 milliers de dollars par habitant.
+\end{enumerate}
+Conseil : utiliser un compteur et une boucle.
+\end{mandatoryexercise}
+
+\section*{C. Comparer et interpréter}
+
+\begin{mandatoryexercise}{Tableau texte}
+Afficher un petit tableau texte avec les colonnes : \code{groupe}, \code{moyenne}, \code{mediane}, \code{min}, \code{max}, \code{part\_au\_dessus\_30}. L'objectif est la lisibilité, pas la perfection typographique.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Question économique}
+Ajouter cinq commentaires à la fin du script :
+\begin{enumerate}
+  \item quel groupe a la moyenne la plus élevée ?
+  \item quel groupe a la médiane la plus élevée ?
+  \item pourquoi moyenne et médiane peuvent-elles raconter deux choses différentes ?
+  \item pourquoi le choix des pays influence-t-il fortement le résultat ?
+  \item quelle limite voyez-vous à travailler sur seulement six pays par groupe ?
+\end{enumerate}
+\end{mandatoryexercise}
+
+\section*{D. Entraînement facultatif}
+
+\begin{extensionexercise}{Statistiques supplémentaires sans pression}
+Choisir au moins deux questions si le parcours obligatoire est terminé.
+\begin{enumerate}
+  \item Ajouter un pays dans chaque groupe et vérifier que les fonctions marchent encore.
+  \item Calculer l'étendue : \code{max - min}.
+  \item Écrire une fonction \code{proportion\_au\_dessus(valeurs, seuil)}.
+  \item Tester le seuil de 50 au lieu de 30.
+  \item Écrire une fonction \code{resume(valeurs)} qui affiche moyenne, médiane, min et max.
+  \item Comparer la moyenne avant et après ajout d'une valeur très élevée.
+  \item Calculer un premier quartile avec une méthode simple de votre choix.
+  \item Calculer l'écart-type à partir d'une formule fournie par l'enseignant.
+  \item Écrire une phrase expliquant pourquoi l'écart-type mesure la dispersion.
+  \item Transformer les valeurs en dollars au lieu de milliers de dollars.
+\end{enumerate}
+\end{extensionexercise}
+
+\end{document}

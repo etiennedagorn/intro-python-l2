@@ -1,0 +1,155 @@
+\documentclass[11pt,a4paper]{article}
+\input{../tp_workbook_preamble.tex}
+
+\begin{document}
+
+\workbooktitle
+  {TP4}
+  {Graphiques et simulation simple à partir d'OWID}
+  {Comment utiliser Python pour visualiser une distribution et comprendre intuitivement la stabilisation d'une moyenne ?}
+  {Un fichier \code{tp4\_nom\_prenom.py}, deux figures \code{.png} et une interprétation courte.}
+
+\begin{checkpointbox}{Parcours obligatoire}
+Les exercices 1 à 8 sont obligatoires. La simulation est volontairement simple : elle sert à apprendre les boucles, \code{random.choice} et les graphiques, pas à faire de statistique avancée.
+\end{checkpointbox}
+
+\begin{checkpointbox}{Source des données}
+Les taux de fécondité sont des extraits pédagogiques arrondis d'Our World in Data.
+\begin{lstlisting}[language=terminal]
+https://ourworldindata.org/grapher/children-per-woman-un.csv
+\end{lstlisting}
+\end{checkpointbox}
+
+\begin{pseudocodeexercise}{Visualiser puis simuler}
+\begin{lstlisting}
+# Objectif : observer une distribution puis simuler des tirages
+# Entree : liste de taux de fecondite
+# 1. Calculer la moyenne observee
+# 2. Tracer un graphique en barres
+# 3. Tirer au hasard une valeur dans la liste
+# 4. Repeter le tirage plusieurs fois
+# 5. Calculer la moyenne des tirages
+# 6. Observer si la moyenne se stabilise quand n augmente
+\end{lstlisting}
+\end{pseudocodeexercise}
+
+\section*{A. Préparer les données et un graphique}
+
+\begin{mandatoryexercise}{Créer l'extrait OWID}
+Créer un dictionnaire où les clés sont des pays ou régions et les valeurs des taux de fécondité arrondis.
+\begin{lstlisting}
+fertilite = {
+    "World": 2.3,
+    "France": 1.8,
+    "United States": 1.6,
+    "Japan": 1.2,
+    "India": 2.0,
+    "Nigeria": 4.5,
+    "Niger": 6.1,
+    "Brazil": 1.6,
+    "Ethiopia": 3.9,
+    "China": 1.0
+}
+\end{lstlisting}
+Afficher le nombre d'observations et la moyenne simple de ces valeurs.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Graphique en barres}
+Avec \code{matplotlib}, tracer un graphique en barres des taux de fécondité.
+\begin{lstlisting}
+import matplotlib.pyplot as plt
+
+pays = list(fertilite.keys())
+valeurs = list(fertilite.values())
+
+plt.bar(pays, valeurs)
+plt.xticks(rotation=45, ha="right")
+plt.ylabel("Enfants par femme")
+plt.title("Taux de fecondite - extrait OWID")
+plt.tight_layout()
+plt.savefig("fertilite_barres.png", dpi=300)
+\end{lstlisting}
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Interpréter le graphique}
+Ajouter trois commentaires :
+\begin{enumerate}
+  \item quel pays a le taux le plus élevé dans l'extrait ?
+  \item quel pays a le taux le plus faible ?
+  \item pourquoi ce graphique est-il plus lisible qu'une liste brute ?
+\end{enumerate}
+\end{mandatoryexercise}
+
+\section*{B. Simulation très guidée}
+
+\begin{mandatoryexercise}{Un tirage aléatoire}
+Importer \code{random}, puis tirer une valeur au hasard dans la liste des taux.
+\begin{lstlisting}
+import random
+
+tirage = random.choice(valeurs)
+print(tirage)
+\end{lstlisting}
+Exécuter plusieurs fois le script : le résultat est-il toujours le même ?
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Moyenne de plusieurs tirages}
+Compléter le code suivant pour calculer la moyenne de 20 tirages.
+\begin{lstlisting}
+tirages = []
+for i in range(20):
+    tirages.append(random.choice(valeurs))
+
+moyenne_tirages = sum(tirages) / len(tirages)
+print(moyenne_tirages)
+\end{lstlisting}
+Comparer cette moyenne à la moyenne de la liste initiale.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Stabilisation de la moyenne}
+Calculer la moyenne des tirages pour plusieurs tailles : \code{5}, \code{20}, \code{100}, \code{1000}. Afficher les résultats dans une phrase.
+\begin{lstlisting}
+tailles = [5, 20, 100, 1000]
+for n in tailles:
+    tirages = []
+    for i in range(n):
+        tirages.append(random.choice(valeurs))
+    print(n, sum(tirages) / len(tirages))
+\end{lstlisting}
+\end{mandatoryexercise}
+
+\section*{C. Visualiser la simulation}
+
+\begin{mandatoryexercise}{Graphique de stabilisation}
+Créer deux listes : \code{tailles} et \code{moyennes\_simulees}. Tracer \code{moyennes\_simulees} en fonction de \code{tailles}. Ajouter une ligne horizontale correspondant à la moyenne de la liste initiale avec \code{plt.axhline(...)}. Sauvegarder \code{simulation\_moyenne.png}.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Interprétation économique}
+Ajouter quatre commentaires :
+\begin{enumerate}
+  \item que représente la moyenne de l'extrait ?
+  \item que montre la simulation quand le nombre de tirages augmente ?
+  \item pourquoi ce résultat ne décrit-il pas directement la population mondiale ?
+  \item pourquoi la sélection des pays est-elle importante ?
+\end{enumerate}
+\end{mandatoryexercise}
+
+\section*{D. Entraînement facultatif}
+
+\begin{extensionexercise}{Pour aller plus loin, sans obligation}
+Choisir au moins deux questions si le parcours obligatoire est terminé.
+\begin{enumerate}
+  \item Fixer la graine avec \code{random.seed(123)} et observer l'effet.
+  \item Faire 10 simulations de taille 20 et comparer les moyennes obtenues.
+  \item Tracer un histogramme des 1000 tirages.
+  \item Supprimer \code{Niger} de la liste et recalculer la moyenne.
+  \item Ajouter une ligne pour la médiane de la liste initiale.
+  \item Écrire une fonction \code{moyenne\_tirages(n)}.
+  \item Tester des tailles \code{10}, \code{50}, \code{500}, \code{5000}.
+  \item Calculer l'écart entre moyenne simulée et moyenne initiale.
+  \item Lire intuitivement la loi des grands nombres : que veut dire “stabiliser” ?
+  \item Extension avancée : construire un intervalle \code{moyenne +/- 2 * ecart\_type / racine(n)} avec une formule donnée.
+\end{enumerate}
+\end{extensionexercise}
+
+\end{document}

@@ -1,0 +1,95 @@
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{inconsolata}
+\usepackage{listings}
+\usepackage{microtype}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usetikzlibrary{arrows.meta,positioning}
+
+\definecolor{ink}{HTML}{202124}
+\definecolor{muted}{HTML}{5F6368}
+\definecolor{line}{HTML}{DADCE0}
+\definecolor{paper}{HTML}{F8F9FA}
+\definecolor{accent}{HTML}{8A1538}
+\definecolor{green}{HTML}{0B6B57}
+\definecolor{blue}{HTML}{245B8E}
+\definecolor{amber}{HTML}{9A5B00}
+
+\setbeamercolor{normal text}{fg=ink,bg=white}
+\setbeamercolor{structure}{fg=accent}
+\setbeamercolor{frametitle}{fg=ink,bg=white}
+\setbeamercolor{title}{fg=ink}
+\setbeamercolor{subtitle}{fg=muted}
+\setbeamercolor{block title}{fg=white,bg=accent}
+\setbeamercolor{block body}{fg=ink,bg=paper}
+\setbeamercolor{alerted text}{fg=accent}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\color{accent}\small$\blacktriangleright$}
+\setbeamertemplate{itemize subitem}{\color{green}\scriptsize$\bullet$}
+\setbeamertemplate{frametitle}{
+  \vspace{0.15cm}
+  \insertframetitle\par
+  \vspace{0.1cm}
+  {\color{line}\rule{\linewidth}{0.45pt}}
+}
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=.76\paperwidth,ht=2.5ex,dp=1ex,leftskip=0.35cm]{author in head/foot}%
+      Python pour économistes -- L2 Économie
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.24\paperwidth,ht=2.5ex,dp=1ex,rightskip=0.35cm plus1fil]{date in head/foot}%
+      \hfill\insertframenumber/\inserttotalframenumber
+    \end{beamercolorbox}%
+  }%
+}
+
+\setbeamersize{text margin left=0.65cm,text margin right=0.65cm}
+
+
+\lstdefinelanguage{terminal}{
+  morekeywords={ls,cd,pwd,mkdir,python,python3,code,dir,type,echo},
+  sensitive=true
+}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{paper},
+  frame=single,
+  framerule=0.35pt,
+  rulecolor=\color{line},
+  keywordstyle=\color{accent}\bfseries,
+  commentstyle=\color{muted},
+  stringstyle=\color{green},
+  showstringspaces=false,
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  upquote=true,
+  language=Python,
+  literate=
+   {à}{{\`a}}1 {â}{{\^a}}1 {ä}{{\"a}}1
+   {ç}{{\c c}}1
+   {é}{{\'e}}1 {è}{{\`e}}1 {ê}{{\^e}}1 {ë}{{\"e}}1
+   {î}{{\^\i}}1 {ï}{{\"\i}}1
+   {ô}{{\^o}}1 {ö}{{\"o}}1
+   {ù}{{\`u}}1 {û}{{\^u}}1 {ü}{{\"u}}1
+   {À}{{\`A}}1 {Â}{{\^A}}1 {Ä}{{\"A}}1
+   {Ç}{{\c C}}1
+   {É}{{\'E}}1 {È}{{\`E}}1 {Ê}{{\^E}}1 {Ë}{{\"E}}1
+   {Î}{{\^I}}1 {Ï}{{\"I}}1
+   {Ô}{{\^O}}1 {Ö}{{\"O}}1
+   {Ù}{{\`U}}1 {Û}{{\^U}}1 {Ü}{{\"U}}1
+   {œ}{{\oe}}1 {Œ}{{\OE}}1
+   {–}{{--}}1 {—}{{---}}1
+}
+
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\lesson}[1]{\textbf{\textcolor{accent}{#1}}}
+\newcommand{\muted}[1]{\textcolor{muted}{#1}}

@@ -1,0 +1,122 @@
+\documentclass[11pt,a4paper]{article}
+\input{../tp_workbook_preamble.tex}
+
+\begin{document}
+
+\workbooktitle
+  {TP2}
+  {Boucles, conditions et proportions avec données OWID}
+  {Comment utiliser des boucles et des conditions pour classer des observations économiques simples ?}
+  {Un fichier \code{tp2\_nom\_prenom.py} contenant une boucle, une condition, une proportion et une interprétation économique courte.}
+
+\begin{checkpointbox}{Parcours obligatoire}
+Les exercices 1 à 7 sont obligatoires. La notion statistique principale est la proportion. Les seuils utilisés sont pédagogiques : ils servent à apprendre \code{if}, \code{for} et les compteurs.
+\end{checkpointbox}
+
+\begin{checkpointbox}{Source des données}
+Les valeurs de CO$_2$ par habitant sont des extraits pédagogiques arrondis issus d'Our World in Data.
+\begin{lstlisting}[language=terminal]
+https://ourworldindata.org/grapher/co-emissions-per-capita.csv
+\end{lstlisting}
+\end{checkpointbox}
+
+\begin{pseudocodeexercise}{Classer des observations}
+\begin{lstlisting}
+# Objectif : classer des pays selon un indicateur
+# Entree : liste de pays et valeurs de CO2 par habitant
+# Pour chaque pays :
+#     lire la valeur
+#     comparer la valeur a un seuil
+#     afficher une categorie
+# Compter combien de pays sont dans chaque categorie
+# Sortie : effectifs, proportions, interpretation
+\end{lstlisting}
+\end{pseudocodeexercise}
+
+\section*{A. Représenter les données}
+
+\begin{mandatoryexercise}{Créer une liste de dictionnaires}
+Créer la liste suivante. Chaque dictionnaire représente une observation.
+\begin{lstlisting}
+donnees = [
+    {"pays": "France", "co2_pc": 4.7},
+    {"pays": "Germany", "co2_pc": 7.9},
+    {"pays": "Spain", "co2_pc": 5.0},
+    {"pays": "Poland", "co2_pc": 8.4},
+    {"pays": "United States", "co2_pc": 14.9},
+    {"pays": "India", "co2_pc": 2.0},
+    {"pays": "China", "co2_pc": 8.0},
+    {"pays": "World", "co2_pc": 4.7}
+]
+\end{lstlisting}
+Afficher le nombre d'observations et la première observation.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Parcourir les observations}
+Avec une boucle \code{for}, afficher une phrase par pays :
+\begin{lstlisting}
+for obs in donnees:
+    print(f"{obs['pays']} : {obs['co2_pc']} tonnes par habitant")
+\end{lstlisting}
+Modifier ensuite l'affichage pour arrondir à une décimale.
+\end{mandatoryexercise}
+
+\section*{B. Conditions et proportions}
+
+\begin{mandatoryexercise}{Classer avec une condition}
+On utilise trois catégories pédagogiques :
+\begin{itemize}
+  \item \code{faible} si \code{co2\_pc < 5} ;
+  \item \code{intermediaire} si \code{5 <= co2\_pc < 10} ;
+  \item \code{eleve} si \code{co2\_pc >= 10}.
+\end{itemize}
+Écrire une boucle qui affiche la catégorie de chaque pays.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Compter une proportion}
+Compter le nombre de pays dont les émissions dépassent 5 tonnes par habitant. Calculer ensuite la proportion :
+\[
+\frac{\text{nombre de pays au-dessus du seuil}}{\text{nombre total de pays}} \times 100.
+\]
+Afficher une phrase du type : \code{62.5 \% des observations sont au-dessus du seuil.}
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Créer une fonction de classement}
+Écrire une fonction \code{classe\_co2(valeur)} qui renvoie \code{"faible"}, \code{"intermediaire"} ou \code{"eleve"}. L'utiliser dans une boucle pour afficher le classement de tous les pays.
+\end{mandatoryexercise}
+
+\section*{C. Interpréter}
+
+\begin{mandatoryexercise}{Question économique}
+Ajouter quatre commentaires à la fin du script :
+\begin{enumerate}
+  \item quel pays de l'extrait a la valeur la plus élevée ?
+  \item la France est-elle au-dessus ou au-dessous de la valeur mondiale ?
+  \item quelle proportion de l'extrait dépasse 5 tonnes par habitant ?
+  \item pourquoi ne faut-il pas confondre CO$_2$ par habitant et CO$_2$ total ?
+\end{enumerate}
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Contrôle final}
+Le script doit contenir au minimum : une liste de dictionnaires, une boucle \code{for}, une condition \code{if/elif/else}, un compteur, une proportion, une fonction et une interprétation.
+\end{mandatoryexercise}
+
+\section*{D. Entraînement facultatif}
+
+\begin{extensionexercise}{Dix petits entraînements}
+Choisir au moins deux questions si le parcours obligatoire est terminé.
+\begin{enumerate}
+  \item Changer le seuil de 5 à 7 tonnes et recalculer la proportion.
+  \item Créer une liste contenant seulement les pays classés \code{eleve}.
+  \item Calculer la moyenne de \code{co2\_pc} avec une boucle, sans \code{sum()}.
+  \item Ajouter un pays et vérifier que le code fonctionne encore.
+  \item Afficher les pays au-dessous de la valeur mondiale.
+  \item Compter séparément les pays \code{faible}, \code{intermediaire} et \code{eleve}.
+  \item Écrire une fonction \code{au\_dessus\_seuil(valeur, seuil)}.
+  \item Trier manuellement deux pays : lequel a la valeur la plus élevée ?
+  \item Écrire une phrase sur la limite d'un classement par seuil.
+  \item Expliquer pourquoi une proportion dépend de l'échantillon choisi.
+\end{enumerate}
+\end{extensionexercise}
+
+\end{document}

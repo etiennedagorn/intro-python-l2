@@ -1,0 +1,87 @@
+
+
+
+
+
+
+
+
+\begin{frame}{Dictionnaires}
+\begin{enumerate}
+  \item \texttt{prix = \{"pain":1.2, "lait":0.95\}}. Teste l'existence de \texttt{"pates"} sans planter.
+  \item Retourne \texttt{0} si la clé est absente.
+  \item Liste les couples \texttt{(clé,valeur)}.
+\end{enumerate}
+\columnbreak
+\only<2->{
+\begin{itemize}
+  \item \texttt{"pates" in prix} ou \texttt{prix.get("pates")} \(\rightarrow\) \texttt{None}
+  \item \texttt{prix.get("pates", 0)}
+  \item \texttt{list(prix.items())}
+\end{itemize}
+}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Boucles}
+\begin{enumerate}
+  \item Compte les \texttt{0} dans \texttt{L} (boucle).
+  \item Affiche \texttt{(index,valeur)} pour chaque élément de \texttt{L}.
+  \item Construit \texttt{Lpos} avec seulement les valeurs \(>0\) (compréhension).
+\end{enumerate}
+\columnbreak
+\only<2->{
+\begin{lstlisting}[language=Python,basicstyle=\ttfamily\scriptsize]
+n0 = 0
+for x in L:
+    if x == 0: n0 += 1
+for i, x in enumerate(L):
+    print(i, x)
+Lpos = [x for x in L if x > 0]
+\end{lstlisting}
+}
+\end{frame}
+
+
+\begin{frame}{Booléens \& tests}
+\begin{enumerate}
+  \item Vrai/faux : \texttt{bool(0)}, \texttt{bool("")}, \texttt{bool([0])}, \texttt{bool(None)}.
+  \item Complète : \texttt{if 0 < prix <= budget and prix is not None: ...}
+  \item Écris un test qui déclenche quand \texttt{q} est manquant ou \(\le 0\).
+\end{enumerate}
+\columnbreak
+\only<2->{
+\begin{itemize}
+  \item \texttt{False}, \texttt{False}, \texttt{True}, \texttt{False}
+  \item Chaîne valide Python pour bornes inclusives/syntaxe \texttt{and}
+  \item \texttt{if (q is None) or (q \le 0): ...}
+\end{itemize}
+}
+\end{frame}
+
+
+\begin{frame}{Fonctions}
+\begin{enumerate}
+  \item Écris \texttt{taux(p0,p1)} avec erreur si \texttt{p0 == 0}.
+  \item Ajoute un \texttt{doctest} minimal.
+  \item Ajoute un \texttt{assert} garantissant un dénominateur \(>0\).
+\end{enumerate}
+\columnbreak
+\only<2->{
+\begin{lstlisting}[language=Python,basicstyle=\ttfamily\scriptsize]
+def taux(p0: float, p1: float) -> float:
+    """Retourne (p1-p0)/p0.
+    >>> taux(100, 105)
+    0.05
+    """
+    if p0 == 0:
+        raise ValueError("p0 ne peut pas être 0.")
+    return (p1 - p0) / p0
+\end{lstlisting}
+}
+\end{frame}

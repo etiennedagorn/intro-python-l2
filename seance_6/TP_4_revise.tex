@@ -1,0 +1,253 @@
+\documentclass[11pt,a4paper]{article}
+\input{../tp_workbook_preamble_modern.tex}
+
+\begin{document}
+
+\workbooktitle
+  {TD4}
+  {Graphiques et simulation simple à partir d'OWID}
+  {Comment utiliser Python pour visualiser une distribution et comprendre intuitivement la stabilisation d'une moyenne ?}
+  {Un fichier \code{td4\_nom\_prenom.py}, deux figures \code{.png} et une interprétation courte.}
+
+\begin{objectivebox}{Objectifs du TD}
+\begin{itemize}
+  \item Construire un graphique simple avec \code{matplotlib}.
+  \item Utiliser \code{random.choice} pour simuler des tirages.
+  \item Observer comment une moyenne simulée évolue quand le nombre de tirages augmente.
+  \item Identifier une \code{SyntaxError} et une erreur d'indentation dans une boucle.
+\end{itemize}
+\end{objectivebox}
+
+\begin{checkpointbox}{Progression du TD}
+Les exercices 1 à 11 sont obligatoires. La simulation est volontairement simple : elle sert à apprendre les boucles, \code{random.choice} et les graphiques, pas à faire de statistique avancée.
+\end{checkpointbox}
+
+\begin{checkpointbox}{Source des données}
+Les taux de fécondité sont des extraits pédagogiques arrondis d'Our World in Data.
+\begin{lstlisting}[language=terminal]
+https://ourworldindata.org/grapher/children-per-woman-un.csv
+\end{lstlisting}
+\end{checkpointbox}
+
+\begin{pathwaybox}{Bibliothèques utilisées}
+\code{matplotlib} sert à tracer les graphiques. \code{random} sert à tirer des valeurs au hasard. Si un import échoue, le problème vient probablement de l'environnement Python ou de la bibliothèque installée, pas de la logique de votre script.
+\end{pathwaybox}
+
+\begin{pseudocodeexercise}{Visualiser puis simuler}
+\begin{lstlisting}
+# Objectif : observer une distribution puis simuler des tirages
+# Entree : liste de taux de fecondite
+# 1. Calculer la moyenne observee
+# 2. Tracer un graphique en barres
+# 3. Tirer au hasard une valeur dans la liste
+# 4. Repeter le tirage plusieurs fois
+# 5. Calculer la moyenne des tirages
+# 6. Observer si la moyenne se stabilise quand n augmente
+\end{lstlisting}
+\end{pseudocodeexercise}
+
+\section*{A. Préparer les données et un graphique}
+
+\begin{mandatoryexercise}{Créer l'extrait OWID}
+Créer un dictionnaire où les clés sont des pays ou régions et les valeurs des taux de fécondité arrondis.
+\begin{lstlisting}
+fertilite = {
+    "World": 2.3,
+    "France": 1.8,
+    "United States": 1.6,
+    "Japan": 1.2,
+    "India": 2.0,
+    "Nigeria": 4.5,
+    "Niger": 6.1,
+    "Brazil": 1.6,
+    "Ethiopia": 3.9,
+    "China": 1.0
+}
+\end{lstlisting}
+Créer ensuite la liste des valeurs et calculer la moyenne initiale. Ce nom sera réutilisé dans la simulation.
+\begin{lstlisting}
+valeurs = list(fertilite.values())
+moyenne_initiale = sum(valeurs) / len(valeurs)
+\end{lstlisting}
+Afficher le nombre d'observations et la moyenne simple de ces valeurs.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Observer clés et valeurs}
+Avant le graphique, vérifier ce que renvoient les conversions suivantes.
+\begin{lstlisting}
+pays = list(fertilite.keys())
+valeurs = list(fertilite.values())
+
+print(pays[:3])
+print(valeurs[:3])
+print(len(pays) == len(valeurs))
+\end{lstlisting}
+Écrire en commentaire pourquoi le graphique en barres a besoin de deux listes de même longueur.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Graphique en barres}
+Avec \code{matplotlib}, tracer un graphique en barres des taux de fécondité.
+\begin{lstlisting}
+import matplotlib.pyplot as plt
+
+pays = list(fertilite.keys())
+valeurs = list(fertilite.values())
+
+plt.figure()
+plt.bar(pays, valeurs)
+plt.xticks(rotation=45, ha="right")
+plt.ylabel("Enfants par femme")
+plt.title("Taux de fecondite - extrait OWID")
+plt.tight_layout()
+plt.savefig("fertilite_barres.png", dpi=300)
+\end{lstlisting}
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Modifier un paramètre graphique}
+Reprendre le graphique en barres et faire deux modifications seulement :
+\begin{enumerate}
+  \item changer le titre pour indiquer qu'il s'agit d'un extrait pédagogique ;
+  \item sauvegarder la figure sous le nom \code{fertilite\_barres\_version2.png}.
+\end{enumerate}
+Vérifier que l'ancien fichier et le nouveau fichier existent tous les deux. Si un seul fichier existe, vérifier le nom passé à \code{plt.savefig(...)}.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Interpréter le graphique}
+Ajouter trois commentaires :
+\begin{enumerate}
+  \item quel pays a le taux le plus élevé dans l'extrait ?
+  \item quel pays a le taux le plus faible ?
+  \item pourquoi ce graphique est-il plus lisible qu'une liste brute ?
+\end{enumerate}
+\end{mandatoryexercise}
+
+\section*{B. Simulation très guidée}
+
+\begin{mandatoryexercise}{Un tirage aléatoire}
+Importer \code{random}, puis tirer une valeur au hasard dans la liste des taux.
+\begin{lstlisting}
+import random
+
+tirage = random.choice(valeurs)
+print(tirage)
+\end{lstlisting}
+Exécuter plusieurs fois le script : le résultat est-il toujours le même ?
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Prédire le rôle de \code{range}}
+Avant de simuler 20 tirages, prédire combien de lignes seront affichées par chaque boucle.
+\begin{lstlisting}
+for i in range(3):
+    print(i)
+
+for i in range(1):
+    print("tirage")
+\end{lstlisting}
+Exécuter ensuite les deux fragments. Ajouter une phrase qui explique pourquoi \code{range(20)} permet de répéter exactement 20 tirages.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Moyenne de plusieurs tirages}
+Compléter le code suivant pour calculer la moyenne de 20 tirages.
+\begin{lstlisting}
+tirages = []
+for i in range(20):
+    tirages.append(random.choice(valeurs))
+
+moyenne_tirages = sum(tirages) / len(tirages)
+print(moyenne_tirages)
+\end{lstlisting}
+Comparer cette moyenne à la moyenne de la liste initiale.
+\textbf{Mini-débogage.}
+Avant de continuer, expliquer pourquoi \code{for i in range(20)} sans deux-points produit une \code{SyntaxError}, et pourquoi une ligne non indentée après \code{for} produit une erreur d'indentation.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Stabilisation de la moyenne}
+Calculer la moyenne des tirages pour plusieurs tailles : \code{5}, \code{20}, \code{100}, \code{1000}. Afficher les résultats dans une phrase.
+\begin{lstlisting}
+tailles = [5, 20, 100, 1000]
+for n in tailles:
+    tirages = []
+    for i in range(n):
+        tirages.append(random.choice(valeurs))
+    print(n, sum(tirages) / len(tirages))
+\end{lstlisting}
+\end{mandatoryexercise}
+
+\section*{C. Visualiser la simulation}
+
+\begin{pseudocodeexercise}{Passer des tirages à une courbe}
+\begin{lstlisting}
+# Objectif : voir si la moyenne simulee se stabilise
+# Entree : plusieurs tailles de simulation
+# 1. Creer une liste vide pour les moyennes
+# 2. Pour chaque taille n :
+#       faire n tirages
+#       calculer la moyenne des tirages
+#       ajouter cette moyenne a la liste
+# 3. Tracer tailles en abscisse et moyennes en ordonnee
+# Sortie : graphique de stabilisation
+\end{lstlisting}
+\end{pseudocodeexercise}
+
+\begin{mandatoryexercise}{Graphique de stabilisation}
+Créer deux listes : \code{tailles} et \code{moyennes\_simulees}. Compléter d'abord le squelette, puis tracer le graphique.
+\begin{lstlisting}
+tailles = [5, 20, 100, 1000]
+moyennes_simulees = []
+
+for n in tailles:
+    tirages = []
+    for i in range(n):
+        tirages.append(random.choice(valeurs))
+    moyenne_n = ...
+    moyennes_simulees.append(moyenne_n)
+
+plt.figure()
+plt.plot(tailles, moyennes_simulees, marker="o")
+plt.axhline(moyenne_initiale, linestyle="--")
+plt.xlabel("Nombre de tirages")
+plt.ylabel("Moyenne simulée")
+plt.tight_layout()
+plt.savefig("simulation_moyenne.png", dpi=300)
+\end{lstlisting}
+La variable \code{moyenne\_initiale} doit avoir été calculée avant le graphique.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Interprétation économique}
+Ajouter quatre commentaires :
+\begin{enumerate}
+  \item que représente la moyenne de l'extrait ?
+  \item que montre la simulation quand le nombre de tirages augmente ?
+  \item pourquoi ce résultat ne décrit-il pas directement la population mondiale ?
+  \item pourquoi la sélection des pays est-elle importante ?
+\end{enumerate}
+\end{mandatoryexercise}
+
+\section*{D. Entraînement facultatif}
+
+\begin{extensionexercise}{Pour aller plus loin, sans obligation}
+Choisir au moins deux questions si le parcours obligatoire est terminé.
+\begin{enumerate}
+  \item Fixer la graine avec \code{random.seed(123)} et observer l'effet.
+  \item Faire 10 simulations de taille 20 et comparer les moyennes obtenues.
+  \item Tracer un histogramme des 1000 tirages.
+  \item Supprimer \code{Niger} de la liste et recalculer la moyenne.
+  \item Ajouter une ligne pour la médiane de la liste initiale.
+  \item Écrire une fonction \code{moyenne\_tirages(n)}.
+  \item Tester des tailles \code{10}, \code{50}, \code{500}, \code{5000}.
+  \item Calculer l'écart entre moyenne simulée et moyenne initiale.
+  \item Lire intuitivement la loi des grands nombres : que veut dire “stabiliser” ?
+  \item Extension avancée : construire un intervalle \code{moyenne +/- 2 * ecart\_type / racine(n)} avec une formule donnée.
+\end{enumerate}
+\end{extensionexercise}
+
+\begin{takeawaybox}{À retenir}
+\begin{itemize}
+  \item Un graphique rend une comparaison plus lisible qu'une liste brute de valeurs.
+  \item Un import donne accès à une bibliothèque ou à un module non disponible par défaut.
+  \item Une simulation répète une opération contrôlée pour observer un comportement.
+  \item Dans une boucle, les deux-points et l'indentation font partie de la logique du programme.
+\end{itemize}
+\end{takeawaybox}
+
+\end{document}

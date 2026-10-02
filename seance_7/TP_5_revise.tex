@@ -1,0 +1,258 @@
+\documentclass[11pt,a4paper]{article}
+\input{../tp_workbook_preamble_modern.tex}
+
+\begin{document}
+
+\workbooktitle
+  {TD5}
+  {Mini-projet pandas avec Our World in Data}
+  {Comment importer un CSV OWID, produire des statistiques descriptives simples, tracer un graphique et rédiger une interprétation économique ?}
+  {Un fichier \code{td5\_nom\_prenom.py}, une figure \code{out/gdp\_top10.png}, un fichier \code{out/gdp\_selection.csv} et une interprétation de six à huit lignes.}
+
+\begin{objectivebox}{Objectifs du TD}
+\begin{itemize}
+  \item Importer un fichier CSV avec \code{pandas} et inspecter sa structure.
+  \item Filtrer un tableau, calculer des statistiques descriptives et exporter un résultat.
+  \item Produire un graphique lisible à partir d'un \code{DataFrame}.
+  \item Diagnostiquer des erreurs courantes de bibliothèque, chemin, colonne et filtre vide.
+\end{itemize}
+\end{objectivebox}
+
+\begin{checkpointbox}{Progression du TD}
+Les exercices 1 à 13 sont obligatoires. Ce TD est le mini-projet final : il combine chemins de fichiers, \code{pandas}, statistiques descriptives simples, graphique et interprétation. Les premiers exercices restent guidés ; les derniers demandent davantage d'autonomie.
+\end{checkpointbox}
+
+\begin{pathwaybox}{Pathways : travailler avec un CSV OWID}
+Le TD lit directement un CSV publié par Our World in Data. Si la connexion internet ne fonctionne pas en salle, télécharger le CSV avec un navigateur et placer le fichier dans un dossier \code{data}.
+\begin{lstlisting}[language=terminal]
+https://ourworldindata.org/grapher/gdp-per-capita-worldbank.csv
+\end{lstlisting}
+\end{pathwaybox}
+
+\begin{pseudocodeexercise}{Pipeline pandas final}
+\begin{lstlisting}
+# Objectif : mini-projet descriptif avec un CSV OWID
+# 1. Lire le CSV
+# 2. Inspecter lignes, colonnes et types
+# 3. Renommer les colonnes utiles
+# 4. Filtrer une annee et quelques pays
+# 5. Calculer moyenne, mediane, min, max
+# 6. Tracer un graphique lisible
+# 7. Exporter un tableau propre
+# 8. Rediger une interpretation prudente
+\end{lstlisting}
+\end{pseudocodeexercise}
+
+\section*{A. Importer et inspecter}
+
+\begin{mandatoryexercise}{Préparer le script}
+Créer l'arborescence suivante :
+\begin{lstlisting}[language=terminal]
+TD5/
+  td5_nom_prenom.py
+  out/
+\end{lstlisting}
+Dans le script, créer le dossier \code{out}.
+\begin{lstlisting}
+from pathlib import Path
+
+out_dir = Path("out")
+out_dir.mkdir(exist_ok=True)
+\end{lstlisting}
+\code{Path("out")} désigne un dossier nommé \code{out} dans le dossier depuis lequel le script est exécuté. Si les fichiers produits ne sont pas retrouvés, vérifier le dossier courant et relancer après sauvegarde du script.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Vérifier le dossier courant}
+Ajouter temporairement ces deux lignes au début du script, puis exécuter.
+\begin{lstlisting}
+print("Dossier courant :", Path.cwd())
+print("Le dossier out existe :", out_dir.exists())
+\end{lstlisting}
+Comparer le chemin affiché avec l'endroit où le fichier \code{td5\_nom\_prenom.py} a été enregistré. Supprimer ensuite ces affichages si le dossier est correct, ou les garder en commentaire si cela aide à comprendre le problème.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Lire le CSV OWID}
+Lire le fichier depuis l'URL OWID.
+\begin{lstlisting}
+import pandas as pd
+
+url = "https://ourworldindata.org/grapher/gdp-per-capita-worldbank.csv"
+df = pd.read_csv(url)
+
+print(df.head())
+print(df.shape)
+print(df.columns)
+\end{lstlisting}
+Ajouter un commentaire indiquant le nombre de lignes et de colonnes.
+Si la connexion internet ne fonctionne pas, télécharger le CSV dans un dossier \code{data}, puis remplacer temporairement la ligne de lecture par :
+\begin{lstlisting}
+df = pd.read_csv("data/gdp-per-capita-worldbank.csv")
+\end{lstlisting}
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Repérer la colonne de l'indicateur}
+Avant de renommer les colonnes, afficher seulement les noms de colonnes.
+\begin{lstlisting}
+print(list(df.columns))
+\end{lstlisting}
+Écrire en commentaire le nom exact de la colonne qui contient le PIB par habitant. Vérifier ensuite que \code{df.columns[-1]} correspond bien à cette colonne dans le fichier utilisé.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Renommer proprement}
+Le nom de la colonne de valeur peut être long. On le récupère automatiquement après avoir regardé \code{df.columns}.
+\begin{lstlisting}
+value_col = df.columns[-1]
+
+df = df.rename(columns={
+    "Entity": "country",
+    "Code": "code",
+    "Year": "year",
+    value_col: "gdp_pc"
+})
+\end{lstlisting}
+Afficher \code{df[["country", "year", "gdp\_pc"]].head()}.
+\textbf{Pourquoi \code{df.columns[-1]} ?}
+Les fichiers OWID placent souvent l'indicateur dans la dernière colonne. Ici, \code{-1} signifie : prendre le dernier nom de colonne. Ce n'est pas une règle universelle ; c'est une vérification pratique après inspection.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Débogage pandas guidé}
+Pour chaque situation, identifier l'hypothèse la plus probable et le premier contrôle à effectuer.
+\begin{enumerate}
+  \item \code{ModuleNotFoundError: No module named 'pandas'} ;
+  \item \code{FileNotFoundError: data/gdp-per-capita-worldbank.csv} ;
+  \item \code{KeyError: 'gdp\_pc'} après le renommage ;
+  \item le script s'exécute, mais \code{selection} est vide.
+\end{enumerate}
+Indices : environnement Python, dossier courant, nom exact des colonnes, orthographe exacte des pays.
+\end{mandatoryexercise}
+
+\section*{B. Filtrer et décrire}
+
+\begin{mandatoryexercise}{Sélectionner une année récente}
+Créer un tableau \code{latest} avec la dernière année disponible dans le fichier, puis retirer les valeurs manquantes.
+\begin{lstlisting}
+latest_year = df["year"].max()
+latest = df.loc[df["year"] == latest_year].copy()
+latest = latest.dropna(subset=["gdp_pc"])
+print(latest_year)
+print(latest.shape)
+\end{lstlisting}
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Sélectionner quelques pays}
+Créer une liste de pays et filtrer le tableau.
+\begin{lstlisting}
+pays_selection = [
+    "France", "Germany", "Spain", "Poland",
+    "United States", "China", "India", "Brazil"
+]
+selection = latest.loc[latest["country"].isin(pays_selection)].copy()
+print(selection[["country", "gdp_pc"]])
+\end{lstlisting}
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Diagnostiquer une sélection vide}
+Modifier temporairement un nom de pays, par exemple \code{"Germany"} en \code{"Germanie"}, puis relancer le filtre. Observer ce qui disparaît du tableau.
+
+Ajouter ensuite ces deux contrôles :
+\begin{lstlisting}
+print(len(selection))
+print(sorted(latest["country"].unique())[:10])
+\end{lstlisting}
+Remettre le nom correct avant de continuer. L'objectif est de comprendre qu'un filtre peut fonctionner techniquement tout en produisant une sélection incomplète.
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Statistiques descriptives simples}
+Sur \code{selection}, calculer :
+\begin{enumerate}
+  \item moyenne ;
+  \item médiane ;
+  \item minimum ;
+  \item maximum ;
+  \item proportion de pays au-dessus de la moyenne de la sélection.
+\end{enumerate}
+On peut utiliser \code{mean()}, \code{median()}, \code{min()} et \code{max()}.
+\end{mandatoryexercise}
+
+\section*{C. Graphique et export}
+
+\begin{pseudocodeexercise}{Passer du tableau au graphique}
+\begin{lstlisting}
+# Objectif : representer les dix valeurs les plus elevees
+# Entree : tableau latest sans valeurs manquantes
+# 1. Trier le tableau par PIB par habitant decroissant
+# 2. Garder les dix premieres lignes
+# 3. Tracer une barre par pays
+# 4. Ajouter titre, axes et rotation des etiquettes
+# 5. Sauvegarder la figure dans le dossier out
+# Sortie : fichier gdp_top10.png
+\end{lstlisting}
+\end{pseudocodeexercise}
+
+\begin{mandatoryexercise}{Graphique du top 10}
+Créer un graphique en barres des dix pays les plus élevés dans \code{latest}.
+\begin{lstlisting}
+import matplotlib.pyplot as plt
+
+top10 = latest.sort_values("gdp_pc", ascending=False).head(10)
+ax = top10.plot(kind="bar", x="country", y="gdp_pc", legend=False)
+ax.set_xlabel("Pays")
+ax.set_ylabel("PIB par habitant")
+ax.set_title(f"Top 10 du PIB par habitant - {latest_year}")
+plt.xticks(rotation=45, ha="right")
+plt.tight_layout()
+plt.savefig(out_dir / "gdp_top10.png", dpi=300)
+\end{lstlisting}
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Exporter un tableau propre}
+Exporter \code{selection} dans \code{out/gdp\_selection.csv} avec seulement \code{country}, \code{code}, \code{year}, \code{gdp\_pc}.
+\begin{lstlisting}
+selection[["country", "code", "year", "gdp_pc"]].to_csv(
+    out_dir / "gdp_selection.csv",
+    index=False
+)
+\end{lstlisting}
+\end{mandatoryexercise}
+
+\begin{mandatoryexercise}{Interprétation finale}
+Ajouter six à huit lignes de commentaire :
+\begin{enumerate}
+  \item année étudiée ;
+  \item pays le plus élevé dans la sélection ;
+  \item pays le plus faible dans la sélection ;
+  \item moyenne et médiane de la sélection ;
+  \item comparaison de la France à la moyenne ;
+  \item limite : choix des pays ;
+  \item limite : le PIB par habitant ne mesure pas toutes les dimensions du développement.
+\end{enumerate}
+\end{mandatoryexercise}
+
+\section*{D. Extension facultative}
+
+\begin{extensionexercise}{Pour les étudiants plus rapides}
+Choisir au moins deux questions si le mini-projet est terminé.
+\begin{enumerate}
+  \item Tracer uniquement les pays de la sélection.
+  \item Comparer la France à l'Allemagne, aux États-Unis et à la Chine.
+  \item Créer une colonne \code{above\_selection\_mean}.
+  \item Exporter le \code{top10} dans \code{out/gdp\_top10.csv}.
+  \item Tracer l'évolution du PIB par habitant de la France depuis 1990.
+  \item Ajouter le monde \code{"World"} si présent dans le fichier.
+  \item Remplacer \code{latest\_year} par une année choisie manuellement.
+  \item Calculer le rapport entre le maximum et le minimum de la sélection.
+  \item Importer aussi l'espérance de vie depuis le fichier CSV OWID \code{life-expectancy.csv}.
+  \item Extension avancée : fusionner PIB par habitant et espérance de vie pour une même année.
+\end{enumerate}
+\end{extensionexercise}
+
+\begin{takeawaybox}{À retenir}
+\begin{itemize}
+  \item Avant de traiter un CSV, il faut inspecter ses colonnes, ses dimensions et quelques lignes.
+  \item Un \code{DataFrame} se filtre avec une condition booléenne et se copie quand on crée un extrait de travail.
+  \item Les chemins de sortie doivent être construits et vérifiés pour retrouver les fichiers produits.
+  \item Une interprétation descriptive doit citer l'année, la sélection et les limites du résultat.
+\end{itemize}
+\end{takeawaybox}
+
+\end{document}

@@ -1,0 +1,451 @@
+\documentclass[10pt,aspectratio=169]{beamer}
+\input{../lecture_clean_preamble.tex}
+
+\title{Cours 2 -- Décrire, comparer, visualiser des données OWID}
+\subtitle{Moyenne, médiane, dispersion et premiers pas avec pandas}
+\author{Etienne Dagorn}
+\institute{Université de Lille -- L2 Économie}
+\date{2026--2027}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Objectif de la séance}
+\begin{block}{But}
+Passer de petits objets Python à une première analyse descriptive : lire des données, calculer quelques indicateurs, visualiser et interpréter avec prudence.
+\end{block}
+\begin{itemize}
+  \item Python reste l'objectif principal.
+  \item Les statistiques servent de langage pour résumer les données.
+  \item Les exemples suivent la logique des TD OWID.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Où va le cours ?}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Séance & Python & Statistique support \\
+\midrule
+TD1 & variables, listes & moyenne, min, max, pourcentage \\
+TD2 & boucles, conditions & proportions, seuils \\
+TD3 & fonctions & comparaison de groupes \\
+TD4 & graphiques, simulation & distribution, stabilisation d'une moyenne \\
+TD5 & \code{pandas} & mini-projet descriptif OWID \\
+\bottomrule
+\end{tabular}
+\vspace{0.45cm}
+\begin{block}{Fil rouge}
+Une bonne analyse décrit une distribution, pas seulement un chiffre isolé.
+\end{block}
+\end{frame}
+
+\begin{frame}{Donnée, observation, variable}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Mot & Sens simple & Exemple OWID \\
+\midrule
+Observation & une ligne du tableau & France en 2021 \\
+Variable & une colonne du tableau & PIB par habitant \\
+Valeur & une case du tableau & 46000 \\
+Unité & sens de la valeur & dollars par habitant \\
+\bottomrule
+\end{tabular}
+\vspace{0.45cm}
+\begin{block}{Réflexe}
+Avant de calculer : quelle est l'observation ? quelle est la variable ? quelle est l'unité ?
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Même information, trois formes}
+\begin{columns}[T,totalwidth=\textwidth]
+\begin{column}{0.32\textwidth}
+\begin{lstlisting}
+valeurs = [46, 54, 34]
+\end{lstlisting}
+\end{column}
+\begin{column}{0.32\textwidth}
+\begin{lstlisting}
+gdp = {
+    "France": 46,
+    "Germany": 54,
+    "Spain": 34
+}
+\end{lstlisting}
+\end{column}
+\begin{column}{0.32\textwidth}
+\begin{lstlisting}
+donnees = [
+    {"pays": "France", "gdp": 46},
+    {"pays": "Germany", "gdp": 54},
+    {"pays": "Spain", "gdp": 34}
+]
+\end{lstlisting}
+\end{column}
+\end{columns}
+\begin{block}{Idée}
+Plus les données deviennent riches, plus une table devient pratique. C'est le rôle d'un DataFrame \code{pandas}.
+\end{block}
+\end{frame}
+
+\begin{frame}{Langage, bibliothèque, environnement}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Terme & Rôle & Exemple \\
+\midrule
+Langage & règles pour écrire des programmes & Python \\
+Interpréteur & programme qui lit le langage & \code{python3} \\
+Bibliothèque & outils ajoutés au langage & \code{pandas}, \code{matplotlib} \\
+Environnement & ensemble installé sur la machine & Python + packages \\
+\bottomrule
+\end{tabular}
+\vspace{0.45cm}
+\begin{block}{Erreur fréquente}
+Si \code{import pandas} échoue, Python fonctionne peut-être très bien : c'est la bibliothèque ou l'environnement qui manque.
+\end{block}
+\end{frame}
+
+\begin{frame}{Avant de calculer avec un tableau}
+\begin{block}{Rituel de lecture}
+Avec un vrai fichier de données, on ne calcule pas avant d'avoir regardé la structure minimale du tableau.
+\end{block}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Question & Commande pandas & Ce que l'on vérifie \\
+\midrule
+Quelles lignes ? & \code{df.head()} & aperçu des premières observations \\
+Quelle taille ? & \code{df.shape} & nombre de lignes et colonnes \\
+Quels noms ? & \code{df.columns} & noms exacts à utiliser dans le code \\
+\bottomrule
+\end{tabular}
+\end{frame}
+
+\begin{frame}[fragile]{Pseudo-code : décrire une liste}
+\begin{lstlisting}
+# Objectif : resumer une liste de valeurs economiques
+# Entree : une liste de nombres
+# 1. Compter les observations
+# 2. Calculer la moyenne
+# 3. Trier pour trouver la mediane
+# 4. Reperer minimum et maximum
+# 5. Observer la dispersion
+# Sortie : chiffres + interpretation courte
+\end{lstlisting}
+\begin{block}{Programmation}
+Le pseudo-code dit quoi faire. Python impose ensuite une syntaxe précise pour le faire.
+\end{block}
+\end{frame}
+
+\begin{frame}{Moyenne et médiane : ce qu'elles disent}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Indicateur & Question & Limite \\
+\midrule
+Moyenne & niveau général & sensible aux valeurs extrêmes \\
+Médiane & valeur centrale & ignore l'ampleur des écarts \\
+Minimum & plus petite valeur & ne résume pas le groupe \\
+Maximum & plus grande valeur & peut être atypique \\
+\bottomrule
+\end{tabular}
+\vspace{0.45cm}
+\begin{block}{À retenir}
+Moyenne et médiane résument le centre. Elles ne suffisent pas à décrire la forme de la distribution.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Même moyenne, même médiane, distributions différentes}
+\begin{lstlisting}
+groupe_a = [8, 9, 10, 11, 12]
+groupe_b = [0, 5, 10, 15, 20]
+\end{lstlisting}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Groupe & Moyenne & Médiane & Lecture \\
+\midrule
+A & 10 & 10 & valeurs concentrées \\
+B & 10 & 10 & valeurs très dispersées \\
+\bottomrule
+\end{tabular}
+\vspace{0.4cm}
+\begin{block}{Question}
+Si ces valeurs sont des revenus, les deux groupes racontent-ils la même situation économique ?
+\end{block}
+\end{frame}
+
+\begin{frame}{Distribution : regarder toutes les valeurs}
+\begin{itemize}
+  \item Une distribution décrit la façon dont les valeurs se répartissent.
+  \item On peut regarder le centre : moyenne, médiane.
+  \item On peut regarder les extrêmes : min, max, étendue.
+  \item On peut regarder la dispersion : écarts à la moyenne, variance, écart-type.
+  \item On peut visualiser : histogramme, barres, points.
+\end{itemize}
+\begin{block}{Idée économique}
+Deux pays ou deux groupes peuvent avoir le même niveau moyen mais des inégalités ou dispersions très différentes.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Écarts à la moyenne}
+Pour \code{groupe\_b = [0, 5, 10, 15, 20]}, la moyenne vaut 10.
+\begin{lstlisting}
+ecart = valeur - moyenne
+\end{lstlisting}
+\begin{tabular}{@{}rrrrrr@{}}
+\toprule
+Valeur & 0 & 5 & 10 & 15 & 20 \\
+Écart & -10 & -5 & 0 & 5 & 10 \\
+\bottomrule
+\end{tabular}
+\vspace{0.45cm}
+\begin{block}{Problème}
+Si on additionne les écarts, les valeurs négatives et positives se compensent. Il faut donc mesurer la taille des écarts autrement.
+\end{block}
+\end{frame}
+
+\begin{frame}{Variance et écart-type : intuition}
+\begin{block}{Variance}
+La variance est la moyenne des carrés des écarts à la moyenne.
+\[
+\text{variance} = \frac{1}{n}\sum (x_i - \bar{x})^2
+\]
+\end{block}
+\begin{itemize}
+  \item On met les écarts au carré pour éviter les compensations.
+  \item Les grands écarts comptent davantage.
+  \item L'écart-type est la racine carrée de la variance.
+  \item L'écart-type revient dans l'unité de départ, donc il est plus lisible.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Pseudo-code : variance sans panique}
+\begin{lstlisting}
+# Objectif : mesurer la dispersion d'une liste
+# Entree : liste de valeurs
+# 1. Calculer la moyenne
+# 2. Pour chaque valeur :
+#       calculer l'ecart a la moyenne
+#       mettre cet ecart au carre
+# 3. Calculer la moyenne des ecarts au carre
+# 4. Prendre la racine pour obtenir l'ecart-type
+# Sortie : variance et ecart-type
+\end{lstlisting}
+\begin{block}{Position dans le cours}
+À connaître intuitivement. En obligatoire, on insiste surtout sur moyenne, médiane, min, max et graphiques.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Livecoding 1 : résumer deux groupes}
+Départ en direct :
+\begin{lstlisting}
+groupe_a = [8, 9, 10, 11, 12]
+groupe_b = [0, 5, 10, 15, 20]
+
+def moyenne(valeurs):
+    return sum(valeurs) / len(valeurs)
+
+print(moyenne(groupe_a))
+print(moyenne(groupe_b))
+\end{lstlisting}
+À coder ensemble : min, max, étendue, puis une phrase d'interprétation.
+\end{frame}
+
+\begin{frame}[fragile]{Livecoding 2 : médiane et dispersion}
+Objectif : transformer une idée statistique en fonction Python.
+\begin{lstlisting}
+def mediane_impair(valeurs):
+    valeurs_triees = sorted(valeurs)
+    milieu = len(valeurs_triees) // 2
+    return valeurs_triees[milieu]
+
+def etendue(valeurs):
+    return max(valeurs) - min(valeurs)
+\end{lstlisting}
+Question en direct : quel groupe a la plus grande étendue ? Est-ce visible dans la moyenne ?
+\end{frame}
+
+\begin{frame}[fragile]{Livecoding 3 : variance pas à pas}
+Version volontairement explicite, pour comprendre la logique.
+\begin{lstlisting}
+def variance(valeurs):
+    m = moyenne(valeurs)
+    carres = []
+    for x in valeurs:
+        ecart = x - m
+        carres.append(ecart ** 2)
+    return moyenne(carres)
+\end{lstlisting}
+Extension en direct si le groupe suit :
+\begin{lstlisting}
+import math
+print(math.sqrt(variance(groupe_b)))
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Graphiques : voir ce que les chiffres cachent}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Graphique & Sert à voir & TD \\
+\midrule
+Barres & comparer des catégories & TD4, TD5 \\
+Histogramme & forme d'une distribution & TD4 \\
+Courbe & évolution dans le temps & extension TD5 \\
+Nuage de points & relation entre deux variables & plus tard \\
+\bottomrule
+\end{tabular}
+\vspace{0.45cm}
+\begin{block}{Règle}
+Un graphique doit répondre à une question précise. Il n'est pas une décoration.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Livecoding 4 : visualiser une distribution}
+\begin{lstlisting}
+import matplotlib.pyplot as plt
+
+valeurs = [46, 54, 34, 38, 22, 61]
+pays = ["France", "Germany", "Spain", "Italy", "Poland", "Sweden"]
+
+plt.bar(pays, valeurs)
+plt.xticks(rotation=45, ha="right")
+plt.ylabel("PIB par habitant, milliers de dollars")
+plt.tight_layout()
+plt.show()
+\end{lstlisting}
+À demander : quel pays tire la moyenne vers le haut ?
+\end{frame}
+
+\begin{frame}{Lire un fichier Our World in Data}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Colonne OWID & Sens & Exemple \\
+\midrule
+\code{Entity} & pays ou région & France \\
+\code{Code} & code pays & FRA \\
+\code{Year} & année & 2022 \\
+Dernière colonne & indicateur & PIB par habitant \\
+\bottomrule
+\end{tabular}
+\vspace{0.45cm}
+\begin{block}{Astuce}
+Les fichiers OWID ont souvent une structure régulière : identifier la colonne de valeur est la première étape.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Pseudo-code : pipeline pandas OWID}
+\begin{lstlisting}
+# Objectif : decrire un indicateur OWID
+# 1. Lire le CSV depuis une URL
+# 2. Afficher les premieres lignes
+# 3. Renommer Entity, Code, Year, valeur
+# 4. Filtrer une annee recente
+# 5. Selectionner quelques pays
+# 6. Calculer moyenne, mediane, min, max
+# 7. Tracer un graphique
+# 8. Rediger une interpretation prudente
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Livecoding 5 : lire un CSV OWID}
+\begin{lstlisting}
+import pandas as pd
+
+url = "https://ourworldindata.org/grapher/gdp-per-capita-worldbank.csv"
+df = pd.read_csv(url)
+
+print(df.head())
+print(df.shape)
+print(df.columns)
+\end{lstlisting}
+Question : quelle colonne contient l'indicateur économique ?
+\end{frame}
+
+\begin{frame}{Débogage pandas : trois cas courants}
+\begin{tabular}{@{}ll@{}}
+\toprule
+Message probable & Hypothèse utile \\
+\midrule
+\code{ModuleNotFoundError} & la bibliothèque n'est pas installée dans l'environnement actif \\
+\code{FileNotFoundError} & le chemin ou le dossier courant n'est pas le bon \\
+\code{KeyError} & le nom de colonne utilisé n'existe pas exactement \\
+\bottomrule
+\end{tabular}
+\vspace{0.45cm}
+\begin{block}{Réflexe}
+Avant d'utiliser une colonne, afficher \code{df.columns} et recopier le nom exact.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Livecoding 6 : nettoyer et filtrer}
+\begin{lstlisting}
+value_col = df.columns[-1]
+df = df.rename(columns={
+    "Entity": "country",
+    "Code": "code",
+    "Year": "year",
+    value_col: "gdp_pc"
+})
+
+latest_year = df["year"].max()
+latest = df.loc[df["year"] == latest_year].dropna(subset=["gdp_pc"])
+\end{lstlisting}
+À demander : pourquoi retirer les valeurs manquantes avant de calculer ?
+\end{frame}
+
+\begin{frame}[fragile]{Livecoding 7 : calculer et comparer}
+\begin{lstlisting}
+pays = ["France", "Germany", "Spain", "Poland", "United States", "India"]
+selection = latest.loc[latest["country"].isin(pays)].copy()
+
+print(selection[["country", "gdp_pc"]])
+print(selection["gdp_pc"].mean())
+print(selection["gdp_pc"].median())
+print(selection["gdp_pc"].min())
+print(selection["gdp_pc"].max())
+\end{lstlisting}
+Interprétation : la France est-elle au-dessus ou au-dessous de la moyenne de cette sélection ?
+\end{frame}
+
+\begin{frame}{Décrire sans surinterpréter}
+\begin{block}{Phrase acceptable}
+Dans cette sélection de pays et pour cette année, la France est au-dessus ou au-dessous de la moyenne observée du PIB par habitant.
+\end{block}
+\begin{block}{Phrase trop forte}
+La France est plus riche parce que sa politique économique est meilleure.
+\end{block}
+\begin{itemize}
+  \item On décrit des données.
+  \item On ne prouve pas une cause.
+  \item On précise toujours le périmètre : pays, année, indicateur, source.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Ce que les TD rendent obligatoire}
+\begin{tabular}{@{}ll@{}}
+\toprule
+TD & Obligatoire \\
+\midrule
+TD3 & fonctions, moyenne, médiane, min, max, comparaison \\
+TD4 & graphique, simulation simple, distribution \\
+TD5 & CSV OWID, \code{pandas}, graphique, interprétation \\
+\bottomrule
+\end{tabular}
+\vspace{0.45cm}
+\begin{block}{Priorité pédagogique}
+Écrire du Python clair avant d'empiler les notions statistiques.
+\end{block}
+\end{frame}
+
+\begin{frame}{Résumé}
+\begin{itemize}
+  \item Moyenne et médiane résument le centre d'une distribution.
+  \item Elles ne captent pas toute la dispersion.
+  \item Variance et écart-type mesurent les écarts à la moyenne, mais restent secondaires dans ce cours.
+  \item Les graphiques aident à voir ce qu'un chiffre unique cache.
+  \item \code{pandas} permet de passer d'une petite liste à un vrai tableau OWID.
+  \item Toute interprétation doit rester descriptive et prudente.
+\end{itemize}
+\end{frame}
+
+\end{document}
