@@ -40,13 +40,13 @@ Avant de publier, vérifier que le dossier `docs/` ne contient que les supports 
 find docs -maxdepth 4 -type f | sort
 ```
 
-Vérifier aussi qu'aucun fichier interne n'est présent dans le site :
+Vérifier aussi qu'aucun fichier interne non destiné à la publication n'est présent dans le site. Le seul script de correction public est celui du TD1, lié depuis la page d'accueil :
 
 ```bash
 find docs -iname "*corr*" -o -iname "*correction*"
 ```
 
-Cette commande ne doit rien afficher.
+Cette commande doit afficher uniquement `docs/supports/corr/TP_1_corr_revise.py`.
 
 ## 4. Initialiser Git si le dossier n'est pas encore un dépôt
 

@@ -29,3 +29,7 @@ __pycache__/
 
 # Fichiers systeme locaux.
 .DS_Store
+
+# Exception publique : code corrige lie depuis la page du TD1.
+!docs/supports/corr/
+!docs/supports/corr/TP_1_corr_revise.py
