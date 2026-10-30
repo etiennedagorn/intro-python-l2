@@ -11,23 +11,19 @@
 <header class="site-header"><nav class="nav" aria-label="Navigation principale">
   <a class="brand" href="index.html">Python pour économistes</a>
   <div class="nav-links">
-    <a href="index.html">Accueil</a><a href="index.html#seances">TD</a>
-    <a href="corriges.html">Corrigés</a><a href="index.html#cours">Cours</a>
+    <a href="index.html#cours">Cours</a>
+    <a href="index.html#seances">TD et corrigés</a>
   </div>
 </nav></header>
 <main id="contenu" class="corrige">
 
 <p class="eyebrow">Corrigé TD4</p><h1>Graphiques et simulation simple à partir d’OWID</h1>
-<p class="lead">Les dix valeurs sont celles de l’énoncé. World est un agrégat déjà inclus avec neuf pays : leur moyenne simple n’est donc pas le taux mondial. Dans le parcours obligatoire, les tirages restent aléatoires ; les résultats affichés correspondent à une exécution, pas à des valeurs à retrouver exactement.</p>
-<div class="link-row">
-<a class="resource-link" href="td4.html">Énoncé du TD4</a>
-<a class="resource-link" href="supports/corr/TD4_corrige.ipynb" download>Notebook .ipynb</a>
-<a class="resource-link" href="supports/corr/TD4_corrige.py" download>Script .py</a>
-<a class="resource-link" href="supports/corr/TD4_complet.zip" download>Dossier complet .zip</a>
+<p class="lead">Essayez chaque exercice, puis ouvrez sa solution. Les exercices se suivent dans l’ordre.</p>
+<div class="link-row primary-actions">
+<a class="resource-link" href="supports/tp/TP_4_revise.pdf">Énoncé (PDF)</a>
+<a class="resource-link" href="supports/corr/TD4_complet.zip" download>Télécharger le corrigé</a>
 </div>
-<p>Les exercices se suivent. Utiliser <kbd>Tab</kbd> puis <kbd>Entrée</kbd> ou <kbd>Espace</kbd> pour ouvrir une solution au clavier. Les zones de code peuvent défiler horizontalement.</p>
-<p>Les sorties ci-dessous proviennent du code exécuté. Les simulations du TD4 peuvent changer à chaque exécution.</p>
-<nav aria-label="Sommaire du corrigé"><h2>Sommaire</h2><ol>
+<details class="sommaire"><summary>Sommaire des exercices</summary><nav aria-label="Sommaire du corrigé"><ol>
 <li><a href="#exercice-1">Créer l&#x27;extrait OWID</a></li>
 <li><a href="#exercice-2">Observer clés et valeurs</a></li>
 <li><a href="#exercice-3">Graphique en barres</a></li>
@@ -39,24 +35,7 @@
 <li><a href="#exercice-9">Stabilisation de la moyenne</a></li>
 <li><a href="#exercice-10">Graphique de stabilisation</a></li>
 <li><a href="#exercice-11">Interprétation économique</a></li>
-</ol><a href="#facultatif">Les dix questions facultatives</a></nav>
-<details id="pseudo-1"><summary>Démarche en pseudo-code 1 — Visualiser puis simuler</summary><pre tabindex="0"><code># Objectif : observer une distribution puis simuler des tirages
-# Entree : liste de taux de fecondite
-# 1. Calculer la moyenne observee
-# 2. Tracer un graphique en barres
-# 3. Tirer au hasard une valeur dans la liste
-# 4. Repeter le tirage plusieurs fois
-# 5. Calculer la moyenne des tirages
-# 6. Observer si la moyenne se stabilise quand n augmente</code></pre><p>Les exercices ci-dessous mettent en œuvre ce plan.</p></details>
-<details id="pseudo-2"><summary>Démarche en pseudo-code 2 — Passer des tirages à une courbe</summary><pre tabindex="0"><code># Objectif : voir si la moyenne simulee se stabilise
-# Entree : plusieurs tailles de simulation
-# 1. Creer une liste vide pour les moyennes
-# 2. Pour chaque taille n :
-#       faire n tirages
-#       calculer la moyenne des tirages
-#       ajouter cette moyenne a la liste
-# 3. Tracer tailles en abscisse et moyennes en ordonnee
-# Sortie : graphique de stabilisation</code></pre><p>Les exercices ci-dessous mettent en œuvre ce plan.</p></details>
+</ol></nav></details>
 <section id="exercice-1" class="exercice">
 <h2>Exercice 1 — Créer l&#x27;extrait OWID</h2>
 <p><strong>Objectif.</strong> Créer l’extrait et calculer sa moyenne simple.</p>
@@ -283,7 +262,7 @@ plt.close()
 
 </details></section>
 
-<section id="facultatif"><h2>Entraînement facultatif</h2><p>Ces dix questions sont également corrigées. Elles se lisent après le parcours obligatoire, dans l’ordre.</p></section>
+<details id="facultatif" class="complements"><summary>Exercices facultatifs (10)</summary><p>À lire après les exercices obligatoires, dans l’ordre.</p>
 <section id="extension-1" class="exercice">
 <h2>Question facultative 1 — Fixer et répéter une graine.</h2>
 <p><strong>Objectif.</strong> Fixer et répéter une graine.</p>
@@ -483,11 +462,29 @@ Marge : 0.100 enfants par femme
 </code></pre>
 </details></section>
 
-<section><h2>Sources et fichiers de référence</h2><p>Les extraits des TD1 à TD4 sont ceux des énoncés. Les CSV complémentaires sont des copies des fichiers du dépôt, dont la date de téléchargement initial n’est pas documentée.
+</details><details class="complements"><summary>Autres formats, conseils et sources</summary>
+<p><a href="supports/corr/TD4_corrige.ipynb" download>Notebook (.ipynb)</a> · <a href="supports/corr/TD4_corrige.py" download>Script Python (.py)</a></p>
+<p>Les dix valeurs sont celles de l’énoncé. World est un agrégat déjà inclus avec neuf pays : leur moyenne simple n’est donc pas le taux mondial. Dans le parcours obligatoire, les tirages restent aléatoires ; les résultats affichés correspondent à une exécution, pas à des valeurs à retrouver exactement.</p>
+<p>Extraire le dossier téléchargé avant de travailler. Pour ouvrir une solution au clavier, utiliser Tab puis Entrée ou Espace. Les zones de code peuvent défiler horizontalement. Les sorties sont celles d’une exécution ; les tirages du TD4 peuvent varier.</p>
+<details id="pseudo-1"><summary>Démarche en pseudo-code 1 — Visualiser puis simuler</summary><pre tabindex="0"><code># Objectif : observer une distribution puis simuler des tirages
+# Entree : liste de taux de fecondite
+# 1. Calculer la moyenne observee
+# 2. Tracer un graphique en barres
+# 3. Tirer au hasard une valeur dans la liste
+# 4. Repeter le tirage plusieurs fois
+# 5. Calculer la moyenne des tirages
+# 6. Observer si la moyenne se stabilise quand n augmente</code></pre><p>Les exercices ci-dessous mettent en œuvre ce plan.</p></details>
+<details id="pseudo-2"><summary>Démarche en pseudo-code 2 — Passer des tirages à une courbe</summary><pre tabindex="0"><code># Objectif : voir si la moyenne simulee se stabilise
+# Entree : plusieurs tailles de simulation
+# 1. Creer une liste vide pour les moyennes
+# 2. Pour chaque taille n :
+#       faire n tirages
+#       calculer la moyenne des tirages
+#       ajouter cette moyenne a la liste
+# 3. Tracer tailles en abscisse et moyennes en ordonnee
+# Sortie : graphique de stabilisation</code></pre><p>Les exercices ci-dessous mettent en œuvre ce plan.</p></details>
+<h2>Sources</h2><p>Les extraits des TD1 à TD4 sont ceux des énoncés. Les CSV complémentaires sont des copies des fichiers du dépôt, dont la date de téléchargement initial n’est pas documentée.
 <a href="supports/corr/data/provenance.json">Consulter les sources et empreintes SHA-256 des CSV</a>.</p>
-</section><nav class="pager" aria-label="Navigation entre corrigés"><a href="corriges.html">Tous les corrigés</a>
-<a href="td3-corrige.html">Corrigé précédent</a>
-<a href="td5-corrige.html">Corrigé suivant</a>
-</nav></main><footer class="footer"><div class="footer-inner">
+</details><p class="return-link"><a href="corriges.html">Tous les corrigés</a></p></main><footer class="footer"><div class="footer-inner">
 Python pour économistes - Université de Lille - L2 ESM
 </div></footer></body></html>

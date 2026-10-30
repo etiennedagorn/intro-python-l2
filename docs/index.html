@@ -4,46 +4,74 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Python pour économistes - L2</title>
-    <meta name="description" content="Supports de cours et TD du cours Python pour économistes, L2 Économie.">
+    <meta name="description" content="Cours, énoncés et corrigés de Python pour économistes, L2 Économie.">
     <link rel="stylesheet" href="assets/style.css">
   </head>
   <body>
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
     <header class="site-header">
       <nav class="nav" aria-label="Navigation principale">
         <a class="brand" href="index.html">Python pour économistes</a>
         <div class="nav-links">
-          <a href="index.html" aria-current="page">Accueil</a>
-          <a href="#installation">Installation</a>
-          <a href="#seances">TD</a>
-          <a href="#cours">Cours</a>
-          <a href="corriges.html">Corrigés</a>
+          <a href="index.html#cours">Cours</a>
+          <a href="index.html#seances">TD et corrigés</a>
         </div>
       </nav>
     </header>
-
-    <main>
+    <main id="contenu" class="course-home">
       <section class="intro">
-        <div>
-          <p class="eyebrow">Université de Lille - L2 ESM - 2026-2027</p>
-          <h1>Introduction à Python pour économistes</h1>
-          <p class="lead">
-            Un parcours progressif pour apprendre à écrire, exécuter, lire, déboguer et réutiliser des scripts Python appliqués à des données économiques.
-          </p>
-        </div>
-        <a class="featured-document" href="supports/livret_exercices_python_revise.pdf">
-          <img src="assets/previews/livret-preview.png" alt="Aperçu du livret de TD">
-          <span>
-            <strong>Livret complet</strong>
-            <small>TD1 à TD5 en un seul PDF</small>
-          </span>
-        </a>
+        <p class="eyebrow">Université de Lille · L2 ESM · 2026-2027</p>
+        <h1>Introduction à Python pour économistes</h1>
+        <p class="lead">Retrouvez les cours, les énoncés et les corrigés des cinq TD.</p>
       </section>
-
-      <section id="installation" class="section setup">
-        <div class="section-heading">
-          <p class="eyebrow">Avant le premier TD</p>
-          <h2>Installer Python et VS Code</h2>
-        </div>
+      <section id="seances" class="section">
+        <h2>TD et corrigés</h2>
+        <article class="td-row">
+          <div><h3>TD1 — Premiers scripts et statistiques descriptives simples</h3><p>Variables, listes et premier graphique.</p></div>
+          <div class="link-row">
+            <a class="resource-link" href="supports/tp/TP_1_revise.pdf" aria-label="Énoncé du TD1 (PDF)">Énoncé (PDF)</a>
+            <a class="resource-link" href="td1-corrige.html" aria-label="Corrigé du TD1">Corrigé</a>
+          </div>
+        </article>
+        <article class="td-row">
+          <div><h3>TD2 — Boucles, conditions et proportions</h3><p>Parcourir et classer des observations.</p></div>
+          <div class="link-row">
+            <a class="resource-link" href="supports/tp/TP_2_revise.pdf" aria-label="Énoncé du TD2 (PDF)">Énoncé (PDF)</a>
+            <a class="resource-link" href="td2-corrige.html" aria-label="Corrigé du TD2">Corrigé</a>
+          </div>
+        </article>
+        <article class="td-row">
+          <div><h3>TD3 — Fonctions et comparaison de groupes</h3><p>Réutiliser des calculs et comparer des résultats.</p></div>
+          <div class="link-row">
+            <a class="resource-link" href="supports/tp/TP_3_revise.pdf" aria-label="Énoncé du TD3 (PDF)">Énoncé (PDF)</a>
+            <a class="resource-link" href="td3-corrige.html" aria-label="Corrigé du TD3">Corrigé</a>
+          </div>
+        </article>
+        <article class="td-row">
+          <div><h3>TD4 — Graphiques et simulation</h3><p>Visualiser des données et simuler des tirages.</p></div>
+          <div class="link-row">
+            <a class="resource-link" href="supports/tp/TP_4_revise.pdf" aria-label="Énoncé du TD4 (PDF)">Énoncé (PDF)</a>
+            <a class="resource-link" href="td4-corrige.html" aria-label="Corrigé du TD4">Corrigé</a>
+          </div>
+        </article>
+        <article class="td-row">
+          <div><h3>TD5 — Mini-projet pandas</h3><p>Importer, filtrer et analyser un fichier CSV.</p></div>
+          <div class="link-row">
+            <a class="resource-link" href="supports/tp/TP_5_revise.pdf" aria-label="Énoncé du TD5 (PDF)">Énoncé (PDF)</a>
+            <a class="resource-link" href="td5-corrige.html" aria-label="Corrigé du TD5">Corrigé</a>
+          </div>
+        </article>
+        <p class="collection-link"><a href="supports/livret_exercices_python_revise.pdf">Le livret complet des cinq TD (PDF)</a></p>
+      </section>
+      <section id="cours" class="section">
+        <h2>Cours</h2>
+        <ul class="course-links">
+          <li><a href="supports/cours/py_seance_1_revise.pdf">Cours 1 — Premiers pas avec Python <span>(PDF)</span></a></li>
+          <li><a href="supports/cours/py_seance_2_revise.pdf">Cours 2 — Décrire, comparer, visualiser <span>(PDF)</span></a></li>
+        </ul>
+      </section>
+<details id="installation" class="setup-guide">
+        <summary>Installer Python et VS Code</summary>
 
         <p class="lead">
           Pour suivre le cours dans de bonnes conditions, il faut idéalement installer trois éléments : Python, Visual Studio Code et l'extension Python de VS Code.
@@ -129,121 +157,8 @@
           </ul>
           <p>Les cas plus complexes pourront être réglés pendant la première séance.</p>
         </div>
-      </section>
-
-      <section id="seances" class="section">
-        <div class="section-heading">
-          <p class="eyebrow">Progression active</p>
-          <h2>Séances de TD</h2>
-        </div>
-
-        <div class="session-list">
-          <article class="session">
-            <img src="assets/previews/tp1-preview.png" alt="Aperçu du TD1">
-            <div class="session-body">
-              <div class="session-header">
-                <h3>Premiers scripts et statistiques descriptives simples</h3>
-                <span class="session-number">TD1</span>
-              </div>
-              <p>Créer un fichier Python, manipuler variables, types, listes, erreurs simples et premier graphique avec matplotlib.</p>
-              <div class="link-row">
-                <a class="resource-link" href="td1.html">Page du TD</a>
-                <a class="resource-link" href="supports/tp/TP_1_revise.pdf">PDF étudiant</a>
-                <a class="resource-link" href="td1-corrige.html">Corrigé expliqué</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="session">
-            <img src="assets/previews/tp2-preview.png" alt="Aperçu du TD2">
-            <div class="session-body">
-              <div class="session-header">
-                <h3>Boucles, conditions et proportions avec données OWID</h3>
-                <span class="session-number">TD2</span>
-              </div>
-              <p>Parcourir une liste de dictionnaires, classer des observations, compter une proportion et tracer un graphique CO2.</p>
-              <div class="link-row">
-                <a class="resource-link" href="td2.html">Page du TD</a>
-                <a class="resource-link" href="supports/tp/TP_2_revise.pdf">PDF étudiant</a>
-                <a class="resource-link" href="td2-corrige.html">Corrigé expliqué</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="session">
-            <img src="assets/previews/tp3-preview.png" alt="Aperçu du TD3">
-            <div class="session-body">
-              <div class="session-header">
-                <h3>Fonctions et comparaison de groupes</h3>
-                <span class="session-number">TD3</span>
-              </div>
-              <p>Écrire des fonctions, distinguer affichage et retour, comparer deux groupes et produire un graphique de synthèse.</p>
-              <div class="link-row">
-                <a class="resource-link" href="td3.html">Page du TD</a>
-                <a class="resource-link" href="supports/tp/TP_3_revise.pdf">PDF étudiant</a>
-                <a class="resource-link" href="td3-corrige.html">Corrigé expliqué</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="session">
-            <img src="assets/previews/tp4-preview.png" alt="Aperçu du TD4">
-            <div class="session-body">
-              <div class="session-header">
-                <h3>Graphiques et simulation simple à partir d'OWID</h3>
-                <span class="session-number">TD4</span>
-              </div>
-              <p>Construire des figures, simuler des tirages avec random et observer la stabilisation d'une moyenne.</p>
-              <div class="link-row">
-                <a class="resource-link" href="td4.html">Page du TD</a>
-                <a class="resource-link" href="supports/tp/TP_4_revise.pdf">PDF étudiant</a>
-                <a class="resource-link" href="td4-corrige.html">Corrigé expliqué</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="session">
-            <img src="assets/previews/tp5-preview.png" alt="Aperçu du TD5">
-            <div class="session-body">
-              <div class="session-header">
-                <h3>Mini-projet pandas avec Our World in Data</h3>
-                <span class="session-number">TD5</span>
-              </div>
-              <p>Importer un CSV, inspecter un DataFrame, filtrer, exporter, visualiser et rédiger une interprétation prudente.</p>
-              <div class="link-row">
-                <a class="resource-link" href="td5.html">Page du TD</a>
-                <a class="resource-link" href="supports/tp/TP_5_revise.pdf">PDF étudiant</a>
-                <a class="resource-link" href="td5-corrige.html">Corrigé expliqué</a>
-              </div>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section id="cours" class="section">
-        <div class="section-heading">
-          <p class="eyebrow">Repères communs</p>
-          <h2>Supports de cours</h2>
-        </div>
-
-        <div class="grid two">
-          <article class="card">
-            <img src="assets/previews/cours1-preview.png" alt="Aperçu du cours 1">
-            <h3>Cours 1 - Premiers pas avec Python</h3>
-            <p>Ordinateur, script, exécution, variables, types, chemins et premières erreurs.</p>
-            <a class="resource-link" href="supports/cours/py_seance_1_revise.pdf">Ouvrir le PDF</a>
-          </article>
-
-          <article class="card">
-            <img src="assets/previews/cours2-preview.png" alt="Aperçu du cours 2">
-            <h3>Cours 2 - Décrire, comparer, visualiser</h3>
-            <p>Données, tableaux, statistiques descriptives, graphiques et premiers repères pandas.</p>
-            <a class="resource-link" href="supports/cours/py_seance_2_revise.pdf">Ouvrir le PDF</a>
-          </article>
-        </div>
-      </section>
+      </details>
     </main>
-
     <footer class="footer">
       <div class="footer-inner">Python pour économistes - Université de Lille - L2 ESM</div>
     </footer>

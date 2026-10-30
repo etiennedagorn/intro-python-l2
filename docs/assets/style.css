@@ -513,6 +513,113 @@ code {
   font-size: 0.94rem;
 }
 
+/* Accès direct aux supports, avec deux entrées dans le menu. */
+.course-home .intro {
+  display: block;
+  padding: 0 0 4px;
+}
+
+.td-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-top: 1px solid var(--line);
+  padding: 18px 0;
+}
+
+.td-row h3 {
+  margin-bottom: 4px;
+}
+
+.td-row p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.td-row .link-row {
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.collection-link {
+  margin-top: 16px;
+}
+
+.course-links,
+.corrige-list {
+  padding: 0;
+  list-style: none;
+}
+
+.course-links li,
+.corrige-list li {
+  border-top: 1px solid var(--line);
+}
+
+.course-links a {
+  display: block;
+  padding: 16px 0;
+}
+
+.course-links span {
+  color: var(--muted);
+}
+
+.corrige-list a {
+  display: flex;
+  gap: 18px;
+  align-items: baseline;
+  padding: 20px 0;
+  text-decoration: none;
+}
+
+.corrige-list a span:first-of-type {
+  flex: 1;
+}
+
+.setup-guide {
+  margin-top: 40px;
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+}
+
+.setup-guide > summary,
+.complements > summary,
+.sommaire > summary {
+  cursor: pointer;
+  padding: 8px 0;
+  font-weight: 600;
+}
+
+.setup-guide[open] > summary {
+  margin-bottom: 20px;
+}
+
+.corrige .sommaire {
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  padding: 0 0 8px;
+  margin: 24px 0;
+}
+
+.corrige .complements {
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  padding: 12px 0;
+  margin-top: 32px;
+}
+
+.primary-actions {
+  margin-bottom: 18px;
+}
+
+.return-link {
+  margin-top: 28px;
+}
+
 @media print {
   .corrige details > * {
     display: block !important;
@@ -524,6 +631,12 @@ code {
 }
 
 @media (max-width: 860px) {
+  .td-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
   .nav,
   .intro,
   .td-layout,

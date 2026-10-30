@@ -34,9 +34,30 @@ def main():
             for largeur in [1280, 390]:
                 page = navigateur.new_page(viewport={"width": largeur, "height": 900})
                 page.on("pageerror", lambda erreur: erreurs.append(str(erreur)))
+                page.goto(base + "index.html")
+                assert page.locator(".nav-links a").count() == 2
+                assert page.locator(".td-row").count() == 5
+                assert page.locator(".td-row .resource-link").count() == 10
+                installation = page.locator("#installation")
+                assert installation.get_attribute("open") is None
+                page.screenshot(path=str(captures / f"accueil-{largeur}.png"))
+                installation.locator("summary").focus()
+                installation.locator("summary").press("Enter")
+                assert installation.get_attribute("open") is not None
+                installation.locator("summary").press("Space")
+                assert installation.get_attribute("open") is None
+                assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 1")
                 for td in range(1, 6):
+                    page.goto(base + f"td{td}.html")
+                    assert page.locator(".nav-links a").count() == 2
+                    assert page.locator(".link-row .resource-link").count() == 2
                     reponse = page.goto(base + f"td{td}-corrige.html")
                     assert reponse.status == 200
+                    assert page.locator(".nav-links a").count() == 2
+                    assert page.locator("a[download]:visible").count() == 1
+                    assert page.locator("#facultatif").get_attribute("open") is None
+                    if td == 1:
+                        page.screenshot(path=str(captures / f"corrige-intro-{largeur}.png"))
                     summary = page.locator(".exercice summary").first
                     summary.focus()
                     summary.press("Enter")
@@ -58,6 +79,7 @@ def main():
                         page.screenshot(path=str(captures / f"td{td}-{largeur}.png"))
                     print(f"TD{td}, {largeur}px : rendu, clavier, largeur et téléchargements OK.", flush=True)
                 page.goto(base + "corriges.html")
+                assert page.locator(".nav-links a").count() == 2
                 assert page.locator('a[href$="-corrige.html"]').count() == 5
                 page.close()
             navigateur.close()

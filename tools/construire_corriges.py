@@ -61,7 +61,7 @@ def titres_exercices(tex):
     return titres
 
 
-def entete(titre, actuel=""):
+def entete(titre):
     return f'''<!doctype html>
 <html lang="fr">
 <head>
@@ -75,8 +75,8 @@ def entete(titre, actuel=""):
 <header class="site-header"><nav class="nav" aria-label="Navigation principale">
   <a class="brand" href="index.html">Python pour économistes</a>
   <div class="nav-links">
-    <a href="index.html">Accueil</a><a href="index.html#seances">TD</a>
-    <a href="corriges.html"{actuel}>Corrigés</a><a href="index.html#cours">Cours</a>
+    <a href="index.html#cours">Cours</a>
+    <a href="index.html#seances">TD et corrigés</a>
   </div>
 </nav></header>
 <main id="contenu" class="corrige">
@@ -91,11 +91,9 @@ Python pour économistes - Université de Lille - L2 ESM
 
 
 def fichiers(td):
-    return f'''<div class="link-row">
-<a class="resource-link" href="td{td}.html">Énoncé du TD{td}</a>
-<a class="resource-link" href="supports/corr/TD{td}_corrige.ipynb" download>Notebook .ipynb</a>
-<a class="resource-link" href="supports/corr/TD{td}_corrige.py" download>Script .py</a>
-<a class="resource-link" href="supports/corr/TD{td}_complet.zip" download>Dossier complet .zip</a>
+    return f'''<div class="link-row primary-actions">
+<a class="resource-link" href="supports/tp/TP_{td}_revise.pdf">Énoncé (PDF)</a>
+<a class="resource-link" href="supports/corr/TD{td}_complet.zip" download>Télécharger le corrigé</a>
 </div>'''
 
 
@@ -136,7 +134,7 @@ def render_exercice(ex, titre, cellule, td, extension=False):
 '''
 
 
-def construire_td(td):
+def construire_td(td, reutiliser=False):
     contenu = importlib.import_module(f"corriges_td{td}")
     source = ROOT / f"seance_{td + 2}" / f"TP_{td}_revise.tex"
     tex = source.read_text()
@@ -177,73 +175,85 @@ def construire_td(td):
                           commentaire("Résultat et interprétation : " + ex["resultat"]) + "\n" +
                           (commentaire("Vigilance : " + ex["vigilance"]) if ex["vigilance"] else ""))
     chemin_script = PUBLIC / f"TD{td}_corrige.py"
-    chemin_script.write_text("\n\n".join(script).strip() + "\n")
-    # Chaque version est exécutée dans un dossier neuf, avec uniquement ses données.
-    with tempfile.TemporaryDirectory(prefix=f"td{td}-script-") as dossier:
-        travail = Path(dossier)
-        (travail / "data").mkdir()
-        for nom in DONNEES.get(td, []):
-            shutil.copyfile(PUBLIC / "data" / nom, travail / "data" / nom)
-        resultat = subprocess.run([sys.executable, str(ROOT / "tools/verifier_corriges.py"), str(td), str(chemin_script)],
-                                  cwd=travail, capture_output=True, text=True, timeout=180,
-                                  env={**os.environ, "MPLBACKEND": "Agg"})
-        if resultat.returncode:
-            raise RuntimeError(f"TD{td}, script :\n{resultat.stdout}\n{resultat.stderr}")
-    with tempfile.TemporaryDirectory(prefix=f"td{td}-notebook-") as dossier:
-        travail = Path(dossier)
-        (travail / "data").mkdir()
-        for nom in DONNEES.get(td, []):
-            shutil.copyfile(PUBLIC / "data" / nom, travail / "data" / nom)
-        # Cellule de contrôle exécutée dans le vrai noyau, puis retirée du rendu étudiant.
-        notebook.cells.append(nbformat.v4.new_code_cell(assertions(td)))
-        NotebookClient(notebook, timeout=180, kernel_name="python3",
-                       resources={"metadata": {"path": dossier}}).execute()
-        notebook.cells.pop()
-        for cell in notebook.cells:
-            for output in cell.get("outputs", []):
-                if output["output_type"] == "stream":
-                    output["text"] = output["text"].replace(dossier, "<dossier TD5 de cette exécution>")
-    nbformat.validate(notebook)
-    nbformat.write(notebook, PUBLIC / f"TD{td}_corrige.ipynb")
-    if td == 1:
-        # Préserver le lien public historique vers le script du TD1.
-        shutil.copyfile(chemin_script, PUBLIC / "TP_1_corr_revise.py")
+    if reutiliser:
+        archive_notebook = nbformat.read(PUBLIC / f"TD{td}_corrige.ipynb", as_version=4)
+        # Réutiliser uniquement des sorties qui correspondent exactement aux sources.
+        attendu = [(cell.cell_type, cell.source) for cell in notebook.cells]
+        existant = [(cell.cell_type, cell.source) for cell in archive_notebook.cells]
+        if existant != attendu:
+            raise ValueError(f"TD{td} : sources modifiées ; reconstruire avec exécution.")
+        nbformat.validate(archive_notebook)
+        if any(output.output_type == "error" for cell in archive_notebook.cells
+               for output in cell.get("outputs", [])):
+            raise ValueError(f"TD{td} : le notebook contient une erreur d'exécution.")
+        notebook = archive_notebook
+    else:
+        chemin_script.write_text("\n\n".join(script).strip() + "\n")
+        # Chaque version est exécutée dans un dossier neuf, avec uniquement ses données.
+        with tempfile.TemporaryDirectory(prefix=f"td{td}-script-") as dossier:
+            travail = Path(dossier)
+            (travail / "data").mkdir()
+            for nom in DONNEES.get(td, []):
+                shutil.copyfile(PUBLIC / "data" / nom, travail / "data" / nom)
+            resultat = subprocess.run([sys.executable, str(ROOT / "tools/verifier_corriges.py"), str(td), str(chemin_script)],
+                                      cwd=travail, capture_output=True, text=True, timeout=180,
+                                      env={**os.environ, "MPLBACKEND": "Agg"})
+            if resultat.returncode:
+                raise RuntimeError(f"TD{td}, script :\n{resultat.stdout}\n{resultat.stderr}")
+        with tempfile.TemporaryDirectory(prefix=f"td{td}-notebook-") as dossier:
+            travail = Path(dossier)
+            (travail / "data").mkdir()
+            for nom in DONNEES.get(td, []):
+                shutil.copyfile(PUBLIC / "data" / nom, travail / "data" / nom)
+            # Cellule de contrôle exécutée dans le vrai noyau, puis retirée du rendu étudiant.
+            notebook.cells.append(nbformat.v4.new_code_cell(assertions(td)))
+            NotebookClient(notebook, timeout=180, kernel_name="python3",
+                           resources={"metadata": {"path": dossier}}).execute()
+            notebook.cells.pop()
+            for cell in notebook.cells:
+                for output in cell.get("outputs", []):
+                    if output["output_type"] == "stream":
+                        output["text"] = output["text"].replace(dossier, "<dossier TD5 de cette exécution>")
+        nbformat.validate(notebook)
+        nbformat.write(notebook, PUBLIC / f"TD{td}_corrige.ipynb")
+        if td == 1:
+            # Préserver le lien public historique vers le script du TD1.
+            shutil.copyfile(chemin_script, PUBLIC / "TP_1_corr_revise.py")
     html = [entete(f"Corrigé TD{td}"), f'<p class="eyebrow">Corrigé TD{td}</p><h1>{escape(TITRES[td - 1])}</h1>',
-            f'<p class="lead">{escape(contenu.INTRO)}</p>', fichiers(td),
-            '<p>Les exercices se suivent. Utiliser <kbd>Tab</kbd> puis <kbd>Entrée</kbd> ou <kbd>Espace</kbd> pour ouvrir une solution au clavier. Les zones de code peuvent défiler horizontalement.</p>',
-            '<p>Les sorties ci-dessous proviennent du code exécuté. Les simulations du TD4 peuvent changer à chaque exécution.</p>',
-            '<nav aria-label="Sommaire du corrigé"><h2>Sommaire</h2><ol>']
+            '<p class="lead">Essayez chaque exercice, puis ouvrez sa solution. Les exercices se suivent dans l’ordre.</p>', fichiers(td),
+            '<details class="sommaire"><summary>Sommaire des exercices</summary><nav aria-label="Sommaire du corrigé"><ol>']
     html.extend(f'<li><a href="#exercice-{i}">{escape(t)}</a></li>' for i, t in enumerate(titres, 1))
-    html.append('</ol><a href="#facultatif">Les dix questions facultatives</a></nav>')
-    html.extend(pseudo_html)
+    html.append('</ol></nav></details>')
     for ex, titre, indice, extension in emplacements:
         if extension and ex["numero"] == 1:
-            html.append('<section id="facultatif"><h2>Entraînement facultatif</h2><p>Ces dix questions sont également corrigées. Elles se lisent après le parcours obligatoire, dans l’ordre.</p></section>')
+            html.append('<details id="facultatif" class="complements"><summary>Exercices facultatifs (10)</summary><p>À lire après les exercices obligatoires, dans l’ordre.</p>')
         html.append(render_exercice(ex, titre, notebook.cells[indice], td, extension))
-    html.append('<section><h2>Sources et fichiers de référence</h2><p>Les extraits des TD1 à TD4 sont ceux des énoncés. Les CSV complémentaires sont des copies des fichiers du dépôt, dont la date de téléchargement initial n’est pas documentée. ')
+    html.append('</details><details class="complements"><summary>Autres formats, conseils et sources</summary>')
+    html.append(f'<p><a href="supports/corr/TD{td}_corrige.ipynb" download>Notebook (.ipynb)</a> · <a href="supports/corr/TD{td}_corrige.py" download>Script Python (.py)</a></p>')
+    html.append(f'<p>{escape(contenu.INTRO)}</p>')
+    html.append('<p>Extraire le dossier téléchargé avant de travailler. Pour ouvrir une solution au clavier, utiliser Tab puis Entrée ou Espace. Les zones de code peuvent défiler horizontalement. Les sorties sont celles d’une exécution ; les tirages du TD4 peuvent varier.</p>')
+    html.extend(pseudo_html)
+    html.append('<h2>Sources</h2><p>Les extraits des TD1 à TD4 sont ceux des énoncés. Les CSV complémentaires sont des copies des fichiers du dépôt, dont la date de téléchargement initial n’est pas documentée.')
     html.append('<a href="supports/corr/data/provenance.json">Consulter les sources et empreintes SHA-256 des CSV</a>.</p>')
     if td == 1:
         html.append('<p>Extension sur les populations : <a href="supports/corr/data/population.csv" download>population.csv</a> ; source <a href="https://ourworldindata.org/grapher/population">Our World in Data — Population</a>.</p>')
     if td == 5:
         html.append('<p><a href="supports/corr/data/gdp-per-capita-worldbank.csv" download>CSV du PIB</a> · <a href="supports/corr/data/life-expectancy.csv" download>CSV de l’espérance de vie</a> · <a href="https://ourworldindata.org/grapher/gdp-per-capita-worldbank">Indicateur PIB OWID et unités</a> · <a href="supports/corr/data/gdp-metadata-2026-10-30.json">Métadonnées consultées le 30 octobre 2026</a>. Les noms de colonnes en ligne peuvent différer de la copie du dépôt.</p>')
-    html.append('</section><nav class="pager" aria-label="Navigation entre corrigés"><a href="corriges.html">Tous les corrigés</a>')
-    if td > 1:
-        html.append(f'<a href="td{td-1}-corrige.html">Corrigé précédent</a>')
-    if td < 5:
-        html.append(f'<a href="td{td+1}-corrige.html">Corrigé suivant</a>')
-    html.append('</nav>' + pied())
+    html.append('</details><p class="return-link"><a href="corriges.html">Tous les corrigés</a></p>' + pied())
     (DOCS / f"td{td}-corrige.html").write_text(
         "\n".join(ligne.rstrip() for ligne in "\n".join(html).splitlines()) + "\n")
     lire = f"TD{td} — Corrigé\n\nExtraire le ZIP dans un dossier, puis ouvrir ce dossier dans VS Code.\nExécuter : python3 TD{td}_corrige.py (ou py sous Windows).\nBibliothèques : matplotlib" + (" et pandas" if td == 5 else "") + ".\nInstaller dans le même Python : python3 -m pip install matplotlib" + (" pandas" if td == 5 else "") + ".\nPour le notebook, utiliser Jupyter ou l'extension Jupyter de VS Code ; sélectionner\nle même Python puis redémarrer le noyau et exécuter toutes les cellules dans l'ordre.\nLes questions facultatives suivent les exercices obligatoires et utilisent leurs variables.\nLes images sont enregistrées dans le dossier courant" + (", sous out/ au TD5" if td == 5 else "") + ".\nLes données sont des copies des CSV du dépôt. Voir data/provenance.json.\nLa date initiale de téléchargement n'est pas documentée ; les empreintes identifient la copie.\n"
-    with zipfile.ZipFile(PUBLIC / f"TD{td}_complet.zip", "w", compression=zipfile.ZIP_DEFLATED) as archive:
-        for nom in [f"TD{td}_corrige.py", f"TD{td}_corrige.ipynb"]:
-            archive.write(PUBLIC / nom, nom)
-        for nom in DONNEES.get(td, []):
-            archive.write(PUBLIC / "data" / nom, "data/" + nom)
-        if DONNEES.get(td):
-            archive.write(PUBLIC / "data/provenance.json", "data/provenance.json")
-        archive.writestr("LISEZMOI.txt", lire)
-    print(f"TD{td} : {len(titres)} exercices, 10 questions facultatives, {len(pseudos)} plans ; script et notebook OK.", flush=True)
+    if not reutiliser:
+        with zipfile.ZipFile(PUBLIC / f"TD{td}_complet.zip", "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            for nom in [f"TD{td}_corrige.py", f"TD{td}_corrige.ipynb"]:
+                archive.write(PUBLIC / nom, nom)
+            for nom in DONNEES.get(td, []):
+                archive.write(PUBLIC / "data" / nom, "data/" + nom)
+            if DONNEES.get(td):
+                archive.write(PUBLIC / "data/provenance.json", "data/provenance.json")
+            archive.writestr("LISEZMOI.txt", lire)
+    print(f"TD{td} : rendu HTML actualisé avec les sorties validées." if reutiliser else
+          f"TD{td} : {len(titres)} exercices, 10 questions facultatives, {len(pseudos)} plans ; script et notebook OK.", flush=True)
 
 
 def verifier_liens():
@@ -282,15 +292,20 @@ def verifier_liens():
 
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--rendu-seul", action="store_true",
+                        help="Actualiser le HTML à partir des notebooks déjà exécutés, sans toucher aux téléchargements.")
+    options = parser.parse_args()
     FIGURES.mkdir(exist_ok=True)
     for td in range(1, 6):
-        construire_td(td)
-    html = [entete("Corrigés des TD", ' aria-current="page"'), '<p class="eyebrow">TD1 à TD5</p><h1>Corrigés des TD Python</h1>',
-            '<p class="lead">62 exercices obligatoires, les 50 questions facultatives et les 10 démarches en pseudo-code des cinq TD. Chaque solution explique le raisonnement et présente du code exécuté, ses résultats et ses limites.</p>',
-            '<p>Commencez par essayer les exercices. Les solutions sont repliées dans chaque page. Les scripts et notebooks suivent les questions dans l’ordre. Le dossier complet contient aussi les données nécessaires ; extraire le ZIP avant de travailler.</p>']
+        construire_td(td, reutiliser=options.rendu_seul)
+    html = [entete("Corrigés des TD"), '<p class="eyebrow">TD1 à TD5</p><h1>Corrigés des TD Python</h1>',
+            '<p class="lead">Choisissez un TD pour lire les solutions et télécharger le corrigé.</p>',
+            '<ul class="corrige-list">']
     for td in range(1, 6):
-        html.append(f'<section><h2><a href="td{td}-corrige.html">Corrigé TD{td} — {escape(TITRES[td-1])}</a></h2>' + fichiers(td) + '</section>')
-    html.append('<section><h2>Exécuter les corrigés</h2><p>Python 3 avec matplotlib suffit pour les TD1 à TD4. Le TD5 utilise aussi pandas. Installer les bibliothèques dans le Python choisi par VS Code, puis ouvrir le dossier extrait et lancer le script depuis ce dossier. Pour les notebooks, sélectionner ce même Python dans Jupyter et exécuter les cellules dans l’ordre depuis un noyau redémarré.</p><p>Les données sont celles du dépôt. Les simulations peuvent varier ; les résultats du TD5 sont fixés par les copies CSV fournies. Les noms de fichiers des énoncés et leurs données restent inchangés.</p></section>')
+        html.append(f'<li><a href="td{td}-corrige.html"><strong>TD{td}</strong><span>{escape(TITRES[td-1])}</span><span aria-hidden="true">→</span></a></li>')
+    html.append('</ul><details><summary>Comment exécuter un corrigé ?</summary><p>Télécharger le corrigé depuis sa page, puis extraire le dossier. Python 3 avec matplotlib suffit pour les TD1 à TD4 ; le TD5 utilise aussi pandas. Ouvrir le dossier extrait et y lancer le script, ou ouvrir le notebook dans Jupyter et exécuter les cellules dans l’ordre.</p></details>')
     (DOCS / "corriges.html").write_text("\n".join(html) + pied())
     verifier_liens()
 

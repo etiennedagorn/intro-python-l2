@@ -11,23 +11,19 @@
 <header class="site-header"><nav class="nav" aria-label="Navigation principale">
   <a class="brand" href="index.html">Python pour économistes</a>
   <div class="nav-links">
-    <a href="index.html">Accueil</a><a href="index.html#seances">TD</a>
-    <a href="corriges.html">Corrigés</a><a href="index.html#cours">Cours</a>
+    <a href="index.html#cours">Cours</a>
+    <a href="index.html#seances">TD et corrigés</a>
   </div>
 </nav></header>
 <main id="contenu" class="corrige">
 
 <p class="eyebrow">Corrigé TD2</p><h1>Boucles, conditions et proportions avec données OWID</h1>
-<p class="lead">Le Brésil ajouté à l’exercice 4 reste présent : neuf observations sont utilisées ensuite. La ligne World est conservée pour suivre l’énoncé, mais elle représente un agrégat mondial, pas un pays supplémentaire. Les proportions sont celles des lignes de cet extrait.</p>
-<div class="link-row">
-<a class="resource-link" href="td2.html">Énoncé du TD2</a>
-<a class="resource-link" href="supports/corr/TD2_corrige.ipynb" download>Notebook .ipynb</a>
-<a class="resource-link" href="supports/corr/TD2_corrige.py" download>Script .py</a>
-<a class="resource-link" href="supports/corr/TD2_complet.zip" download>Dossier complet .zip</a>
+<p class="lead">Essayez chaque exercice, puis ouvrez sa solution. Les exercices se suivent dans l’ordre.</p>
+<div class="link-row primary-actions">
+<a class="resource-link" href="supports/tp/TP_2_revise.pdf">Énoncé (PDF)</a>
+<a class="resource-link" href="supports/corr/TD2_complet.zip" download>Télécharger le corrigé</a>
 </div>
-<p>Les exercices se suivent. Utiliser <kbd>Tab</kbd> puis <kbd>Entrée</kbd> ou <kbd>Espace</kbd> pour ouvrir une solution au clavier. Les zones de code peuvent défiler horizontalement.</p>
-<p>Les sorties ci-dessous proviennent du code exécuté. Les simulations du TD4 peuvent changer à chaque exécution.</p>
-<nav aria-label="Sommaire du corrigé"><h2>Sommaire</h2><ol>
+<details class="sommaire"><summary>Sommaire des exercices</summary><nav aria-label="Sommaire du corrigé"><ol>
 <li><a href="#exercice-1">Observer un dictionnaire seul</a></li>
 <li><a href="#exercice-2">Identifier une clé de dictionnaire</a></li>
 <li><a href="#exercice-3">Créer une liste de dictionnaires</a></li>
@@ -41,23 +37,7 @@
 <li><a href="#exercice-11">Débogage : boucle, compteur, indentation</a></li>
 <li><a href="#exercice-12">Question économique</a></li>
 <li><a href="#exercice-13">Contrôle final</a></li>
-</ol><a href="#facultatif">Les dix questions facultatives</a></nav>
-<details id="pseudo-1"><summary>Démarche en pseudo-code 1 — Classer des observations</summary><pre tabindex="0"><code># Objectif : classer des pays selon un indicateur
-# Entree : liste de pays et valeurs de CO2 par habitant
-# Pour chaque pays :
-#     lire la valeur
-#     comparer la valeur a un seuil
-#     afficher une categorie
-# Compter combien de pays sont dans chaque categorie
-# Sortie : effectifs, proportions, interpretation</code></pre><p>Les exercices ci-dessous mettent en œuvre ce plan.</p></details>
-<details id="pseudo-2"><summary>Démarche en pseudo-code 2 — Préparer des listes pour un graphique</summary><pre tabindex="0"><code># Objectif : tracer une valeur par pays
-# Entree : liste de dictionnaires
-# 1. Creer une liste vide pour les noms de pays
-# 2. Creer une liste vide pour les valeurs de CO2
-# 3. Parcourir les observations une par une
-# 4. Ajouter le pays et la valeur dans les deux listes
-# 5. Tracer puis sauvegarder un graphique
-# Sortie : figure png</code></pre><p>Les exercices ci-dessous mettent en œuvre ce plan.</p></details>
+</ol></nav></details>
 <section id="exercice-1" class="exercice">
 <h2>Exercice 1 — Observer un dictionnaire seul</h2>
 <p><strong>Objectif.</strong> Lire et modifier une observation.</p>
@@ -354,7 +334,7 @@ print(&quot;Contrôle final : TD2 terminé, figure co2_td2.png enregistrée.&quo
 </code></pre>
 </details></section>
 
-<section id="facultatif"><h2>Entraînement facultatif</h2><p>Ces dix questions sont également corrigées. Elles se lisent après le parcours obligatoire, dans l’ordre.</p></section>
+<details id="facultatif" class="complements"><summary>Exercices facultatifs (10)</summary><p>À lire après les exercices obligatoires, dans l’ordre.</p>
 <section id="extension-1" class="exercice">
 <h2>Question facultative 1 — Recalculer avec un seuil de 7.</h2>
 <p><strong>Objectif.</strong> Recalculer avec un seuil de 7.</p>
@@ -528,11 +508,28 @@ else:
 
 </details></section>
 
-<section><h2>Sources et fichiers de référence</h2><p>Les extraits des TD1 à TD4 sont ceux des énoncés. Les CSV complémentaires sont des copies des fichiers du dépôt, dont la date de téléchargement initial n’est pas documentée.
+</details><details class="complements"><summary>Autres formats, conseils et sources</summary>
+<p><a href="supports/corr/TD2_corrige.ipynb" download>Notebook (.ipynb)</a> · <a href="supports/corr/TD2_corrige.py" download>Script Python (.py)</a></p>
+<p>Le Brésil ajouté à l’exercice 4 reste présent : neuf observations sont utilisées ensuite. La ligne World est conservée pour suivre l’énoncé, mais elle représente un agrégat mondial, pas un pays supplémentaire. Les proportions sont celles des lignes de cet extrait.</p>
+<p>Extraire le dossier téléchargé avant de travailler. Pour ouvrir une solution au clavier, utiliser Tab puis Entrée ou Espace. Les zones de code peuvent défiler horizontalement. Les sorties sont celles d’une exécution ; les tirages du TD4 peuvent varier.</p>
+<details id="pseudo-1"><summary>Démarche en pseudo-code 1 — Classer des observations</summary><pre tabindex="0"><code># Objectif : classer des pays selon un indicateur
+# Entree : liste de pays et valeurs de CO2 par habitant
+# Pour chaque pays :
+#     lire la valeur
+#     comparer la valeur a un seuil
+#     afficher une categorie
+# Compter combien de pays sont dans chaque categorie
+# Sortie : effectifs, proportions, interpretation</code></pre><p>Les exercices ci-dessous mettent en œuvre ce plan.</p></details>
+<details id="pseudo-2"><summary>Démarche en pseudo-code 2 — Préparer des listes pour un graphique</summary><pre tabindex="0"><code># Objectif : tracer une valeur par pays
+# Entree : liste de dictionnaires
+# 1. Creer une liste vide pour les noms de pays
+# 2. Creer une liste vide pour les valeurs de CO2
+# 3. Parcourir les observations une par une
+# 4. Ajouter le pays et la valeur dans les deux listes
+# 5. Tracer puis sauvegarder un graphique
+# Sortie : figure png</code></pre><p>Les exercices ci-dessous mettent en œuvre ce plan.</p></details>
+<h2>Sources</h2><p>Les extraits des TD1 à TD4 sont ceux des énoncés. Les CSV complémentaires sont des copies des fichiers du dépôt, dont la date de téléchargement initial n’est pas documentée.
 <a href="supports/corr/data/provenance.json">Consulter les sources et empreintes SHA-256 des CSV</a>.</p>
-</section><nav class="pager" aria-label="Navigation entre corrigés"><a href="corriges.html">Tous les corrigés</a>
-<a href="td1-corrige.html">Corrigé précédent</a>
-<a href="td3-corrige.html">Corrigé suivant</a>
-</nav></main><footer class="footer"><div class="footer-inner">
+</details><p class="return-link"><a href="corriges.html">Tous les corrigés</a></p></main><footer class="footer"><div class="footer-inner">
 Python pour économistes - Université de Lille - L2 ESM
 </div></footer></body></html>

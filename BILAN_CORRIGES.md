@@ -45,12 +45,20 @@ distincte ne sont pas des TD supplémentaires dans ce parcours.
 - Trois empreintes SHA-256 conformes aux CSV de référence.
 - Les PDF publics correspondent exactement aux PDF révisés des séances ;
   contrôle des titres d’exercices dans les PDF et les sources LaTeX.
-- Les 12 pages HTML du site passent le contrôle de 295 liens, ressources et
+- À la livraison initiale, les 12 pages HTML passent le contrôle de 295 liens, ressources et
   ancres locaux, sans lien manquant ni identifiant dupliqué.
 - Chrome : les cinq corrigés contrôlés en 1280 et 390 pixels, ouverture et
   fermeture au clavier, absence de débordement horizontal de la page,
   présence des téléchargements et chargement des graphiques. Captures
   relues pour les graphiques de simulation et le top 10 sur mobile.
+
+La présentation a ensuite été simplifiée à la demande de l’enseignant : deux
+entrées dans le menu, cinq lignes de TD avec accès direct à l’énoncé et au
+corrigé, installation et informations secondaires repliées. Le contrôle après
+cette modification porte sur 210 liens et ressources locaux. Les 112 questions,
+les données et les fichiers téléchargeables sont conservés. Les cinq TD,
+l’accueil et les corrigés ont été vérifiés dans Chrome en 1280 et 390 pixels,
+avec ouverture des blocs au clavier et sans débordement horizontal.
 
 ## Ambiguïtés traitées sans modifier les énoncés
 

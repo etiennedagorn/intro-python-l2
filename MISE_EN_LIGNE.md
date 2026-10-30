@@ -29,6 +29,17 @@ Les contenus pédagogiques se trouvent dans `tools/corriges_td1.py` à
 `tools/corriges_td5.py`. Modifier ces sources puis reconstruire, plutôt que
 d’éditer séparément le HTML, le script et le notebook.
 
+Pour modifier uniquement la présentation et réutiliser les sorties déjà
+validées, sans réexécuter Python ni modifier les téléchargements :
+
+```bash
+/tmp/corriges-venv/bin/python tools/construire_corriges.py --rendu-seul
+```
+
+Ce mode vérifie que les cellules du notebook correspondent aux sources.
+Si le code ou les explications pédagogiques changent, refaire la construction
+complète avec exécution.
+
 La construction :
 
 - vérifie les titres et le nombre d’exercices avec les cinq `TP_N_revise.tex` ;
