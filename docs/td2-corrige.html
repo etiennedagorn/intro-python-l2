@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Corrigé TD2 - Python pour économistes</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+<header class="site-header"><nav class="nav" aria-label="Navigation principale">
+  <a class="brand" href="index.html">Python pour économistes</a>
+  <div class="nav-links">
+    <a href="index.html">Accueil</a><a href="index.html#seances">TD</a>
+    <a href="corriges.html">Corrigés</a><a href="index.html#cours">Cours</a>
+  </div>
+</nav></header>
+<main id="contenu" class="corrige">
+
+<p class="eyebrow">Corrigé TD2</p><h1>Boucles, conditions et proportions avec données OWID</h1>
+<p class="lead">Le Brésil ajouté à l’exercice 4 reste présent : neuf observations sont utilisées ensuite. La ligne World est conservée pour suivre l’énoncé, mais elle représente un agrégat mondial, pas un pays supplémentaire. Les proportions sont celles des lignes de cet extrait.</p>
+<div class="link-row">
+<a class="resource-link" href="td2.html">Énoncé du TD2</a>
+<a class="resource-link" href="supports/corr/TD2_corrige.ipynb" download>Notebook .ipynb</a>
+<a class="resource-link" href="supports/corr/TD2_corrige.py" download>Script .py</a>
+<a class="resource-link" href="supports/corr/TD2_complet.zip" download>Dossier complet .zip</a>
+</div>
+<p>Les exercices se suivent. Utiliser <kbd>Tab</kbd> puis <kbd>Entrée</kbd> ou <kbd>Espace</kbd> pour ouvrir une solution au clavier. Les zones de code peuvent défiler horizontalement.</p>
+<p>Les sorties ci-dessous proviennent du code exécuté. Les simulations du TD4 peuvent changer à chaque exécution.</p>
+<nav aria-label="Sommaire du corrigé"><h2>Sommaire</h2><ol>
+<li><a href="#exercice-1">Observer un dictionnaire seul</a></li>
+<li><a href="#exercice-2">Identifier une clé de dictionnaire</a></li>
+<li><a href="#exercice-3">Créer une liste de dictionnaires</a></li>
+<li><a href="#exercice-4">Ajouter une observation courte</a></li>
+<li><a href="#exercice-5">Parcourir les observations</a></li>
+<li><a href="#exercice-6">Classer avec une condition</a></li>
+<li><a href="#exercice-7">Tester les seuils avant la boucle complète</a></li>
+<li><a href="#exercice-8">Compter une proportion</a></li>
+<li><a href="#exercice-9">Graphique des émissions par habitant</a></li>
+<li><a href="#exercice-10">Créer une fonction de classement</a></li>
+<li><a href="#exercice-11">Débogage : boucle, compteur, indentation</a></li>
+<li><a href="#exercice-12">Question économique</a></li>
+<li><a href="#exercice-13">Contrôle final</a></li>
+</ol><a href="#facultatif">Les dix questions facultatives</a></nav>
+<details id="pseudo-1"><summary>Démarche en pseudo-code 1 — Classer des observations</summary><pre tabindex="0"><code># Objectif : classer des pays selon un indicateur
+# Entree : liste de pays et valeurs de CO2 par habitant
+# Pour chaque pays :
+#     lire la valeur
+#     comparer la valeur a un seuil
+#     afficher une categorie
+# Compter combien de pays sont dans chaque categorie
+# Sortie : effectifs, proportions, interpretation</code></pre><p>Les exercices ci-dessous mettent en œuvre ce plan.</p></details>
+<details id="pseudo-2"><summary>Démarche en pseudo-code 2 — Préparer des listes pour un graphique</summary><pre tabindex="0"><code># Objectif : tracer une valeur par pays
+# Entree : liste de dictionnaires
+# 1. Creer une liste vide pour les noms de pays
+# 2. Creer une liste vide pour les valeurs de CO2
+# 3. Parcourir les observations une par une
+# 4. Ajouter le pays et la valeur dans les deux listes
+# 5. Tracer puis sauvegarder un graphique
+# Sortie : figure png</code></pre><p>Les exercices ci-dessous mettent en œuvre ce plan.</p></details>
+<section id="exercice-1" class="exercice">
+<h2>Exercice 1 — Observer un dictionnaire seul</h2>
+<p><strong>Objectif.</strong> Lire et modifier une observation.</p>
+<details><summary>Afficher la solution : exercice 1</summary>
+<h3>Démarche de résolution</h3><p>Les clés sont les noms des informations. Les crochets permettent de lire la valeur correspondant à une clé.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">obs = {&quot;pays&quot;: &quot;France&quot;, &quot;co2_pc&quot;: 4.7}
+print(obs[&quot;pays&quot;])
+print(obs[&quot;co2_pc&quot;])
+obs[&quot;co2_pc&quot;] = 5.1
+print(obs[&quot;pays&quot;])
+print(obs[&quot;co2_pc&quot;])
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Avant modification : France, 4.7 ; après : France, 5.1. Le nom du pays est conservé.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>France
+4.7
+France
+5.1
+</code></pre>
+</details></section>
+
+<section id="exercice-2" class="exercice">
+<h2>Exercice 2 — Identifier une clé de dictionnaire</h2>
+<p><strong>Objectif.</strong> Identifier une clé absente.</p>
+<details><summary>Afficher la solution : exercice 2</summary>
+<h3>Démarche de résolution</h3><p>Le dictionnaire de cet exercice est recréé avec 4.7. La clé population n’existe pas : remplacer cette clé par co2_pc.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">obs = {&quot;pays&quot;: &quot;France&quot;, &quot;co2_pc&quot;: 4.7}
+print(obs[&quot;pays&quot;])
+# print(obs[&quot;population&quot;]) provoquerait KeyError: &#x27;population&#x27;.
+print(obs[&quot;co2_pc&quot;])
+</code></pre>
+<h3>Résultat et interprétation</h3><p>France puis 4.7. Les guillemets et l’orthographe exacte des clés comptent.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>France
+4.7
+</code></pre>
+</details></section>
+
+<section id="exercice-3" class="exercice">
+<h2>Exercice 3 — Créer une liste de dictionnaires</h2>
+<p><strong>Objectif.</strong> Créer les huit observations initiales.</p>
+<details><summary>Afficher la solution : exercice 3</summary>
+<h3>Démarche de résolution</h3><p>Chaque dictionnaire réunit un nom et une valeur ; la liste rassemble ces observations dans un ordre donné.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">donnees = [
+    {&quot;pays&quot;: &quot;France&quot;, &quot;co2_pc&quot;: 4.7},
+    {&quot;pays&quot;: &quot;Germany&quot;, &quot;co2_pc&quot;: 7.9},
+    {&quot;pays&quot;: &quot;Spain&quot;, &quot;co2_pc&quot;: 5.0},
+    {&quot;pays&quot;: &quot;Poland&quot;, &quot;co2_pc&quot;: 8.4},
+    {&quot;pays&quot;: &quot;United States&quot;, &quot;co2_pc&quot;: 14.9},
+    {&quot;pays&quot;: &quot;India&quot;, &quot;co2_pc&quot;: 2.0},
+    {&quot;pays&quot;: &quot;China&quot;, &quot;co2_pc&quot;: 8.0},
+    {&quot;pays&quot;: &quot;World&quot;, &quot;co2_pc&quot;: 4.7}
+]
+print(&quot;Nombre d&#x27;observations :&quot;, len(donnees))
+print(&quot;Première observation :&quot;, donnees[0])
+</code></pre>
+<h3>Résultat et interprétation</h3><p>8 observations ; le premier dictionnaire correspond à France, 4.7.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Nombre d&#x27;observations : 8
+Première observation : {&#x27;pays&#x27;: &#x27;France&#x27;, &#x27;co2_pc&#x27;: 4.7}
+</code></pre>
+</details></section>
+
+<section id="exercice-4" class="exercice">
+<h2>Exercice 4 — Ajouter une observation courte</h2>
+<p><strong>Objectif.</strong> Ajouter le Brésil.</p>
+<details><summary>Afficher la solution : exercice 4</summary>
+<h3>Démarche de résolution</h3><p>append ajoute le dictionnaire à la fin. La boucle parcourra automatiquement cette nouvelle ligne.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">donnees.append({&quot;pays&quot;: &quot;Brazil&quot;, &quot;co2_pc&quot;: 2.3})
+print(len(donnees))
+print(donnees[-1])
+</code></pre>
+<h3>Résultat et interprétation</h3><p>9 ; {&#x27;pays&#x27;: &#x27;Brazil&#x27;, &#x27;co2_pc&#x27;: 2.3}.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>9
+{&#x27;pays&#x27;: &#x27;Brazil&#x27;, &#x27;co2_pc&#x27;: 2.3}
+</code></pre>
+</details></section>
+
+<section id="exercice-5" class="exercice">
+<h2>Exercice 5 — Parcourir les observations</h2>
+<p><strong>Objectif.</strong> Afficher une phrase par observation.</p>
+<details><summary>Afficher la solution : exercice 5</summary>
+<h3>Démarche de résolution</h3><p>À chaque tour de boucle, obs représente un dictionnaire différent. Le code indenté est répété pour toutes les lignes.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">for obs in donnees:
+    print(f&quot;{obs[&#x27;pays&#x27;]} : {obs[&#x27;co2_pc&#x27;]:.1f} tonnes par habitant&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Neuf phrases, de France : 4.7 à Brazil : 2.3 tonnes par habitant.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>France : 4.7 tonnes par habitant
+Germany : 7.9 tonnes par habitant
+Spain : 5.0 tonnes par habitant
+Poland : 8.4 tonnes par habitant
+United States : 14.9 tonnes par habitant
+India : 2.0 tonnes par habitant
+China : 8.0 tonnes par habitant
+World : 4.7 tonnes par habitant
+Brazil : 2.3 tonnes par habitant
+</code></pre>
+</details></section>
+
+<section id="exercice-6" class="exercice">
+<h2>Exercice 6 — Classer avec une condition</h2>
+<p><strong>Objectif.</strong> Classer les observations selon les trois catégories.</p>
+<details><summary>Afficher la solution : exercice 6</summary>
+<h3>Démarche de résolution</h3><p>Tester d’abord le seuil inférieur. Le elif est examiné seulement si la première condition est fausse : à ce stade la valeur est déjà au moins égale à 5.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">for obs in donnees:
+    pays = obs[&quot;pays&quot;]
+    co2 = obs[&quot;co2_pc&quot;]
+    if co2 &lt; 5:
+        categorie = &quot;faible&quot;
+    elif co2 &lt; 10:
+        categorie = &quot;intermediaire&quot;
+    else:
+        categorie = &quot;eleve&quot;
+    print(pays, categorie)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>faible : France, India, World, Brazil ; intermediaire : Germany, Spain, Poland, China ; eleve : United States.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>France faible
+Germany intermediaire
+Spain intermediaire
+Poland intermediaire
+United States eleve
+India faible
+China intermediaire
+World faible
+Brazil faible
+</code></pre>
+</details></section>
+
+<section id="exercice-7" class="exercice">
+<h2>Exercice 7 — Tester les seuils avant la boucle complète</h2>
+<p><strong>Objectif.</strong> Vérifier les valeurs exactement aux seuils.</p>
+<details><summary>Afficher la solution : exercice 7</summary>
+<h3>Démarche de résolution</h3><p>Réutiliser les mêmes conditions sur quatre valeurs tests, indépendamment des données.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python"># Attendus : faible, intermediaire, intermediaire, eleve.
+for valeur in [4.9, 5.0, 9.9, 10.0]:
+    if valeur &lt; 5:
+        categorie = &quot;faible&quot;
+    elif valeur &lt; 10:
+        categorie = &quot;intermediaire&quot;
+    else:
+        categorie = &quot;eleve&quot;
+    print(valeur, categorie)
+# 5.0 n&#x27;est pas strictement inférieur à 5 : il est intermédiaire.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>4.9 faible ; 5.0 intermediaire ; 9.9 intermediaire ; 10.0 eleve.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>4.9 faible
+5.0 intermediaire
+9.9 intermediaire
+10.0 eleve
+</code></pre>
+</details></section>
+
+<section id="exercice-8" class="exercice">
+<h2>Exercice 8 — Compter une proportion</h2>
+<p><strong>Objectif.</strong> Compter les valeurs strictement supérieures à 5.</p>
+<details><summary>Afficher la solution : exercice 8</summary>
+<h3>Démarche de résolution</h3><p>Initialiser le compteur avant la boucle. Ajouter 1 seulement lorsque la condition est vraie, puis diviser par le nombre total de lignes.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">compteur = 0
+for obs in donnees:
+    if obs[&quot;co2_pc&quot;] &gt; 5:
+        compteur = compteur + 1
+proportion = compteur / len(donnees) * 100
+print(&quot;Effectif au-dessus de 5 :&quot;, compteur)
+print(f&quot;{proportion:.1f} % des observations sont au-dessus du seuil.&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>4 sur 9, soit 44.4 %. Spain vaut exactement 5 et n’est pas comptée. Avant ajout du Brésil, on aurait 4 sur 8 = 50.0 %.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Effectif au-dessus de 5 : 4
+44.4 % des observations sont au-dessus du seuil.
+</code></pre>
+<div class="callout"><strong>Point de vigilance.</strong> Le 62.5 % de l’énoncé illustre une forme de phrase ; il ne correspond pas à ces données. Ne pas confondre le test &gt; 5 avec la catégorie intermédiaire, qui inclut 5.</div></details></section>
+
+<section id="exercice-9" class="exercice">
+<h2>Exercice 9 — Graphique des émissions par habitant</h2>
+<p><strong>Objectif.</strong> Préparer puis tracer deux listes alignées.</p>
+<details><summary>Afficher la solution : exercice 9</summary>
+<h3>Démarche de résolution</h3><p>Partir de deux listes vides. À chaque tour de boucle, ajouter le nom et sa valeur ensemble.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">import matplotlib.pyplot as plt
+
+noms_pays = []
+valeurs_co2 = []
+for obs in donnees:
+    noms_pays.append(obs[&quot;pays&quot;])
+    valeurs_co2.append(obs[&quot;co2_pc&quot;])
+plt.figure()
+plt.bar(noms_pays, valeurs_co2)
+plt.ylabel(&quot;Tonnes de CO2 par habitant&quot;)
+plt.title(&quot;Émissions par habitant - extrait pédagogique OWID&quot;)
+plt.xticks(rotation=45, ha=&quot;right&quot;)
+plt.tight_layout()
+plt.savefig(&quot;co2_td2.png&quot;, dpi=300)
+plt.show()
+plt.close()
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Neuf barres ; United States est la plus haute. La barre World est une référence agrégée et non un pays.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><figure><img loading="lazy" src="supports/corr/figures/td2-exercice-9-1.png" alt="Préparer puis tracer deux listes alignées."><figcaption>Préparer puis tracer deux listes alignées. Résultat de l’exécution de référence.</figcaption></figure>
+</details></section>
+
+<section id="exercice-10" class="exercice">
+<h2>Exercice 10 — Créer une fonction de classement</h2>
+<p><strong>Objectif.</strong> Écrire une fonction réutilisable de classement.</p>
+<details><summary>Afficher la solution : exercice 10</summary>
+<h3>Démarche de résolution</h3><p>valeur est le paramètre. return renvoie la catégorie à l’endroit de l’appel ; print sert ensuite à l’afficher.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">def classe_co2(valeur):
+    if valeur &lt; 5:
+        return &quot;faible&quot;
+    elif valeur &lt; 10:
+        return &quot;intermediaire&quot;
+    else:
+        return &quot;eleve&quot;
+
+print(classe_co2(4.7))
+print(classe_co2(7.9))
+print(classe_co2(14.9))
+for obs in donnees:
+    print(obs[&quot;pays&quot;], classe_co2(obs[&quot;co2_pc&quot;]))
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Les trois tests renvoient faible, intermediaire, eleve. La boucle retrouve le classement de l’exercice 6.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>faible
+intermediaire
+eleve
+France faible
+Germany intermediaire
+Spain intermediaire
+Poland intermediaire
+United States eleve
+India faible
+China intermediaire
+World faible
+Brazil faible
+</code></pre>
+</details></section>
+
+<section id="exercice-11" class="exercice">
+<h2>Exercice 11 — Débogage : boucle, compteur, indentation</h2>
+<p><strong>Objectif.</strong> Corriger indentation et initialisation du compteur.</p>
+<details><summary>Afficher la solution : exercice 11</summary>
+<h3>Démarche de résolution</h3><p>Le corps de for est indenté une fois ; le corps du if imbriqué est indenté une seconde fois. Un compteur doit exister avant d’être incrémenté.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python"># A : sans indentation après for, Python signale IndentationError.
+for obs in donnees:
+    print(obs[&quot;pays&quot;])
+
+# B : dans une session neuve, compteur inconnu provoque NameError.
+# S&#x27;il existe déjà, ce fragment peut modifier une ancienne valeur par erreur.
+compteur = 0
+compteur = compteur + 1
+print(&quot;Compteur après une augmentation :&quot;, compteur)
+
+# C : la ligne après if doit être à l&#x27;intérieur de la condition.
+compteur = 0
+for obs in donnees:
+    if obs[&quot;co2_pc&quot;] &gt; 5:
+        compteur = compteur + 1
+print(&quot;Compteur corrigé :&quot;, compteur)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>A affiche les neuf noms ; B affiche 1 ; C compte 4 observations. Relancer dans une session neuve évite qu’un ancien compteur masque une erreur.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>France
+Germany
+Spain
+Poland
+United States
+India
+China
+World
+Brazil
+Compteur après une augmentation : 1
+Compteur corrigé : 4
+</code></pre>
+</details></section>
+
+<section id="exercice-12" class="exercice">
+<h2>Exercice 12 — Question économique</h2>
+<p><strong>Objectif.</strong> Répondre aux quatre questions économiques.</p>
+<details><summary>Afficher la solution : exercice 12</summary>
+<h3>Démarche de résolution</h3><p>Lire le maximum du graphique, comparer les valeurs françaises et mondiales, puis utiliser le bon dénominateur.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python"># United States a la valeur la plus élevée : 14,9 tonnes par habitant.
+# France et World sont à égalité dans cet extrait arrondi : 4,7.
+# Quatre des neuf lignes dépassent 5 tonnes : 44,4 %.
+# Les émissions par habitant sont rapportées à la population ; un pays
+# très peuplé peut avoir un total élevé sans la plus forte valeur par habitant.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>La France n’est ni au-dessus ni au-dessous : elle est égale à la référence mondiale arrondie. En excluant World, la proportion de pays serait 4/8 = 50 %.</p>
+
+</details></section>
+
+<section id="exercice-13" class="exercice">
+<h2>Exercice 13 — Contrôle final</h2>
+<p><strong>Objectif.</strong> Contrôler le script complet.</p>
+<details><summary>Afficher la solution : exercice 13</summary>
+<h3>Démarche de résolution</h3><p>Vérifier la présence de chaque notion et exécuter les exercices dans l’ordre.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python"># Liste de dictionnaires : exercice 3 ; boucle : 5 ; conditions : 6.
+# Compteur et proportion : 8 ; graphique : 9 ; fonction : 10.
+# Interprétation : exercice 12.
+print(&quot;Contrôle final : TD2 terminé, figure co2_td2.png enregistrée.&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Le parcours obligatoire produit une figure et une proportion de 44.4 %.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Contrôle final : TD2 terminé, figure co2_td2.png enregistrée.
+</code></pre>
+</details></section>
+
+<section id="facultatif"><h2>Entraînement facultatif</h2><p>Ces dix questions sont également corrigées. Elles se lisent après le parcours obligatoire, dans l’ordre.</p></section>
+<section id="extension-1" class="exercice">
+<h2>Question facultative 1 — Recalculer avec un seuil de 7.</h2>
+<p><strong>Objectif.</strong> Recalculer avec un seuil de 7.</p>
+<details><summary>Afficher la solution : question facultative 1</summary>
+<h3>Démarche de résolution</h3><p>Repartir d’un compteur nul et conserver les neuf observations.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">compteur_7 = 0
+for obs in donnees:
+    if obs[&quot;co2_pc&quot;] &gt; 7:
+        compteur_7 = compteur_7 + 1
+print(f&quot;Au-dessus de 7 : {compteur_7 / len(donnees) * 100:.1f} %&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>4/9 = 44.4 %. Aucune valeur de l’extrait n’est strictement entre 5 et 7.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Au-dessus de 7 : 44.4 %
+</code></pre>
+</details></section>
+
+<section id="extension-2" class="exercice">
+<h2>Question facultative 2 — Lister les pays classés eleve.</h2>
+<p><strong>Objectif.</strong> Lister les pays classés eleve.</p>
+<details><summary>Afficher la solution : question facultative 2</summary>
+<h3>Démarche de résolution</h3><p>Ajouter un nom seulement si la fonction renvoie la catégorie recherchée.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">pays_eleves = []
+for obs in donnees:
+    if classe_co2(obs[&quot;co2_pc&quot;]) == &quot;eleve&quot;:
+        pays_eleves.append(obs[&quot;pays&quot;])
+print(pays_eleves)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>[&#x27;United States&#x27;].</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>[&#x27;United States&#x27;]
+</code></pre>
+</details></section>
+
+<section id="extension-3" class="exercice">
+<h2>Question facultative 3 — Calculer une moyenne sans sum.</h2>
+<p><strong>Objectif.</strong> Calculer une moyenne sans sum.</p>
+<details><summary>Afficher la solution : question facultative 3</summary>
+<h3>Démarche de résolution</h3><p>Un accumulateur reçoit la somme au fil de la boucle ; la division se fait après les neuf additions.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">total_co2 = 0
+for obs in donnees:
+    total_co2 = total_co2 + obs[&quot;co2_pc&quot;]
+print(f&quot;Moyenne simple : {total_co2 / len(donnees):.2f} tonnes par habitant&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>6.43 tonnes par habitant. Cette moyenne de lignes, contenant World, ne mesure pas les émissions mondiales par habitant.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Moyenne simple : 6.43 tonnes par habitant
+</code></pre>
+</details></section>
+
+<section id="extension-4" class="exercice">
+<h2>Question facultative 4 — Vérifier l’ajout d’un pays sans inventer sa valeur.</h2>
+<p><strong>Objectif.</strong> Vérifier l’ajout d’un pays sans inventer sa valeur.</p>
+<details><summary>Afficher la solution : question facultative 4</summary>
+<h3>Démarche de résolution</h3><p>Le Brésil est l’ajout fourni par l’énoncé. Reconstituer les huit lignes de départ sur une copie puis l’ajouter, sans modifier donnees.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">donnees_test = donnees[:-1]  # Copie sans le Brésil ajouté à l&#x27;exercice 4.
+donnees_test.append({&quot;pays&quot;: &quot;Brazil&quot;, &quot;co2_pc&quot;: 2.3})
+for obs in donnees_test:
+    print(obs[&quot;pays&quot;], classe_co2(obs[&quot;co2_pc&quot;]))
+print(&quot;Nombre de lignes après ajout :&quot;, len(donnees_test))
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Le Brésil est classé faible et les neuf lignes sont parcourues.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>France faible
+Germany intermediaire
+Spain intermediaire
+Poland intermediaire
+United States eleve
+India faible
+China intermediaire
+World faible
+Brazil faible
+Nombre de lignes après ajout : 9
+</code></pre>
+</details></section>
+
+<section id="extension-5" class="exercice">
+<h2>Question facultative 5 — Afficher les pays sous la référence mondiale.</h2>
+<p><strong>Objectif.</strong> Afficher les pays sous la référence mondiale.</p>
+<details><summary>Afficher la solution : question facultative 5</summary>
+<h3>Démarche de résolution</h3><p>Rechercher d’abord la ligne World, puis comparer chaque ligne à sa valeur.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">for obs in donnees:
+    if obs[&quot;pays&quot;] == &quot;World&quot;:
+        valeur_mondiale = obs[&quot;co2_pc&quot;]
+for obs in donnees:
+    if obs[&quot;co2_pc&quot;] &lt; valeur_mondiale:
+        print(obs[&quot;pays&quot;])
+</code></pre>
+<h3>Résultat et interprétation</h3><p>India et Brazil. France est égale à la référence, donc exclue par &lt;.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>India
+Brazil
+</code></pre>
+</details></section>
+
+<section id="extension-6" class="exercice">
+<h2>Question facultative 6 — Compter les trois catégories.</h2>
+<p><strong>Objectif.</strong> Compter les trois catégories.</p>
+<details><summary>Afficher la solution : question facultative 6</summary>
+<h3>Démarche de résolution</h3><p>Utiliser trois compteurs distincts et une seule catégorie par ligne.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">nombre_faibles = 0
+nombre_intermediaires = 0
+nombre_eleves = 0
+for obs in donnees:
+    categorie = classe_co2(obs[&quot;co2_pc&quot;])
+    if categorie == &quot;faible&quot;:
+        nombre_faibles = nombre_faibles + 1
+    elif categorie == &quot;intermediaire&quot;:
+        nombre_intermediaires = nombre_intermediaires + 1
+    else:
+        nombre_eleves = nombre_eleves + 1
+print(nombre_faibles, nombre_intermediaires, nombre_eleves)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>4, 4, 1 ; le total est 9.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>4 4 1
+</code></pre>
+</details></section>
+
+<section id="extension-7" class="exercice">
+<h2>Question facultative 7 — Créer une fonction de comparaison.</h2>
+<p><strong>Objectif.</strong> Créer une fonction de comparaison.</p>
+<details><summary>Afficher la solution : question facultative 7</summary>
+<h3>Démarche de résolution</h3><p>La comparaison renvoie directement un booléen réutilisable.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">def au_dessus_seuil(valeur, seuil):
+    return valeur &gt; seuil
+
+print(au_dessus_seuil(7.9, 7))
+print(au_dessus_seuil(5.0, 5))
+</code></pre>
+<h3>Résultat et interprétation</h3><p>True puis False : une égalité ne dépasse pas le seuil.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>True
+False
+</code></pre>
+</details></section>
+
+<section id="extension-8" class="exercice">
+<h2>Question facultative 8 — Comparer manuellement France et Germany.</h2>
+<p><strong>Objectif.</strong> Comparer manuellement France et Germany.</p>
+<details><summary>Afficher la solution : question facultative 8</summary>
+<h3>Démarche de résolution</h3><p>Comparer deux valeurs déjà présentes, sans trier toute la liste.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">france = donnees[0]
+allemagne = donnees[1]
+if france[&quot;co2_pc&quot;] &gt; allemagne[&quot;co2_pc&quot;]:
+    print(&quot;France a la valeur la plus élevée.&quot;)
+elif france[&quot;co2_pc&quot;] &lt; allemagne[&quot;co2_pc&quot;]:
+    print(&quot;Germany a la valeur la plus élevée.&quot;)
+else:
+    print(&quot;Les deux valeurs sont égales.&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Germany, avec 7.9 contre 4.7.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Germany a la valeur la plus élevée.
+</code></pre>
+</details></section>
+
+<section id="extension-9" class="exercice">
+<h2>Question facultative 9 — Comprendre la limite d’un classement par seuil.</h2>
+<p><strong>Objectif.</strong> Comprendre la limite d’un classement par seuil.</p>
+<details><summary>Afficher la solution : question facultative 9</summary>
+<h3>Démarche de résolution</h3><p>Deux valeurs très proches peuvent se retrouver dans des catégories différentes.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python"># 4,9 et 5,0 sont proches mais changent de catégorie : les seuils
+# pédagogiques simplifient les écarts et ne constituent pas une norme.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Le classement dépend des seuils choisis.</p>
+
+</details></section>
+
+<section id="extension-10" class="exercice">
+<h2>Question facultative 10 — Expliquer la dépendance à l’échantillon.</h2>
+<p><strong>Objectif.</strong> Expliquer la dépendance à l’échantillon.</p>
+<details><summary>Afficher la solution : question facultative 10</summary>
+<h3>Démarche de résolution</h3><p>Une proportion utilise à la fois un effectif et un dénominateur.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python"># Ajouter le Brésil, sous le seuil, fait passer le résultat de 4/8 à 4/9.
+# Les émissions des autres lignes n&#x27;ont pourtant pas changé.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>50.0 % avant l’ajout, 44.4 % après : toujours annoncer le périmètre.</p>
+
+</details></section>
+
+<section><h2>Sources et fichiers de référence</h2><p>Les extraits des TD1 à TD4 sont ceux des énoncés. Les CSV complémentaires sont des copies des fichiers du dépôt, dont la date de téléchargement initial n’est pas documentée.
+<a href="supports/corr/data/provenance.json">Consulter les sources et empreintes SHA-256 des CSV</a>.</p>
+</section><nav class="pager" aria-label="Navigation entre corrigés"><a href="corriges.html">Tous les corrigés</a>
+<a href="td1-corrige.html">Corrigé précédent</a>
+<a href="td3-corrige.html">Corrigé suivant</a>
+</nav></main><footer class="footer"><div class="footer-inner">
+Python pour économistes - Université de Lille - L2 ESM
+</div></footer></body></html>

@@ -442,6 +442,87 @@ code {
   font-size: 0.94em;
 }
 
+/* Corrigés : solutions natives, accessibles sans JavaScript. */
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -100px;
+  padding: 10px 14px;
+  background: white;
+  z-index: 10;
+}
+
+.skip-link:focus {
+  top: 8px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+}
+
+.corrige .exercice {
+  margin-top: 32px;
+  border-top: 1px solid var(--line);
+  min-width: 0;
+  scroll-margin-top: 110px;
+}
+
+.corrige details {
+  margin: 16px 0;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 12px 16px;
+  min-width: 0;
+}
+
+.corrige summary {
+  cursor: pointer;
+  font-weight: 650;
+  min-height: 32px;
+  padding: 4px 0;
+}
+
+.corrige details[open] summary {
+  margin-bottom: 18px;
+}
+
+.corrige h3 {
+  margin-top: 22px;
+}
+
+.corrige pre {
+  max-width: 100%;
+  white-space: pre;
+  font-size: 0.92rem;
+}
+
+.corrige figure {
+  margin: 20px 0;
+}
+
+.corrige figure img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.corrige figcaption,
+.execution-label {
+  color: var(--muted);
+  font-size: 0.94rem;
+}
+
+@media print {
+  .corrige details > * {
+    display: block !important;
+  }
+
+  .corrige pre {
+    white-space: pre-wrap;
+  }
+}
+
 @media (max-width: 860px) {
   .nav,
   .intro,

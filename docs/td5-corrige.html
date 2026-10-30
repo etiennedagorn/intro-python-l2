@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Corrigé TD5 - Python pour économistes</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+<header class="site-header"><nav class="nav" aria-label="Navigation principale">
+  <a class="brand" href="index.html">Python pour économistes</a>
+  <div class="nav-links">
+    <a href="index.html">Accueil</a><a href="index.html#seances">TD</a>
+    <a href="corriges.html">Corrigés</a><a href="index.html#cours">Cours</a>
+  </div>
+</nav></header>
+<main id="contenu" class="corrige">
+
+<p class="eyebrow">Corrigé TD5</p><h1>Mini-projet pandas avec Our World in Data</h1>
+<p class="lead">Pour reproduire les résultats sans réseau, télécharger et extraire le dossier complet : il fournit data/gdp-per-capita-worldbank.csv et data/life-expectancy.csv, copiés sans modification depuis le dépôt. Lancer le script depuis ce dossier ou ouvrir le notebook à cet endroit. Le CSV OWID en ligne peut évoluer ; les résultats présentés proviennent de la copie locale dont la dernière année est 2025.</p>
+<div class="link-row">
+<a class="resource-link" href="td5.html">Énoncé du TD5</a>
+<a class="resource-link" href="supports/corr/TD5_corrige.ipynb" download>Notebook .ipynb</a>
+<a class="resource-link" href="supports/corr/TD5_corrige.py" download>Script .py</a>
+<a class="resource-link" href="supports/corr/TD5_complet.zip" download>Dossier complet .zip</a>
+</div>
+<p>Les exercices se suivent. Utiliser <kbd>Tab</kbd> puis <kbd>Entrée</kbd> ou <kbd>Espace</kbd> pour ouvrir une solution au clavier. Les zones de code peuvent défiler horizontalement.</p>
+<p>Les sorties ci-dessous proviennent du code exécuté. Les simulations du TD4 peuvent changer à chaque exécution.</p>
+<nav aria-label="Sommaire du corrigé"><h2>Sommaire</h2><ol>
+<li><a href="#exercice-1">Préparer le script</a></li>
+<li><a href="#exercice-2">Vérifier le dossier courant</a></li>
+<li><a href="#exercice-3">Lire le CSV OWID</a></li>
+<li><a href="#exercice-4">Repérer la colonne de l&#x27;indicateur</a></li>
+<li><a href="#exercice-5">Renommer proprement</a></li>
+<li><a href="#exercice-6">Débogage pandas guidé</a></li>
+<li><a href="#exercice-7">Sélectionner une année récente</a></li>
+<li><a href="#exercice-8">Sélectionner quelques pays</a></li>
+<li><a href="#exercice-9">Diagnostiquer une sélection vide</a></li>
+<li><a href="#exercice-10">Statistiques descriptives simples</a></li>
+<li><a href="#exercice-11">Graphique du top 10</a></li>
+<li><a href="#exercice-12">Exporter un tableau propre</a></li>
+<li><a href="#exercice-13">Interprétation finale</a></li>
+</ol><a href="#facultatif">Les dix questions facultatives</a></nav>
+<details id="pseudo-1"><summary>Démarche en pseudo-code 1 — Pipeline pandas final</summary><pre tabindex="0"><code># Objectif : mini-projet descriptif avec un CSV OWID
+# 1. Lire le CSV
+# 2. Inspecter lignes, colonnes et types
+# 3. Renommer les colonnes utiles
+# 4. Filtrer une annee et quelques pays
+# 5. Calculer moyenne, mediane, min, max
+# 6. Tracer un graphique lisible
+# 7. Exporter un tableau propre
+# 8. Rediger une interpretation prudente</code></pre><p>Les exercices ci-dessous mettent en œuvre ce plan.</p></details>
+<details id="pseudo-2"><summary>Démarche en pseudo-code 2 — Passer du tableau au graphique</summary><pre tabindex="0"><code># Objectif : representer les dix valeurs les plus elevees
+# Entree : tableau latest sans valeurs manquantes
+# 1. Trier le tableau par PIB par habitant decroissant
+# 2. Garder les dix premieres lignes
+# 3. Tracer une barre par pays
+# 4. Ajouter titre, axes et rotation des etiquettes
+# 5. Sauvegarder la figure dans le dossier out
+# Sortie : fichier gdp_top10.png</code></pre><p>Les exercices ci-dessous mettent en œuvre ce plan.</p></details>
+<section id="exercice-1" class="exercice">
+<h2>Exercice 1 — Préparer le script</h2>
+<p><strong>Objectif.</strong> Créer le dossier de sortie du mini-projet.</p>
+<details><summary>Afficher la solution : exercice 1</summary>
+<h3>Démarche de résolution</h3><p>Enregistrer le fichier dans le dossier TD5, ouvrir ce dossier dans VS Code, puis y lancer Python. exist_ok=True permet de réexécuter sans erreur si out existe déjà.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">from pathlib import Path
+
+out_dir = Path(&quot;out&quot;)
+out_dir.mkdir(exist_ok=True)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Un dossier out existe dans le dossier courant. Les images et tableaux y seront enregistrés.</p>
+
+</details></section>
+
+<section id="exercice-2" class="exercice">
+<h2>Exercice 2 — Vérifier le dossier courant</h2>
+<p><strong>Objectif.</strong> Vérifier le dossier courant.</p>
+<details><summary>Afficher la solution : exercice 2</summary>
+<h3>Démarche de résolution</h3><p>Afficher le lieu depuis lequel Python travaille, qui peut être différent du dossier où le script est enregistré.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">print(&quot;Dossier courant :&quot;, Path.cwd())
+print(&quot;Le dossier out existe :&quot;, out_dir.exists())
+# Ces affichages de diagnostic peuvent être retirés après vérification.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Le premier chemin dépend de votre ordinateur ; le second affichage doit être True. Aucun chemin personnel n’est nécessaire dans le code.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Dossier courant : &lt;dossier TD5 de cette exécution&gt;
+Le dossier out existe : True
+</code></pre>
+</details></section>
+
+<section id="exercice-3" class="exercice">
+<h2>Exercice 3 — Lire le CSV OWID</h2>
+<p><strong>Objectif.</strong> Lire et inspecter le CSV OWID.</p>
+<details><summary>Afficher la solution : exercice 3</summary>
+<h3>Démarche de résolution</h3><p>L’énoncé propose la lecture distante et autorise la lecture locale. La ligne distante est indiquée ci-dessous ; le corrigé exécute la copie du dépôt pour garantir les mêmes résultats hors connexion. Pour un essai en ligne, remplacer la ligne locale par la ligne commentée.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">import pandas as pd
+
+url = &quot;https://ourworldindata.org/grapher/gdp-per-capita-worldbank.csv&quot;
+# Version en ligne de l&#x27;énoncé : df = pd.read_csv(url)
+df = pd.read_csv(&quot;data/gdp-per-capita-worldbank.csv&quot;)
+print(df.head())
+print(df.shape)
+print(df.columns)
+# Copie locale fournie : 7445 lignes et 5 colonnes.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>La copie locale contient 7445 lignes et 5 colonnes. head affiche les cinq premières lignes ; shape donne (lignes, colonnes). Le fichier distant peut avoir d’autres dimensions.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>        Entity Code  Year  GDP per capita World region according to OWID
+0  Afghanistan  AFG  2000       1617.8264                           Asia
+1  Afghanistan  AFG  2001       1454.1108                           Asia
+2  Afghanistan  AFG  2002       1774.3087                           Asia
+3  Afghanistan  AFG  2003       1815.9282                           Asia
+4  Afghanistan  AFG  2004       1776.9182                           Asia
+(7445, 5)
+Index([&#x27;Entity&#x27;, &#x27;Code&#x27;, &#x27;Year&#x27;, &#x27;GDP per capita&#x27;,
+       &#x27;World region according to OWID&#x27;],
+      dtype=&#x27;object&#x27;)
+</code></pre>
+</details></section>
+
+<section id="exercice-4" class="exercice">
+<h2>Exercice 4 — Repérer la colonne de l&#x27;indicateur</h2>
+<p><strong>Objectif.</strong> Identifier la colonne numérique du PIB.</p>
+<details><summary>Afficher la solution : exercice 4</summary>
+<h3>Démarche de résolution</h3><p>Lire les noms avant de sélectionner la colonne. La dernière colonne du fichier local contient une région, et non le PIB.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">print(list(df.columns))
+print(&quot;Dernière colonne :&quot;, df.columns[-1])
+# Le PIB de la copie fournie est dans &quot;GDP per capita&quot;.
+value_col = &quot;GDP per capita&quot;
+print(&quot;Colonne du PIB :&quot;, value_col)
+print(&quot;Type de cette colonne :&quot;, df[value_col].dtype)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Colonnes : Entity, Code, Year, GDP per capita, World region according to OWID. df.columns[-1] renvoie la région : le raccourci de l’énoncé ne convient pas à ce fichier.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>[&#x27;Entity&#x27;, &#x27;Code&#x27;, &#x27;Year&#x27;, &#x27;GDP per capita&#x27;, &#x27;World region according to OWID&#x27;]
+Dernière colonne : World region according to OWID
+Colonne du PIB : GDP per capita
+Type de cette colonne : float64
+</code></pre>
+<div class="callout"><strong>Point de vigilance.</strong> En ligne, le nom peut être plus long. Inspecter à nouveau df.columns et adapter value_col ; ne jamais renommer une région textuelle en gdp_pc.</div></details></section>
+
+<section id="exercice-5" class="exercice">
+<h2>Exercice 5 — Renommer proprement</h2>
+<p><strong>Objectif.</strong> Renommer les colonnes en conservant la bonne mesure.</p>
+<details><summary>Afficher la solution : exercice 5</summary>
+<h3>Démarche de résolution</h3><p>Réutiliser le nom vérifié à l’exercice 4, puis sélectionner trois colonnes pour contrôler le résultat.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">df = df.rename(columns={
+    &quot;Entity&quot;: &quot;country&quot;,
+    &quot;Code&quot;: &quot;code&quot;,
+    &quot;Year&quot;: &quot;year&quot;,
+    value_col: &quot;gdp_pc&quot;
+})
+print(df[[&quot;country&quot;, &quot;year&quot;, &quot;gdp_pc&quot;]].head())
+</code></pre>
+<h3>Résultat et interprétation</h3><p>country, year et gdp_pc sont disponibles. gdp_pc reste numérique. Les métadonnées OWID de cet indicateur annoncent des dollars internationaux aux prix de 2021, ajustés pour les différences de prix.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>       country  year     gdp_pc
+0  Afghanistan  2000  1617.8264
+1  Afghanistan  2001  1454.1108
+2  Afghanistan  2002  1774.3087
+3  Afghanistan  2003  1815.9282
+4  Afghanistan  2004  1776.9182
+</code></pre>
+</details></section>
+
+<section id="exercice-6" class="exercice">
+<h2>Exercice 6 — Débogage pandas guidé</h2>
+<p><strong>Objectif.</strong> Diagnostiquer quatre difficultés distinctes.</p>
+<details><summary>Afficher la solution : exercice 6</summary>
+<h3>Démarche de résolution</h3><p>Faire un contrôle ciblé avant de modifier le calcul : interpréteur, chemin, colonne, puis contenu du filtre.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python"># 1. ModuleNotFoundError : pandas n&#x27;est pas dans le Python utilisé.
+#    Dans le terminal de cet environnement : python3 -m pip install pandas
+# 2. FileNotFoundError : vérifier Path.cwd() et l&#x27;existence de data/le_fichier.csv.
+print(&quot;CSV local présent :&quot;, Path(&quot;data/gdp-per-capita-worldbank.csv&quot;).exists())
+# 3. KeyError &#x27;gdp_pc&#x27; : vérifier le nom exact et relancer le renommage.
+print(&quot;Colonnes après renommage :&quot;, list(df.columns))
+# 4. selection vide : vérifier l&#x27;année, les données manquantes et les noms.
+#    Les contrôles sur latest et selection arrivent aux exercices 7 à 9.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Le chemin local existe et la liste des colonnes contient gdp_pc. Un tableau vide n’est pas nécessairement une exception Python.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>CSV local présent : True
+Colonnes après renommage : [&#x27;country&#x27;, &#x27;code&#x27;, &#x27;year&#x27;, &#x27;gdp_pc&#x27;, &#x27;World region according to OWID&#x27;]
+</code></pre>
+</details></section>
+
+<section id="exercice-7" class="exercice">
+<h2>Exercice 7 — Sélectionner une année récente</h2>
+<p><strong>Objectif.</strong> Sélectionner la dernière année du fichier.</p>
+<details><summary>Afficher la solution : exercice 7</summary>
+<h3>Démarche de résolution</h3><p>Prendre le maximum de year, filtrer cette année puis retirer les lignes sans PIB. copy crée un extrait de travail indépendant.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">latest_year = df[&quot;year&quot;].max()
+latest = df.loc[df[&quot;year&quot;] == latest_year].copy()
+latest = latest.dropna(subset=[&quot;gdp_pc&quot;])
+print(&quot;Dernière année :&quot;, latest_year)
+print(&quot;Dimensions de latest :&quot;, latest.shape)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>2025 et (198, 5) dans la copie fournie. Cette année est commune au filtre, et non la dernière observation propre à chaque pays. latest contient aussi des agrégats régionaux.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Dernière année : 2025
+Dimensions de latest : (198, 5)
+</code></pre>
+</details></section>
+
+<section id="exercice-8" class="exercice">
+<h2>Exercice 8 — Sélectionner quelques pays</h2>
+<p><strong>Objectif.</strong> Retenir les huit pays demandés.</p>
+<details><summary>Afficher la solution : exercice 8</summary>
+<h3>Démarche de résolution</h3><p>isin teste l’appartenance à la liste. Les noms anglais doivent correspondre exactement au fichier ; le filtre conserve l’ordre du tableau source.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">pays_selection = [
+    &quot;France&quot;, &quot;Germany&quot;, &quot;Spain&quot;, &quot;Poland&quot;,
+    &quot;United States&quot;, &quot;China&quot;, &quot;India&quot;, &quot;Brazil&quot;
+]
+selection = latest.loc[latest[&quot;country&quot;].isin(pays_selection)].copy()
+print(selection[[&quot;country&quot;, &quot;gdp_pc&quot;]].to_string(index=False))
+print(&quot;Nombre de pays retenus :&quot;, len(selection))
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Huit pays en 2025. France : 55124.540 ; Germany : 62823.773 ; United States : 76931.310 ; India : 10039.071, dans l’unité de l’indicateur.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>      country    gdp_pc
+       Brazil 20024.697
+        China 25066.521
+       France 55124.540
+      Germany 62823.773
+        India 10039.071
+       Poland 46924.590
+        Spain 49318.105
+United States 76931.310
+Nombre de pays retenus : 8
+</code></pre>
+</details></section>
+
+<section id="exercice-9" class="exercice">
+<h2>Exercice 9 — Diagnostiquer une sélection vide</h2>
+<p><strong>Objectif.</strong> Tester une faute de nom et restaurer le bon filtre.</p>
+<details><summary>Afficher la solution : exercice 9</summary>
+<h3>Démarche de résolution</h3><p>Faire l’expérience sur une liste distincte pour conserver la bonne sélection. Une faute sur un pays retire cette ligne, sans vider tout le tableau.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">pays_test = [
+    &quot;France&quot;, &quot;Germanie&quot;, &quot;Spain&quot;, &quot;Poland&quot;,
+    &quot;United States&quot;, &quot;China&quot;, &quot;India&quot;, &quot;Brazil&quot;
+]
+selection_test = latest.loc[latest[&quot;country&quot;].isin(pays_test)].copy()
+print(&quot;Avec la faute :&quot;, len(selection_test))
+print(&quot;Sans la faute :&quot;, len(selection))
+print(sorted(latest[&quot;country&quot;].unique())[:10])
+# La sélection correcte utilise toujours Germany.
+selection = latest.loc[latest[&quot;country&quot;].isin(pays_selection)].copy()
+</code></pre>
+<h3>Résultat et interprétation</h3><p>La sélection fautive contient sept pays, la sélection correcte huit. Pour une sélection totalement vide, contrôler chaque condition séparément.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Avec la faute : 7
+Sans la faute : 8
+[&#x27;Albania&#x27;, &#x27;Algeria&#x27;, &#x27;Andorra&#x27;, &#x27;Angola&#x27;, &#x27;Antigua and Barbuda&#x27;, &#x27;Argentina&#x27;, &#x27;Armenia&#x27;, &#x27;Australia&#x27;, &#x27;Austria&#x27;, &#x27;Azerbaijan&#x27;]
+</code></pre>
+</details></section>
+
+<section id="exercice-10" class="exercice">
+<h2>Exercice 10 — Statistiques descriptives simples</h2>
+<p><strong>Objectif.</strong> Calculer cinq statistiques descriptives.</p>
+<details><summary>Afficher la solution : exercice 10</summary>
+<h3>Démarche de résolution</h3><p>Les méthodes agissent sur la colonne numérique. Pour une série de booléens, mean compte les True comme 1 et les False comme 0 : on obtient ainsi une proportion.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">moyenne = selection[&quot;gdp_pc&quot;].mean()
+mediane = selection[&quot;gdp_pc&quot;].median()
+minimum = selection[&quot;gdp_pc&quot;].min()
+maximum = selection[&quot;gdp_pc&quot;].max()
+part_au_dessus = (selection[&quot;gdp_pc&quot;] &gt; moyenne).mean() * 100
+print(f&quot;Moyenne : {moyenne:.2f}&quot;)
+print(f&quot;Médiane : {mediane:.2f}&quot;)
+print(f&quot;Minimum : {minimum:.2f}&quot;)
+print(f&quot;Maximum : {maximum:.2f}&quot;)
+print(f&quot;Part au-dessus de la moyenne : {part_au_dessus:.1f} %&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Moyenne 43281.58 ; médiane 48121.35 ; minimum 10039.07 ; maximum 76931.31 ; proportion 62.5 % (5/8). Il s’agit d’une moyenne simple des pays, sans pondération démographique.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Moyenne : 43281.58
+Médiane : 48121.35
+Minimum : 10039.07
+Maximum : 76931.31
+Part au-dessus de la moyenne : 62.5 %
+</code></pre>
+</details></section>
+
+<section id="exercice-11" class="exercice">
+<h2>Exercice 11 — Graphique du top 10</h2>
+<p><strong>Objectif.</strong> Tracer les dix pays ou territoires aux PIB par habitant les plus élevés.</p>
+<details><summary>Afficher la solution : exercice 11</summary>
+<h3>Démarche de résolution</h3><p>L’énoncé parle de pays, mais latest contient aussi des agrégats. Dans ce fichier, les codes pays ou territoires ont trois caractères ; les codes régionaux WB_… et OWID_… sont plus longs. Les exclure avant de trier et de garder dix lignes.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">import matplotlib.pyplot as plt
+
+# Critère adapté à ce CSV inspecté, incluant des territoires comme Macao.
+latest_pays = latest.loc[latest[&quot;code&quot;].str.len() == 3].copy()
+top10 = latest_pays.sort_values(&quot;gdp_pc&quot;, ascending=False).head(10)
+print(top10[[&quot;country&quot;, &quot;gdp_pc&quot;]].to_string(index=False))
+ax = top10.plot(kind=&quot;bar&quot;, x=&quot;country&quot;, y=&quot;gdp_pc&quot;, legend=False, figsize=(9, 5))
+ax.set_xlabel(&quot;Pays ou territoire&quot;)
+ax.set_ylabel(&quot;Dollars internationaux par habitant (prix de 2021)&quot;)
+ax.set_title(f&quot;Top 10 du PIB par habitant - {latest_year}&quot;)
+plt.xticks(rotation=45, ha=&quot;right&quot;)
+plt.tight_layout()
+plt.savefig(out_dir / &quot;gdp_top10.png&quot;, dpi=300)
+plt.show()
+plt.close()
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Singapore arrive en tête de ce fichier (139592.610), suivi d’Ireland et Luxembourg. United States est dixième. Ce top 10 concerne tous les pays ou territoires disponibles, pas les huit pays de selection.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>      country     gdp_pc
+    Singapore 139592.610
+      Ireland 131338.440
+   Luxembourg 127420.600
+        Macao 117098.270
+        Qatar 110135.695
+       Norway  95173.430
+  Switzerland  85732.110
+       Guyana  83658.680
+       Brunei  78985.125
+United States  76931.310
+</code></pre>
+<figure><img loading="lazy" src="supports/corr/figures/td5-exercice-11-1.png" alt="Tracer les dix pays ou territoires aux PIB par habitant les plus élevés."><figcaption>Tracer les dix pays ou territoires aux PIB par habitant les plus élevés. Résultat de l’exécution de référence.</figcaption></figure>
+</details></section>
+
+<section id="exercice-12" class="exercice">
+<h2>Exercice 12 — Exporter un tableau propre</h2>
+<p><strong>Objectif.</strong> Exporter uniquement les quatre colonnes demandées.</p>
+<details><summary>Afficher la solution : exercice 12</summary>
+<h3>Démarche de résolution</h3><p>Choisir explicitement les colonnes ; index=False évite d’ajouter les numéros de lignes de pandas au CSV.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">selection[[&quot;country&quot;, &quot;code&quot;, &quot;year&quot;, &quot;gdp_pc&quot;]].to_csv(
+    out_dir / &quot;gdp_selection.csv&quot;,
+    index=False
+)
+print(&quot;Export créé :&quot;, out_dir / &quot;gdp_selection.csv&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>out/gdp_selection.csv contient huit lignes de données et quatre colonnes, sans colonne d’index supplémentaire.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Export créé : out/gdp_selection.csv
+</code></pre>
+</details></section>
+
+<section id="exercice-13" class="exercice">
+<h2>Exercice 13 — Interprétation finale</h2>
+<p><strong>Objectif.</strong> Rédiger une interprétation de sept lignes.</p>
+<details><summary>Afficher la solution : exercice 13</summary>
+<h3>Démarche de résolution</h3><p>Citer les valeurs de la sélection de huit pays, distincte du top 10 mondial, puis annoncer les limites.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python"># L&#x27;année étudiée dans la copie locale est 2025.
+# United States a le PIB par habitant le plus élevé de la sélection : 76 931,31.
+# India a le plus faible : 10 039,07 dollars internationaux aux prix de 2021.
+# La moyenne simple vaut 43 281,58 et la médiane 48 121,35 dans cette unité.
+# France (55 124,54) est au-dessus de cette moyenne de huit pays.
+# Le choix des huit pays influence ces résultats ; ce n&#x27;est pas une moyenne mondiale.
+# Le PIB par habitant ne décrit ni les inégalités internes ni toutes les dimensions du développement.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Sept lignes fondées sur les résultats exécutés. Si vous utilisez un nouveau téléchargement, recalculer les valeurs et adapter ces commentaires.</p>
+
+</details></section>
+
+<section id="facultatif"><h2>Entraînement facultatif</h2><p>Ces dix questions sont également corrigées. Elles se lisent après le parcours obligatoire, dans l’ordre.</p></section>
+<section id="extension-1" class="exercice">
+<h2>Question facultative 1 — Tracer seulement les huit pays sélectionnés.</h2>
+<p><strong>Objectif.</strong> Tracer seulement les huit pays sélectionnés.</p>
+<details><summary>Afficher la solution : question facultative 1</summary>
+<h3>Démarche de résolution</h3><p>Trier selection au lieu de latest_pays pour changer le périmètre de la figure.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">selection_triee = selection.sort_values(&quot;gdp_pc&quot;, ascending=False)
+ax = selection_triee.plot(kind=&quot;bar&quot;, x=&quot;country&quot;, y=&quot;gdp_pc&quot;, legend=False, figsize=(8, 5))
+ax.set_ylabel(&quot;Dollars internationaux par habitant (prix de 2021)&quot;)
+ax.set_xlabel(&quot;Pays&quot;)
+ax.set_title(f&quot;Huit pays sélectionnés - {latest_year}&quot;)
+plt.xticks(rotation=45, ha=&quot;right&quot;)
+plt.tight_layout()
+plt.savefig(out_dir / &quot;gdp_pays_selection.png&quot;, dpi=300)
+plt.show()
+plt.close()
+</code></pre>
+<h3>Résultat et interprétation</h3><p>United States est en tête de ces huit pays, mais pas du top 10 de tous les pays et territoires.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><figure><img loading="lazy" src="supports/corr/figures/td5-extension-1-1.png" alt="Tracer seulement les huit pays sélectionnés."><figcaption>Tracer seulement les huit pays sélectionnés. Résultat de l’exécution de référence.</figcaption></figure>
+</details></section>
+
+<section id="extension-2" class="exercice">
+<h2>Question facultative 2 — Comparer la France à trois pays.</h2>
+<p><strong>Objectif.</strong> Comparer la France à trois pays.</p>
+<details><summary>Afficher la solution : question facultative 2</summary>
+<h3>Démarche de résolution</h3><p>Filtrer les quatre lignes, puis soustraire la valeur française pour rendre le sens des écarts explicite.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">comparaison = selection.loc[selection[&quot;country&quot;].isin(
+    [&quot;France&quot;, &quot;Germany&quot;, &quot;United States&quot;, &quot;China&quot;]
+)].copy()
+valeur_france = comparaison.loc[comparaison[&quot;country&quot;] == &quot;France&quot;, &quot;gdp_pc&quot;].iloc[0]
+comparaison[&quot;ecart_a_france&quot;] = comparaison[&quot;gdp_pc&quot;] - valeur_france
+print(comparaison[[&quot;country&quot;, &quot;gdp_pc&quot;, &quot;ecart_a_france&quot;]].to_string(index=False))
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Germany et United States dépassent France ; China est en dessous. L’écart de France à elle-même vaut zéro.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>      country    gdp_pc  ecart_a_france
+        China 25066.521      -30058.019
+       France 55124.540           0.000
+      Germany 62823.773        7699.233
+United States 76931.310       21806.770
+</code></pre>
+</details></section>
+
+<section id="extension-3" class="exercice">
+<h2>Question facultative 3 — Créer une colonne de booléens.</h2>
+<p><strong>Objectif.</strong> Créer une colonne de booléens.</p>
+<details><summary>Afficher la solution : question facultative 3</summary>
+<h3>Démarche de résolution</h3><p>Comparer chaque valeur à la même moyenne de sélection calculée à l’exercice 10.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">selection[&quot;above_selection_mean&quot;] = selection[&quot;gdp_pc&quot;] &gt; moyenne
+print(selection[[&quot;country&quot;, &quot;above_selection_mean&quot;]].to_string(index=False))
+</code></pre>
+<h3>Résultat et interprétation</h3><p>True pour France, Germany, Poland, Spain et United States ; False pour Brazil, China et India.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>      country  above_selection_mean
+       Brazil                 False
+        China                 False
+       France                  True
+      Germany                  True
+        India                 False
+       Poland                  True
+        Spain                  True
+United States                  True
+</code></pre>
+</details></section>
+
+<section id="extension-4" class="exercice">
+<h2>Question facultative 4 — Exporter le top 10.</h2>
+<p><strong>Objectif.</strong> Exporter le top 10.</p>
+<details><summary>Afficher la solution : question facultative 4</summary>
+<h3>Démarche de résolution</h3><p>Conserver les quatre colonnes documentées, sans index pandas.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">top10[[&quot;country&quot;, &quot;code&quot;, &quot;year&quot;, &quot;gdp_pc&quot;]].to_csv(
+    out_dir / &quot;gdp_top10.csv&quot;, index=False
+)
+print(&quot;Top 10 exporté :&quot;, out_dir / &quot;gdp_top10.csv&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Un CSV de dix lignes, correspondant exactement au graphique du top 10.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Top 10 exporté : out/gdp_top10.csv
+</code></pre>
+</details></section>
+
+<section id="extension-5" class="exercice">
+<h2>Question facultative 5 — Tracer la série française depuis 1990.</h2>
+<p><strong>Objectif.</strong> Tracer la série française depuis 1990.</p>
+<details><summary>Afficher la solution : question facultative 5</summary>
+<h3>Démarche de résolution</h3><p>Repartir de df, qui contient toutes les années, et non de latest. Trier les années avant de relier les points.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">france_serie = df.loc[(df[&quot;country&quot;] == &quot;France&quot;) &amp; (df[&quot;year&quot;] &gt;= 1990)].copy()
+france_serie = france_serie.dropna(subset=[&quot;gdp_pc&quot;]).sort_values(&quot;year&quot;)
+ax = france_serie.plot(x=&quot;year&quot;, y=&quot;gdp_pc&quot;, legend=False)
+ax.set_xlabel(&quot;Année&quot;)
+ax.set_ylabel(&quot;Dollars internationaux par habitant (prix de 2021)&quot;)
+ax.set_title(&quot;PIB par habitant de la France depuis 1990&quot;)
+plt.tight_layout()
+plt.savefig(out_dir / &quot;gdp_france_depuis_1990.png&quot;, dpi=300)
+plt.show()
+plt.close()
+print(&quot;Années disponibles :&quot;, france_serie[&quot;year&quot;].min(), france_serie[&quot;year&quot;].max())
+</code></pre>
+<h3>Résultat et interprétation</h3><p>La série fournie couvre 1990 à 2025. La trajectoire n’est pas une croissance uniforme : elle présente notamment des baisses à certaines dates.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><figure><img loading="lazy" src="supports/corr/figures/td5-extension-5-1.png" alt="Tracer la série française depuis 1990."><figcaption>Tracer la série française depuis 1990. Résultat de l’exécution de référence.</figcaption></figure>
+<pre tabindex="0"><code>Années disponibles : 1990 2025
+</code></pre>
+</details></section>
+
+<section id="extension-6" class="exercice">
+<h2>Question facultative 6 — Ajouter World lorsqu’il est disponible.</h2>
+<p><strong>Objectif.</strong> Ajouter World lorsqu’il est disponible.</p>
+<details><summary>Afficher la solution : question facultative 6</summary>
+<h3>Démarche de résolution</h3><p>Repartir de la liste de noms demandée et y ajouter World ; afficher aussi cette référence seule pour vérifier sa présence.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">pays_avec_monde = pays_selection + [&quot;World&quot;]
+selection_avec_monde = latest.loc[latest[&quot;country&quot;].isin(pays_avec_monde)].copy()
+monde = latest.loc[latest[&quot;country&quot;] == &quot;World&quot;, [&quot;country&quot;, &quot;gdp_pc&quot;]]
+if monde.empty:
+    print(&quot;World n&#x27;est pas disponible pour cette année.&quot;)
+else:
+    print(monde.to_string(index=False))
+print(&quot;Nombre de lignes avec World :&quot;, len(selection_avec_monde))
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Dans la copie fournie, World est présent. Sa valeur est une référence agrégée ; ne pas calculer une moyenne de pays en l’ajoutant comme un pays supplémentaire.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>country   gdp_pc
+  World 21913.51
+Nombre de lignes avec World : 9
+</code></pre>
+</details></section>
+
+<section id="extension-7" class="exercice">
+<h2>Question facultative 7 — Choisir manuellement une année.</h2>
+<p><strong>Objectif.</strong> Choisir manuellement une année.</p>
+<details><summary>Afficher la solution : question facultative 7</summary>
+<h3>Démarche de résolution</h3><p>2020 existe dans le fichier. Créer un nouvel extrait pour préserver les résultats 2025 du mini-projet.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">annee_choisie = 2020
+tableau_2020 = df.loc[df[&quot;year&quot;] == annee_choisie].dropna(subset=[&quot;gdp_pc&quot;]).copy()
+selection_2020 = tableau_2020.loc[tableau_2020[&quot;country&quot;].isin(pays_selection)].copy()
+print(selection_2020[[&quot;country&quot;, &quot;year&quot;, &quot;gdp_pc&quot;]].to_string(index=False))
+print(&quot;Nombre de pays en 2020 :&quot;, len(selection_2020))
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Huit pays en 2020 dans ce fichier. Changer l’année change le périmètre temporel : le signaler dans toute interprétation.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>      country  year     gdp_pc
+       Brazil  2020 17327.5160
+        China  2020 19215.1020
+       France  2020 49311.3320
+      Germany  2020 60299.5800
+        India  2020  7186.8643
+       Poland  2020 37852.8000
+        Spain  2020 41553.4500
+United States  2020 67406.8300
+Nombre de pays en 2020 : 8
+</code></pre>
+</details></section>
+
+<section id="extension-8" class="exercice">
+<h2>Question facultative 8 — Calculer le rapport entre maximum et minimum.</h2>
+<p><strong>Objectif.</strong> Calculer le rapport entre maximum et minimum.</p>
+<details><summary>Afficher la solution : question facultative 8</summary>
+<h3>Démarche de résolution</h3><p>Diviser deux valeurs dans la même unité. Vérifier que le minimum est positif avant cette division.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">if minimum &gt; 0:
+    rapport = maximum / minimum
+    print(f&quot;Rapport maximum / minimum : {rapport:.2f}&quot;)
+else:
+    print(&quot;Le rapport demandé nécessite un minimum strictement positif.&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>7.66 : le maximum de la sélection représente environ 7.66 fois son minimum. Ce rapport n’a pas d’unité.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Rapport maximum / minimum : 7.66
+</code></pre>
+</details></section>
+
+<section id="extension-9" class="exercice">
+<h2>Question facultative 9 — Importer l’espérance de vie et inspecter ses colonnes.</h2>
+<p><strong>Objectif.</strong> Importer l’espérance de vie et inspecter ses colonnes.</p>
+<details><summary>Afficher la solution : question facultative 9</summary>
+<h3>Démarche de résolution</h3><p>Utiliser également le CSV déjà présent dans le dépôt. La version en ligne est indiquée ; le corrigé utilise la copie locale jointe.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">url_vie = &quot;https://ourworldindata.org/grapher/life-expectancy.csv&quot;
+# Version en ligne : vie = pd.read_csv(url_vie)
+vie = pd.read_csv(&quot;data/life-expectancy.csv&quot;)
+print(vie.head())
+print(vie.shape)
+print(list(vie.columns))
+vie = vie.rename(columns={
+    &quot;Entity&quot;: &quot;country&quot;, &quot;Code&quot;: &quot;code&quot;, &quot;Year&quot;: &quot;year&quot;,
+    &quot;Life expectancy&quot;: &quot;life_expectancy&quot;
+})
+print(&quot;Dernière année de l&#x27;espérance de vie :&quot;, vie[&quot;year&quot;].max())
+</code></pre>
+<h3>Résultat et interprétation</h3><p>21565 lignes, 4 colonnes ; dernière année 2023. Ici l’indicateur se nomme Life expectancy, en années. Son année maximale diffère de celle du PIB.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>        Entity Code  Year  Life expectancy
+0  Afghanistan  AFG  1950          28.1563
+1  Afghanistan  AFG  1951          28.5836
+2  Afghanistan  AFG  1952          29.0138
+3  Afghanistan  AFG  1953          29.4521
+4  Afghanistan  AFG  1954          29.6975
+(21565, 4)
+[&#x27;Entity&#x27;, &#x27;Code&#x27;, &#x27;Year&#x27;, &#x27;Life expectancy&#x27;]
+Dernière année de l&#x27;espérance de vie : 2023
+</code></pre>
+</details></section>
+
+<section id="extension-10" class="exercice">
+<h2>Question facultative 10 — Fusionner les deux indicateurs pour une même année.</h2>
+<p><strong>Objectif.</strong> Fusionner les deux indicateurs pour une même année.</p>
+<details><summary>Afficher la solution : question facultative 10</summary>
+<h3>Démarche de résolution</h3><p>Les dernières années diffèrent : chercher la dernière année commune avec valeurs présentes. Retirer les agrégats, puis fusionner sur le code et l’année. Une jointure interne conserve seulement les couples présents dans les deux tableaux.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">gdp_complet = df.dropna(subset=[&quot;gdp_pc&quot;, &quot;code&quot;])
+vie_complete = vie.dropna(subset=[&quot;life_expectancy&quot;, &quot;code&quot;])
+annees_gdp = gdp_complet[&quot;year&quot;].unique()
+annees_communes = vie_complete.loc[vie_complete[&quot;year&quot;].isin(annees_gdp), &quot;year&quot;]
+annee_commune = annees_communes.max()
+gdp_commun = gdp_complet.loc[
+    (gdp_complet[&quot;year&quot;] == annee_commune) &amp; (gdp_complet[&quot;code&quot;].str.len() == 3),
+    [&quot;country&quot;, &quot;code&quot;, &quot;year&quot;, &quot;gdp_pc&quot;]
+]
+vie_commune = vie_complete.loc[
+    (vie_complete[&quot;year&quot;] == annee_commune) &amp; (vie_complete[&quot;code&quot;].str.len() == 3),
+    [&quot;code&quot;, &quot;year&quot;, &quot;life_expectancy&quot;]
+]
+fusion = gdp_commun.merge(vie_commune, on=[&quot;code&quot;, &quot;year&quot;], how=&quot;inner&quot;)
+print(&quot;Année commune :&quot;, annee_commune)
+print(&quot;Pays ou territoires appariés :&quot;, len(fusion))
+print(fusion.head().to_string(index=False))
+fusion.to_csv(out_dir / &quot;gdp_esperance_vie.csv&quot;, index=False)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>L’année commune est 2023. Chaque ligne appariée contient un PIB et une espérance de vie pour la même année. Ce rapprochement descriptif ne démontre pas qu’un indicateur cause l’autre.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Année commune : 2023
+Pays ou territoires appariés : 196
+    country code  year     gdp_pc  life_expectancy
+Afghanistan  AFG  2023  1983.8126          66.0346
+    Albania  ALB  2023 20501.6460          79.6019
+    Algeria  DZA  2023 15159.3240          76.2610
+    Andorra  AND  2023 64631.2970          84.0406
+     Angola  AGO  2023  8597.5390          64.6170
+</code></pre>
+</details></section>
+
+<section><h2>Sources et fichiers de référence</h2><p>Les extraits des TD1 à TD4 sont ceux des énoncés. Les CSV complémentaires sont des copies des fichiers du dépôt, dont la date de téléchargement initial n’est pas documentée.
+<a href="supports/corr/data/provenance.json">Consulter les sources et empreintes SHA-256 des CSV</a>.</p>
+<p><a href="supports/corr/data/gdp-per-capita-worldbank.csv" download>CSV du PIB</a> · <a href="supports/corr/data/life-expectancy.csv" download>CSV de l’espérance de vie</a> · <a href="https://ourworldindata.org/grapher/gdp-per-capita-worldbank">Indicateur PIB OWID et unités</a> · <a href="supports/corr/data/gdp-metadata-2026-10-30.json">Métadonnées consultées le 30 octobre 2026</a>. Les noms de colonnes en ligne peuvent différer de la copie du dépôt.</p>
+</section><nav class="pager" aria-label="Navigation entre corrigés"><a href="corriges.html">Tous les corrigés</a>
+<a href="td4-corrige.html">Corrigé précédent</a>
+</nav></main><footer class="footer"><div class="footer-inner">
+Python pour économistes - Université de Lille - L2 ESM
+</div></footer></body></html>

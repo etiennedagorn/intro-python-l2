@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Corrigé TD3 - Python pour économistes</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+<header class="site-header"><nav class="nav" aria-label="Navigation principale">
+  <a class="brand" href="index.html">Python pour économistes</a>
+  <div class="nav-links">
+    <a href="index.html">Accueil</a><a href="index.html#seances">TD</a>
+    <a href="corriges.html">Corrigés</a><a href="index.html#cours">Cours</a>
+  </div>
+</nav></header>
+<main id="contenu" class="corrige">
+
+<p class="eyebrow">Corrigé TD3</p><h1>Fonctions et comparaison de groupes</h1>
+<p class="lead">Les valeurs sont les extraits arrondis de l’énoncé, en milliers de dollars internationaux par habitant. Le groupe nommé Monde est une sélection de six pays, pas une moyenne mondiale. Les fonctions obligatoires supposent des listes non vides ; mediane_paire suppose une longueur paire.</p>
+<div class="link-row">
+<a class="resource-link" href="td3.html">Énoncé du TD3</a>
+<a class="resource-link" href="supports/corr/TD3_corrige.ipynb" download>Notebook .ipynb</a>
+<a class="resource-link" href="supports/corr/TD3_corrige.py" download>Script .py</a>
+<a class="resource-link" href="supports/corr/TD3_complet.zip" download>Dossier complet .zip</a>
+</div>
+<p>Les exercices se suivent. Utiliser <kbd>Tab</kbd> puis <kbd>Entrée</kbd> ou <kbd>Espace</kbd> pour ouvrir une solution au clavier. Les zones de code peuvent défiler horizontalement.</p>
+<p>Les sorties ci-dessous proviennent du code exécuté. Les simulations du TD4 peuvent changer à chaque exécution.</p>
+<nav aria-label="Sommaire du corrigé"><h2>Sommaire</h2><ol>
+<li><a href="#exercice-1">Créer deux groupes de pays</a></li>
+<li><a href="#exercice-2">Prédire quelques opérations sur les listes</a></li>
+<li><a href="#exercice-3">Rappel intuitif</a></li>
+<li><a href="#exercice-4">Lire une fonction avant d&#x27;en écrire une</a></li>
+<li><a href="#exercice-5">Modifier une fonction courte</a></li>
+<li><a href="#exercice-6">Fonction moyenne</a></li>
+<li><a href="#exercice-7">Fonction médiane guidée</a></li>
+<li><a href="#exercice-8">Débogage de fonction</a></li>
+<li><a href="#exercice-9">Min, max et proportion</a></li>
+<li><a href="#exercice-10">Graphique de comparaison</a></li>
+<li><a href="#exercice-11">Déboguer un graphique</a></li>
+<li><a href="#exercice-12">Tableau texte</a></li>
+<li><a href="#exercice-13">Question économique</a></li>
+</ol><a href="#facultatif">Les dix questions facultatives</a></nav>
+<details id="pseudo-1"><summary>Démarche en pseudo-code 1 — Automatiser une statistique</summary><pre tabindex="0"><code># Objectif : comparer deux listes de valeurs
+# Entrees : liste_groupe_a, liste_groupe_b
+# Definir une fonction moyenne(liste)
+# Definir une fonction mediane(liste)
+# Appliquer les fonctions aux deux groupes
+# Comparer les resultats
+# Sortie : tableau + phrase d&#x27;interpretation</code></pre><p>Les exercices ci-dessous mettent en œuvre ce plan.</p></details>
+<details id="pseudo-2"><summary>Démarche en pseudo-code 2 — Comparer deux groupes par un graphique</summary><pre tabindex="0"><code># Objectif : comparer visuellement deux resultats
+# Entree : deux listes de valeurs et une fonction moyenne
+# 1. Calculer la moyenne du groupe Europe
+# 2. Calculer la moyenne du groupe Monde
+# 3. Placer les deux resultats dans une liste
+# 4. Tracer une barre par groupe
+# 5. Sauvegarder la figure
+# Sortie : comparaison lisible</code></pre><p>Les exercices ci-dessous mettent en œuvre ce plan.</p></details>
+<section id="exercice-1" class="exercice">
+<h2>Exercice 1 — Créer deux groupes de pays</h2>
+<p><strong>Objectif.</strong> Créer et documenter les deux groupes.</p>
+<details><summary>Afficher la solution : exercice 1</summary>
+<h3>Démarche de résolution</h3><p>Conserver l’ordre des pays et des valeurs pour savoir à quel pays correspond chaque montant.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">groupe_europe = [46.0, 54.0, 34.0, 38.0, 22.0, 61.0]
+groupe_monde = [46.0, 76.0, 19.0, 10.0, 7.0, 3.0]
+pays_europe = [&quot;France&quot;, &quot;Germany&quot;, &quot;Spain&quot;, &quot;Italy&quot;, &quot;Poland&quot;, &quot;Sweden&quot;]
+pays_monde = [&quot;France&quot;, &quot;United States&quot;, &quot;China&quot;, &quot;Brazil&quot;, &quot;India&quot;, &quot;Ethiopia&quot;]
+print(pays_europe, groupe_europe)
+print(pays_monde, groupe_monde)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Deux groupes de six pays, avec France présente dans les deux. Les observations des groupes ne sont donc pas toutes distinctes.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>[&#x27;France&#x27;, &#x27;Germany&#x27;, &#x27;Spain&#x27;, &#x27;Italy&#x27;, &#x27;Poland&#x27;, &#x27;Sweden&#x27;] [46.0, 54.0, 34.0, 38.0, 22.0, 61.0]
+[&#x27;France&#x27;, &#x27;United States&#x27;, &#x27;China&#x27;, &#x27;Brazil&#x27;, &#x27;India&#x27;, &#x27;Ethiopia&#x27;] [46.0, 76.0, 19.0, 10.0, 7.0, 3.0]
+</code></pre>
+</details></section>
+
+<section id="exercice-2" class="exercice">
+<h2>Exercice 2 — Prédire quelques opérations sur les listes</h2>
+<p><strong>Objectif.</strong> Prédire les opérations avant de créer des fonctions.</p>
+<details><summary>Afficher la solution : exercice 2</summary>
+<h3>Démarche de résolution</h3><p>Vérifier d’abord les données sur des opérations connues : longueur, somme, tri et comparaison.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">print(len(groupe_europe))
+print(sum(groupe_monde))
+print(sorted(groupe_monde))
+print(groupe_europe[0] &gt; groupe_monde[0])
+# Ces contrôles permettent de séparer une erreur de données d&#x27;une erreur
+# dans la fonction que l&#x27;on écrira ensuite.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>6 ; 161.0 ; [3.0, 7.0, 10.0, 19.0, 46.0, 76.0] ; False, car 46.0 égale 46.0.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>6
+161.0
+[3.0, 7.0, 10.0, 19.0, 46.0, 76.0]
+False
+</code></pre>
+</details></section>
+
+<section id="exercice-3" class="exercice">
+<h2>Exercice 3 — Rappel intuitif</h2>
+<p><strong>Objectif.</strong> Rappeler le sens des statistiques.</p>
+<details><summary>Afficher la solution : exercice 3</summary>
+<h3>Démarche de résolution</h3><p>Décrire ce que chaque mesure résume avant d’écrire son calcul.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python"># La moyenne additionne les valeurs et divise par leur nombre : niveau moyen.
+# La médiane partage la liste triée en deux moitiés ; si la longueur est
+# paire, on prend ici la moyenne des deux valeurs centrales.
+# Le minimum et le maximum donnent les bornes des valeurs observées ;
+# leur différence est l&#x27;étendue.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>La moyenne est sensible aux grandes valeurs ; la médiane renseigne sur le centre de la liste triée.</p>
+
+</details></section>
+
+<section id="exercice-4" class="exercice">
+<h2>Exercice 4 — Lire une fonction avant d&#x27;en écrire une</h2>
+<p><strong>Objectif.</strong> Lire une définition et un appel de fonction.</p>
+<details><summary>Afficher la solution : exercice 4</summary>
+<h3>Démarche de résolution</h3><p>Une fonction est définie avant son appel. Elle calcule une valeur et return la rend disponible pour la suite.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">def ajouter_trois(x):
+    resultat = x + 3
+    return resultat
+
+print(ajouter_trois(10))
+# Paramètre : x ; argument de cet appel : 10.
+# return resultat renvoie 13 ; print(...) affiche 13.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>13.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>13
+</code></pre>
+</details></section>
+
+<section id="exercice-5" class="exercice">
+<h2>Exercice 5 — Modifier une fonction courte</h2>
+<p><strong>Objectif.</strong> Convertir des milliers de dollars en dollars.</p>
+<details><summary>Afficher la solution : exercice 5</summary>
+<h3>Démarche de résolution</h3><p>Un millier vaut 1000 unités. Après changement du nom ou du paramètre, modifier aussi les endroits qui l’utilisent.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">def convertir_en_dollars(valeur_milliers):
+    return valeur_milliers * 1000
+
+print(convertir_en_dollars(46.0))
+
+# Variante demandée : nouveau nom et nouveau paramètre cohérents.
+def milliers_vers_dollars(montant):
+    return montant * 1000
+
+print(milliers_vers_dollars(46.0))
+</code></pre>
+<h3>Résultat et interprétation</h3><p>46000.0 dans les deux cas ; changer seulement l’appel provoquerait NameError.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>46000.0
+46000.0
+</code></pre>
+</details></section>
+
+<section id="exercice-6" class="exercice">
+<h2>Exercice 6 — Fonction moyenne</h2>
+<p><strong>Objectif.</strong> Écrire et tester la fonction moyenne.</p>
+<details><summary>Afficher la solution : exercice 6</summary>
+<h3>Démarche de résolution</h3><p>La liste donnée en argument devient valeurs pendant l’appel. Vérifier un résultat facile avant les groupes du TD.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">def moyenne(valeurs):
+    return sum(valeurs) / len(valeurs)
+
+print(&quot;Test attendu 12.0 :&quot;, moyenne([10, 12, 14]))
+moyenne_europe = moyenne(groupe_europe)
+moyenne_monde = moyenne(groupe_monde)
+print(f&quot;Europe : {moyenne_europe:.2f} milliers de dollars par habitant&quot;)
+print(f&quot;Monde : {moyenne_monde:.2f} milliers de dollars par habitant&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Test : 12.0 ; Europe : 42.50 ; Monde : 26.83.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Test attendu 12.0 : 12.0
+Europe : 42.50 milliers de dollars par habitant
+Monde : 26.83 milliers de dollars par habitant
+</code></pre>
+<div class="callout"><strong>Point de vigilance.</strong> Une liste vide provoquerait une division par zéro. Ici les deux groupes ont six valeurs.</div></details></section>
+
+<section id="exercice-7" class="exercice">
+<h2>Exercice 7 — Fonction médiane guidée</h2>
+<p><strong>Objectif.</strong> Calculer une médiane sur une liste de longueur paire.</p>
+<details><summary>Afficher la solution : exercice 7</summary>
+<h3>Démarche de résolution</h3><p>Trier sans modifier la liste originale. Pour six valeurs, les indices centraux sont 2 et 3, car les indices commencent à 0. // est la division entière.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">def mediane_paire(valeurs):
+    valeurs_triees = sorted(valeurs)
+    n = len(valeurs_triees)
+    milieu_droit = n // 2
+    milieu_gauche = milieu_droit - 1
+    return (valeurs_triees[milieu_gauche] + valeurs_triees[milieu_droit]) / 2
+
+print(&quot;Test attendu 11.0 :&quot;, mediane_paire([8, 10, 12, 14]))
+mediane_europe = mediane_paire(groupe_europe)
+mediane_monde = mediane_paire(groupe_monde)
+print(&quot;Médianes Europe et Monde :&quot;, mediane_europe, mediane_monde)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>11.0 ; Europe : 42.0 ; Monde : 14.5.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Test attendu 11.0 : 11.0
+Médianes Europe et Monde : 42.0 14.5
+</code></pre>
+<div class="callout"><strong>Point de vigilance.</strong> Cette fonction ne convient ni à une liste vide, ni à une longueur impaire. L’extension 1 propose l’adaptation.</div></details></section>
+
+<section id="exercice-8" class="exercice">
+<h2>Exercice 8 — Débogage de fonction</h2>
+<p><strong>Objectif.</strong> Corriger un nom et un retour manquant.</p>
+<details><summary>Afficher la solution : exercice 8</summary>
+<h3>Démarche de résolution</h3><p>valeur et valeurs sont deux noms distincts. Une fonction sans return renvoie None même si elle affiche un nombre.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python"># Premier bug : sum(valeur) utiliserait un nom non défini (NameError).
+def moyenne_corrigee(valeurs):
+    resultat = sum(valeurs) / len(valeurs)
+    return resultat
+
+# Deuxième bug : print seul ne renvoie pas le résultat à l&#x27;appelant.
+def moyenne_avec_return(valeurs):
+    return sum(valeurs) / len(valeurs)
+
+m = moyenne_avec_return([10, 12, 14])
+print(m + 1)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>13.0. Dans le fragment initial, None + 1 provoquerait TypeError après l’affichage de 12.0.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>13.0
+</code></pre>
+</details></section>
+
+<section id="exercice-9" class="exercice">
+<h2>Exercice 9 — Min, max et proportion</h2>
+<p><strong>Objectif.</strong> Calculer min, max et proportion au-dessus de 30.</p>
+<details><summary>Afficher la solution : exercice 9</summary>
+<h3>Démarche de résolution</h3><p>Écrire un compteur pour chaque groupe ; le seuil est strict. Les deux divisions ont pour dénominateur six.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">compteur_europe = 0
+for valeur in groupe_europe:
+    if valeur &gt; 30:
+        compteur_europe = compteur_europe + 1
+part_europe = compteur_europe / len(groupe_europe) * 100
+
+compteur_monde = 0
+for valeur in groupe_monde:
+    if valeur &gt; 30:
+        compteur_monde = compteur_monde + 1
+part_monde = compteur_monde / len(groupe_monde) * 100
+
+print(&quot;Europe min, max :&quot;, min(groupe_europe), max(groupe_europe))
+print(&quot;Monde min, max :&quot;, min(groupe_monde), max(groupe_monde))
+print(f&quot;Parts au-dessus de 30 : Europe {part_europe:.2f} %, Monde {part_monde:.2f} %&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Europe : min 22, max 61, 5/6 = 83.33 % ; Monde : min 3, max 76, 2/6 = 33.33 %.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Europe min, max : 22.0 61.0
+Monde min, max : 3.0 76.0
+Parts au-dessus de 30 : Europe 83.33 %, Monde 33.33 %
+</code></pre>
+</details></section>
+
+<section id="exercice-10" class="exercice">
+<h2>Exercice 10 — Graphique de comparaison</h2>
+<p><strong>Objectif.</strong> Tracer les moyennes puis les médianes.</p>
+<details><summary>Afficher la solution : exercice 10</summary>
+<h3>Démarche de résolution</h3><p>Appeler les fonctions déjà testées et placer deux résultats face aux deux noms de groupes. Utiliser des fichiers différents pour comparer les deux versions.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">import matplotlib.pyplot as plt
+
+groupes = [&quot;Europe&quot;, &quot;Monde&quot;]
+moyennes = [moyenne(groupe_europe), moyenne(groupe_monde)]
+plt.figure()
+plt.bar(groupes, moyennes)
+plt.ylabel(&quot;Milliers de dollars internationaux par habitant&quot;)
+plt.title(&quot;PIB par habitant moyen - extrait OWID&quot;)
+plt.tight_layout()
+plt.savefig(&quot;comparaison_pib_td3.png&quot;, dpi=300)
+plt.show()
+plt.close()
+
+medianes = [mediane_paire(groupe_europe), mediane_paire(groupe_monde)]
+plt.figure()
+plt.bar(groupes, medianes)
+plt.ylabel(&quot;Milliers de dollars internationaux par habitant&quot;)
+plt.title(&quot;PIB par habitant médian - extrait OWID&quot;)
+plt.tight_layout()
+plt.savefig(&quot;comparaison_medianes_td3.png&quot;, dpi=300)
+plt.show()
+plt.close()
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Le groupe Europe dépasse le groupe Monde dans les deux figures. L’écart des médianes est plus grand que celui des moyennes.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><figure><img loading="lazy" src="supports/corr/figures/td3-exercice-10-1.png" alt="Tracer les moyennes puis les médianes."><figcaption>Tracer les moyennes puis les médianes. Résultat de l’exécution de référence.</figcaption></figure>
+<figure><img loading="lazy" src="supports/corr/figures/td3-exercice-10-2.png" alt="Tracer les moyennes puis les médianes."><figcaption>Tracer les moyennes puis les médianes. Résultat de l’exécution de référence.</figcaption></figure>
+</details></section>
+
+<section id="exercice-11" class="exercice">
+<h2>Exercice 11 — Déboguer un graphique</h2>
+<p><strong>Objectif.</strong> Diagnostiquer deux graphiques trompeurs ou incomplets.</p>
+<details><summary>Afficher la solution : exercice 11</summary>
+<h3>Démarche de résolution</h3><p>Il faut une valeur calculée pour chacun des deux groupes et créer medianes avant son emploi. Attention : matplotlib peut répéter une valeur unique pour deux étiquettes sans signaler d’erreur.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python"># A : fournir une seule moyenne risque de la répéter sur les deux barres.
+moyennes = [moyenne(groupe_europe), moyenne(groupe_monde)]
+print(&quot;Longueurs pour A :&quot;, len(groupes), len(moyennes))
+# B : sans définition préalable, medianes provoquerait NameError.
+# Ici elle existe déjà après l&#x27;exercice 10, mais il faut vérifier sa création.
+medianes = [mediane_paire(groupe_europe), mediane_paire(groupe_monde)]
+print(&quot;Données corrigées A et B :&quot;, moyennes, medianes)
+# Les appels plt.bar(groupes, moyennes) et plt.bar(groupes, medianes)
+# sont ceux des deux graphiques corrigés à l&#x27;exercice 10.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Longueurs 2 et 2 ; moyennes [42.5, 26.833…] ; médianes [42.0, 14.5]. Le fragment A est une erreur de données, même s’il ne déclenche pas d’exception.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Longueurs pour A : 2 2
+Données corrigées A et B : [42.5, 26.833333333333332] [42.0, 14.5]
+</code></pre>
+</details></section>
+
+<section id="exercice-12" class="exercice">
+<h2>Exercice 12 — Tableau texte</h2>
+<p><strong>Objectif.</strong> Afficher un tableau avec les six colonnes demandées.</p>
+<details><summary>Afficher la solution : exercice 12</summary>
+<h3>Démarche de résolution</h3><p>Une ligne par groupe, mêmes unités et mêmes arrondis. Aucun tableau pandas n’est nécessaire.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">print(&quot;groupe | moyenne | mediane | min | max | part_au_dessus_30&quot;)
+print(f&quot;Europe | {moyenne_europe:.2f} | {mediane_europe:.2f} | &quot;
+      f&quot;{min(groupe_europe):.1f} | {max(groupe_europe):.1f} | {part_europe:.2f} %&quot;)
+print(f&quot;Monde | {moyenne_monde:.2f} | {mediane_monde:.2f} | &quot;
+      f&quot;{min(groupe_monde):.1f} | {max(groupe_monde):.1f} | {part_monde:.2f} %&quot;)
+# Les niveaux sont en milliers de dollars internationaux par habitant.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Europe : 42.50 | 42.00 | 22.0 | 61.0 | 83.33 % ; Monde : 26.83 | 14.50 | 3.0 | 76.0 | 33.33 %. Le tableau affiché peut être copié dans le rendu.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>groupe | moyenne | mediane | min | max | part_au_dessus_30
+Europe | 42.50 | 42.00 | 22.0 | 61.0 | 83.33 %
+Monde | 26.83 | 14.50 | 3.0 | 76.0 | 33.33 %
+</code></pre>
+</details></section>
+
+<section id="exercice-13" class="exercice">
+<h2>Exercice 13 — Question économique</h2>
+<p><strong>Objectif.</strong> Formuler cinq observations prudentes.</p>
+<details><summary>Afficher la solution : exercice 13</summary>
+<h3>Démarche de résolution</h3><p>Comparer les statistiques des deux sélections, sans transformer leur différence en résultat sur tous les pays.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python"># Le groupe Europe a la moyenne la plus élevée : 42,50 contre 26,83.
+# Il a aussi la médiane la plus élevée : 42,0 contre 14,5.
+# Les grandes valeurs du groupe Monde tirent davantage sa moyenne vers le haut.
+# Ajouter ou retirer un pays change ces résumés ; France est dans les deux groupes.
+# Six pays par groupe ne forment pas un échantillon représentatif des continents
+# ou du monde : la comparaison est descriptive et dépend du choix des pays.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Les deux indicateurs classent ces groupes dans le même ordre, mais décrivent différemment leur répartition.</p>
+
+</details></section>
+
+<section id="facultatif"><h2>Entraînement facultatif</h2><p>Ces dix questions sont également corrigées. Elles se lisent après le parcours obligatoire, dans l’ordre.</p></section>
+<section id="extension-1" class="exercice">
+<h2>Question facultative 1 — Adapter les fonctions après ajout d’un septième pays.</h2>
+<p><strong>Objectif.</strong> Adapter les fonctions après ajout d’un septième pays.</p>
+<details><summary>Afficher la solution : question facultative 1</summary>
+<h3>Démarche de résolution</h3><p>Utiliser des valeurs déjà données : ajouter United States au premier groupe et Italy au second. Le premier devient explicitement Europe + États-Unis. Une longueur impaire impose une nouvelle médiane qui prend la seule valeur centrale.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">groupe_europe_et_usa = groupe_europe + [76.0]
+groupe_monde_et_italie = groupe_monde + [38.0]
+# Les noms élargis évitent de présenter les États-Unis comme un pays européen.
+pays_europe_et_usa = pays_europe + [&quot;United States&quot;]
+pays_monde_et_italie = pays_monde + [&quot;Italy&quot;]
+
+def mediane(valeurs):
+    valeurs_triees = sorted(valeurs)
+    n = len(valeurs_triees)
+    milieu = n // 2
+    if n % 2 == 0:  # Reste de la division par 2 : zéro signifie pair.
+        return (valeurs_triees[milieu - 1] + valeurs_triees[milieu]) / 2
+    return valeurs_triees[milieu]
+
+print(moyenne(groupe_europe_et_usa), mediane(groupe_europe_et_usa))
+print(moyenne(groupe_monde_et_italie), mediane(groupe_monde_et_italie))
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Médianes 46.0 et 19.0. moyenne reste correcte ; mediane_paire aurait renvoyé des résultats faux (42.0 et 14.5). Les groupes originaux sont conservés.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>47.285714285714285 46.0
+28.428571428571427 19.0
+</code></pre>
+</details></section>
+
+<section id="extension-2" class="exercice">
+<h2>Question facultative 2 — Calculer l’étendue des deux groupes.</h2>
+<p><strong>Objectif.</strong> Calculer l’étendue des deux groupes.</p>
+<details><summary>Afficher la solution : question facultative 2</summary>
+<h3>Démarche de résolution</h3><p>Soustraire la plus petite valeur à la plus grande.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">print(&quot;Étendue Europe :&quot;, max(groupe_europe) - min(groupe_europe))
+print(&quot;Étendue Monde :&quot;, max(groupe_monde) - min(groupe_monde))
+</code></pre>
+<h3>Résultat et interprétation</h3><p>39.0 et 73.0 milliers de dollars internationaux par habitant.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Étendue Europe : 39.0
+Étendue Monde : 73.0
+</code></pre>
+</details></section>
+
+<section id="extension-3" class="exercice">
+<h2>Question facultative 3 — Créer une fonction de proportion.</h2>
+<p><strong>Objectif.</strong> Créer une fonction de proportion.</p>
+<details><summary>Afficher la solution : question facultative 3</summary>
+<h3>Démarche de résolution</h3><p>Compter les valeurs qui vérifient la condition puis renvoyer un pourcentage.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">def proportion_au_dessus(valeurs, seuil):
+    compteur = 0
+    for valeur in valeurs:
+        if valeur &gt; seuil:
+            compteur = compteur + 1
+    return compteur / len(valeurs) * 100
+
+print(proportion_au_dessus(groupe_europe, 30))
+print(proportion_au_dessus(groupe_monde, 30))
+</code></pre>
+<h3>Résultat et interprétation</h3><p>83.33… % et 33.33… %. La fonction suppose une liste non vide.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>83.33333333333334
+33.33333333333333
+</code></pre>
+</details></section>
+
+<section id="extension-4" class="exercice">
+<h2>Question facultative 4 — Tester un seuil de 50.</h2>
+<p><strong>Objectif.</strong> Tester un seuil de 50.</p>
+<details><summary>Afficher la solution : question facultative 4</summary>
+<h3>Démarche de résolution</h3><p>Changer seulement l’argument seuil.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">print(f&quot;Europe &gt; 50 : {proportion_au_dessus(groupe_europe, 50):.2f} %&quot;)
+print(f&quot;Monde &gt; 50 : {proportion_au_dessus(groupe_monde, 50):.2f} %&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Europe : 2/6 = 33.33 % ; Monde : 1/6 = 16.67 %.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Europe &gt; 50 : 33.33 %
+Monde &gt; 50 : 16.67 %
+</code></pre>
+</details></section>
+
+<section id="extension-5" class="exercice">
+<h2>Question facultative 5 — Afficher un résumé avec une fonction.</h2>
+<p><strong>Objectif.</strong> Afficher un résumé avec une fonction.</p>
+<details><summary>Afficher la solution : question facultative 5</summary>
+<h3>Démarche de résolution</h3><p>La fonction resume sert ici à afficher ; elle n’a pas de valeur numérique de retour à réutiliser.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">def resume(valeurs):
+    print(&quot;Moyenne :&quot;, moyenne(valeurs))
+    print(&quot;Médiane :&quot;, mediane(valeurs))
+    print(&quot;Minimum :&quot;, min(valeurs))
+    print(&quot;Maximum :&quot;, max(valeurs))
+
+resume(groupe_europe)
+resume(groupe_monde)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>On retrouve les statistiques du tableau. mediane est la fonction générale de l’extension 1.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Moyenne : 42.5
+Médiane : 42.0
+Minimum : 22.0
+Maximum : 61.0
+Moyenne : 26.833333333333332
+Médiane : 14.5
+Minimum : 3.0
+Maximum : 76.0
+</code></pre>
+</details></section>
+
+<section id="extension-6" class="exercice">
+<h2>Question facultative 6 — Observer l’influence d’une valeur très élevée.</h2>
+<p><strong>Objectif.</strong> Observer l’influence d’une valeur très élevée.</p>
+<details><summary>Afficher la solution : question facultative 6</summary>
+<h3>Démarche de résolution</h3><p>L’énoncé demande une expérience : utiliser une valeur test égale à dix fois le maximum, sans l’attribuer à un pays ni la présenter comme une donnée OWID.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">valeur_test = max(groupe_monde) * 10  # Test fictif : aucun pays associé.
+groupe_test = groupe_monde + [valeur_test]
+print(&quot;Avant :&quot;, moyenne(groupe_monde))
+print(&quot;Après ajout du test :&quot;, moyenne(groupe_test))
+</code></pre>
+<h3>Résultat et interprétation</h3><p>La moyenne passe de 26.83 à 131.57. L’expérience illustre sa sensibilité à une valeur extrême ; le groupe original reste intact.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Avant : 26.833333333333332
+Après ajout du test : 131.57142857142858
+</code></pre>
+</details></section>
+
+<section id="extension-7" class="exercice">
+<h2>Question facultative 7 — Calculer un premier quartile avec une convention annoncée.</h2>
+<p><strong>Objectif.</strong> Calculer un premier quartile avec une convention annoncée.</p>
+<details><summary>Afficher la solution : question facultative 7</summary>
+<h3>Démarche de résolution</h3><p>On choisit la méthode du rang plafond(n/4) : le premier quartile est la plus petite valeur atteignant au moins 25 % des observations triées. D’autres conventions interpolent et donnent des résultats différents.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">def premier_quartile(valeurs):
+    valeurs_triees = sorted(valeurs)
+    n = len(valeurs_triees)
+    rang = (n + 3) // 4  # Plafond de n/4 pour un entier positif.
+    return valeurs_triees[rang - 1]
+
+print(premier_quartile(groupe_europe))
+print(premier_quartile(groupe_monde))
+</code></pre>
+<h3>Résultat et interprétation</h3><p>34.0 et 7.0 : rang 2 dans chaque liste de six valeurs. Toujours préciser la méthode de quartile.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>34.0
+7.0
+</code></pre>
+</details></section>
+
+<section id="extension-8" class="exercice">
+<h2>Question facultative 8 — Calculer un écart-type avec une formule explicite.</h2>
+<p><strong>Objectif.</strong> Calculer un écart-type avec une formule explicite.</p>
+<details><summary>Afficher la solution : question facultative 8</summary>
+<h3>Démarche de résolution</h3><p>La formule annoncée comme fournie par l’enseignant n’est pas jointe. À titre de convention descriptive, on choisit la racine de la moyenne des carrés des écarts à la moyenne, avec division par n. Ce n’est pas l’écart-type corrigé avec n−1.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">def ecart_type_descriptif(valeurs):
+    centre = moyenne(valeurs)
+    somme_carres = 0
+    for valeur in valeurs:
+        somme_carres = somme_carres + (valeur - centre) ** 2
+    return (somme_carres / len(valeurs)) ** 0.5
+
+print(f&quot;Écart-type Europe : {ecart_type_descriptif(groupe_europe):.2f}&quot;)
+print(f&quot;Écart-type Monde : {ecart_type_descriptif(groupe_monde):.2f}&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Résultats en milliers de dollars internationaux par habitant. Confirmer la convention avec l’enseignant si sa formule est distribuée séparément.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Écart-type Europe : 12.91
+Écart-type Monde : 26.11
+</code></pre>
+</details></section>
+
+<section id="extension-9" class="exercice">
+<h2>Question facultative 9 — Interpréter la dispersion.</h2>
+<p><strong>Objectif.</strong> Interpréter la dispersion.</p>
+<details><summary>Afficher la solution : question facultative 9</summary>
+<h3>Démarche de résolution</h3><p>Les carrés des distances à la moyenne augmentent quand les observations sont éloignées du centre.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python"># Un écart-type plus grand indique des valeurs plus dispersées autour
+# de leur moyenne ; il est exprimé dans la même unité que les valeurs.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>L’écart-type ne mesure pas le niveau moyen ; deux groupes peuvent avoir la même moyenne et des dispersions différentes.</p>
+
+</details></section>
+
+<section id="extension-10" class="exercice">
+<h2>Question facultative 10 — Convertir les deux listes en dollars.</h2>
+<p><strong>Objectif.</strong> Convertir les deux listes en dollars.</p>
+<details><summary>Afficher la solution : question facultative 10</summary>
+<h3>Démarche de résolution</h3><p>Réutiliser la fonction de conversion dans des boucles simples.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">europe_dollars = []
+for valeur in groupe_europe:
+    europe_dollars.append(convertir_en_dollars(valeur))
+monde_dollars = []
+for valeur in groupe_monde:
+    monde_dollars.append(convertir_en_dollars(valeur))
+print(europe_dollars)
+print(monde_dollars)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Les niveaux sont multipliés par 1000 ; les proportions et le classement des pays restent identiques.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>[46000.0, 54000.0, 34000.0, 38000.0, 22000.0, 61000.0]
+[46000.0, 76000.0, 19000.0, 10000.0, 7000.0, 3000.0]
+</code></pre>
+</details></section>
+
+<section><h2>Sources et fichiers de référence</h2><p>Les extraits des TD1 à TD4 sont ceux des énoncés. Les CSV complémentaires sont des copies des fichiers du dépôt, dont la date de téléchargement initial n’est pas documentée.
+<a href="supports/corr/data/provenance.json">Consulter les sources et empreintes SHA-256 des CSV</a>.</p>
+</section><nav class="pager" aria-label="Navigation entre corrigés"><a href="corriges.html">Tous les corrigés</a>
+<a href="td2-corrige.html">Corrigé précédent</a>
+<a href="td4-corrige.html">Corrigé suivant</a>
+</nav></main><footer class="footer"><div class="footer-inner">
+Python pour économistes - Université de Lille - L2 ESM
+</div></footer></body></html>

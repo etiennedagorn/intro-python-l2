@@ -1,0 +1,26 @@
+[
+  {
+    "fichier": "gdp-per-capita-worldbank.csv",
+    "source_locale": "../corr_TD/TD5/data/gdp-per-capita-worldbank.csv",
+    "source_owid": "https://ourworldindata.org/grapher/gdp-per-capita-worldbank.csv",
+    "sha256": "18018aea4360d625b274c8a773ebd7a54b7e22e1d79e19587d5af4f0eedac111",
+    "copie_le": "2026-10-30",
+    "telechargement_initial": "Date non documentée dans le dépôt"
+  },
+  {
+    "fichier": "life-expectancy.csv",
+    "source_locale": "../corr_TD/TD1/data/life-expectancy.csv",
+    "source_owid": "https://ourworldindata.org/grapher/life-expectancy.csv",
+    "sha256": "c304603fb8a7da263619a8ae43b7097f35b648c458855e23f1c4ef8f2ae75c01",
+    "copie_le": "2026-10-30",
+    "telechargement_initial": "Date non documentée dans le dépôt"
+  },
+  {
+    "fichier": "population.csv",
+    "source_locale": "../corr_TD/TD1/data/population.csv",
+    "source_owid": "https://ourworldindata.org/grapher/population.csv",
+    "sha256": "6e72d4ffe8f0e940df60c90b13c8ad6eda85043b995b244e8b3e20b1e833b541",
+    "copie_le": "2026-10-30",
+    "telechargement_initial": "Date non documentée dans le dépôt"
+  }
+]

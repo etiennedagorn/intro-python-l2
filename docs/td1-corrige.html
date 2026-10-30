@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Corrigé TD1 - Python pour économistes</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+<header class="site-header"><nav class="nav" aria-label="Navigation principale">
+  <a class="brand" href="index.html">Python pour économistes</a>
+  <div class="nav-links">
+    <a href="index.html">Accueil</a><a href="index.html#seances">TD</a>
+    <a href="corriges.html">Corrigés</a><a href="index.html#cours">Cours</a>
+  </div>
+</nav></header>
+<main id="contenu" class="corrige">
+
+<p class="eyebrow">Corrigé TD1</p><h1>Premiers scripts et statistiques descriptives simples</h1>
+<p class="lead">Les exercices se suivent : le Japon ajouté à l’exercice 6 reste présent ensuite. Les statistiques portent donc sur sept pays. Aucun recours à pandas, aux boucles ou aux fonctions personnelles n’est nécessaire dans ce TD.</p>
+<div class="link-row">
+<a class="resource-link" href="td1.html">Énoncé du TD1</a>
+<a class="resource-link" href="supports/corr/TD1_corrige.ipynb" download>Notebook .ipynb</a>
+<a class="resource-link" href="supports/corr/TD1_corrige.py" download>Script .py</a>
+<a class="resource-link" href="supports/corr/TD1_complet.zip" download>Dossier complet .zip</a>
+</div>
+<p>Les exercices se suivent. Utiliser <kbd>Tab</kbd> puis <kbd>Entrée</kbd> ou <kbd>Espace</kbd> pour ouvrir une solution au clavier. Les zones de code peuvent défiler horizontalement.</p>
+<p>Les sorties ci-dessous proviennent du code exécuté. Les simulations du TD4 peuvent changer à chaque exécution.</p>
+<nav aria-label="Sommaire du corrigé"><h2>Sommaire</h2><ol>
+<li><a href="#exercice-1">Préparer un dossier de travail</a></li>
+<li><a href="#exercice-2">Premières variables économiques</a></li>
+<li><a href="#exercice-3">Prédire puis modifier une affectation</a></li>
+<li><a href="#exercice-4">Premier débogage guidé</a></li>
+<li><a href="#exercice-5">Créer un extrait OWID simplifié</a></li>
+<li><a href="#exercice-6">Modifier une liste sans la désaligner</a></li>
+<li><a href="#exercice-7">Moyenne, minimum, maximum</a></li>
+<li><a href="#exercice-8">Premier graphique avec matplotlib</a></li>
+<li><a href="#exercice-9">Modifier le graphique sans changer les données</a></li>
+<li><a href="#exercice-10">Pourcentage d&#x27;évolution</a></li>
+<li><a href="#exercice-11">Phrase d&#x27;interprétation</a></li>
+<li><a href="#exercice-12">Contrôle final du script</a></li>
+</ol><a href="#facultatif">Les dix questions facultatives</a></nav>
+<details id="pseudo-1"><summary>Démarche en pseudo-code 1 — Décrire une petite liste d&#x27;indicateurs</summary><pre tabindex="0"><code># Objectif : decrire une liste de valeurs OWID
+# Entree : une liste de pays et une liste de valeurs
+# 1. Afficher les donnees de depart
+# 2. Calculer le nombre d&#x27;observations
+# 3. Calculer la moyenne
+# 4. Reperer la valeur minimale et maximale
+# 5. Afficher une phrase avec une unite
+# Sortie : statistiques + interpretation courte</code></pre><p>Les exercices ci-dessous mettent en œuvre ce plan.</p></details>
+<details id="pseudo-2"><summary>Démarche en pseudo-code 2 — Passer d&#x27;une liste à un graphique</summary><pre tabindex="0"><code># Objectif : representer des valeurs par pays
+# Entree : liste de pays, liste de valeurs
+# 1. Creer une figure
+# 2. Tracer une barre par pays
+# 3. Ajouter un titre et une unite sur l&#x27;axe vertical
+# 4. Sauvegarder la figure dans un fichier png
+# Sortie : graphique lisible</code></pre><p>Les exercices ci-dessous mettent en œuvre ce plan.</p></details>
+<section id="exercice-1" class="exercice">
+<h2>Exercice 1 — Préparer un dossier de travail</h2>
+<p><strong>Objectif.</strong> Créer, sauvegarder et exécuter un premier script.</p>
+<details><summary>Afficher la solution : exercice 1</summary>
+<h3>Démarche de résolution</h3><p>Créer le dossier TD1 dans l’explorateur de fichiers, l’ouvrir dans VS Code, puis enregistrer td1_nom_prenom.py dedans. Dans le terminal de ce dossier, lancer python3 td1_nom_prenom.py (ou py sous Windows). Modifier le message puis sauvegarder avant de relancer.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python"># Le dossier courant est celui du terminal ; le fichier exécuté est le .py nommé.
+print(&quot;test TD1&quot;)
+# Après modification et sauvegarde, c&#x27;est ce nouveau message qui apparaît.
+print(&quot;test TD1 modifié&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Le terminal affiche les deux messages. Le fichier peut être enregistré dans un autre dossier que celui du terminal : vérifier le dossier courant si Python ne le trouve pas.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>test TD1
+test TD1 modifié
+</code></pre>
+</details></section>
+
+<section id="exercice-2" class="exercice">
+<h2>Exercice 2 — Premières variables économiques</h2>
+<p><strong>Objectif.</strong> Afficher les quatre variables, leurs types et une phrase lisible.</p>
+<details><summary>Afficher la solution : exercice 2</summary>
+<h3>Démarche de résolution</h3><p>Les guillemets désignent du texte ; un nombre sans partie décimale est un entier. Une f-string insère les valeurs entre accolades.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">pays = &quot;France&quot;
+annee = 2021
+esperance_vie = 82.5
+population_millions = 67.7
+print(pays, type(pays))
+print(annee, type(annee))
+print(esperance_vie, type(esperance_vie))
+print(population_millions, type(population_millions))
+print(f&quot;En {annee}, {pays} compte environ {population_millions} millions d&#x27;habitants.&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Types attendus : str, int, float, float. La phrase contient 2021, France et 67.7 millions. Ce sont les valeurs pédagogiques de l’énoncé, sans mise à jour à partir du CSV.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>France &lt;class &#x27;str&#x27;&gt;
+2021 &lt;class &#x27;int&#x27;&gt;
+82.5 &lt;class &#x27;float&#x27;&gt;
+67.7 &lt;class &#x27;float&#x27;&gt;
+En 2021, France compte environ 67.7 millions d&#x27;habitants.
+</code></pre>
+</details></section>
+
+<section id="exercice-3" class="exercice">
+<h2>Exercice 3 — Prédire puis modifier une affectation</h2>
+<p><strong>Objectif.</strong> Prédire l’effet d’une nouvelle affectation.</p>
+<details><summary>Afficher la solution : exercice 3</summary>
+<h3>Démarche de résolution</h3><p>Python lit les lignes dans l’ordre : la deuxième affectation remplace la première. Refaire ensuite l’essai en remplaçant seulement 68.0 par 68.2.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">population_millions = 67.7
+population_millions = 68.0
+# Prédiction : 68.0, car la deuxième ligne remplace 67.7.
+print(population_millions)
+
+population_millions = 67.7
+population_millions = 68.2
+print(population_millions)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Premier essai : 68.0 ; deuxième essai : 68.2.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>68.0
+68.2
+</code></pre>
+</details></section>
+
+<section id="exercice-4" class="exercice">
+<h2>Exercice 4 — Premier débogage guidé</h2>
+<p><strong>Objectif.</strong> Identifier puis corriger trois erreurs.</p>
+<details><summary>Afficher la solution : exercice 4</summary>
+<h3>Démarche de résolution</h3><p>Tester les lignes fautives séparément. Le dernier mot du message indique le type d’erreur, et le numéro de ligne désigne la ligne à examiner dans votre fichier. La numérotation dépend de son contenu.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python"># print(&quot;Bonjour&quot; : SyntaxError sur cette ligne, parenthèse non fermée.
+print(&quot;Bonjour&quot;)
+# print(pay) : NameError sur cette ligne, nom absent ; le nom créé est pays.
+print(pays)
+# print(&quot;Population : &quot; + population_millions) : TypeError sur cette ligne.
+# La f-string accepte à la fois du texte et un nombre.
+print(f&quot;Population : {population_millions}&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Les corrections affichent Bonjour, France et Population : 68.2. Les lignes fautives restent en commentaires pour permettre l’exécution complète.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Bonjour
+France
+Population : 68.2
+</code></pre>
+</details></section>
+
+<section id="exercice-5" class="exercice">
+<h2>Exercice 5 — Créer un extrait OWID simplifié</h2>
+<p><strong>Objectif.</strong> Créer deux listes alignées et utiliser leurs indices.</p>
+<details><summary>Afficher la solution : exercice 5</summary>
+<h3>Démarche de résolution</h3><p>À une position donnée, le pays et son espérance de vie se correspondent. Le premier indice vaut 0 ; -1 désigne le dernier élément.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">pays = [&quot;France&quot;, &quot;Germany&quot;, &quot;Spain&quot;, &quot;Italy&quot;, &quot;Poland&quot;, &quot;Sweden&quot;]
+esperance_vie = [82.5, 80.6, 83.0, 82.9, 76.5, 83.1]
+print(&quot;Premier pays :&quot;, pays[0])
+print(&quot;Première valeur :&quot;, esperance_vie[0])
+print(&quot;Dernière valeur :&quot;, esperance_vie[-1])
+print(&quot;Nombre de pays :&quot;, len(pays))
+# esperance_vie[10] provoquerait IndexError : seuls 0 à 5 sont disponibles.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>France ; 82.5 ; 83.1 ; 6 pays.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Premier pays : France
+Première valeur : 82.5
+Dernière valeur : 83.1
+Nombre de pays : 6
+</code></pre>
+</details></section>
+
+<section id="exercice-6" class="exercice">
+<h2>Exercice 6 — Modifier une liste sans la désaligner</h2>
+<p><strong>Objectif.</strong> Ajouter le Japon et vérifier les longueurs.</p>
+<details><summary>Afficher la solution : exercice 6</summary>
+<h3>Démarche de résolution</h3><p>Ajouter un élément dans chacune des deux listes. Retirer temporairement la dernière valeur montre le désalignement ; la remettre avant la suite.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">pays.append(&quot;Japan&quot;)
+esperance_vie.append(84.5)
+print(&quot;Nombre de pays :&quot;, len(pays))
+print(&quot;Nombre de valeurs :&quot;, len(esperance_vie))
+print(&quot;Les deux listes ont la même longueur :&quot;, len(pays) == len(esperance_vie))
+
+# Essai temporaire : le dernier élément est retiré avec pop().
+esperance_vie.pop()
+print(&quot;Pendant l&#x27;essai :&quot;, len(pays) == len(esperance_vie))
+esperance_vie.append(84.5)  # Rétablir la correspondance avant le graphique.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>7 pays et 7 valeurs ; True, puis False pendant l’essai. Les deux listes retrouvent finalement 7 éléments.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Nombre de pays : 7
+Nombre de valeurs : 7
+Les deux listes ont la même longueur : True
+Pendant l&#x27;essai : False
+</code></pre>
+<div class="callout"><strong>Point de vigilance.</strong> Une même longueur est nécessaire, mais l’ordre doit également rester identique : ne pas trier une seule des listes.</div></details></section>
+
+<section id="exercice-7" class="exercice">
+<h2>Exercice 7 — Moyenne, minimum, maximum</h2>
+<p><strong>Objectif.</strong> Calculer le nombre, la moyenne, le minimum et le maximum.</p>
+<details><summary>Afficher la solution : exercice 7</summary>
+<h3>Démarche de résolution</h3><p>Additionner les valeurs puis diviser par leur nombre. Le nombre d’observations est un effectif ; les trois autres résultats sont exprimés en années.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">nombre = len(esperance_vie)
+moyenne = sum(esperance_vie) / nombre
+minimum = min(esperance_vie)
+maximum = max(esperance_vie)
+print(&quot;Nombre d&#x27;observations :&quot;, nombre)
+print(f&quot;Moyenne : {moyenne:.2f} années&quot;)
+print(f&quot;Minimum : {minimum:.1f} années&quot;)
+print(f&quot;Maximum : {maximum:.1f} années&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>7 observations ; moyenne 81.87 années ; minimum 76.5 ; maximum 84.5. Sans l’ajout du Japon, la moyenne des six valeurs serait 81.43 années.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Nombre d&#x27;observations : 7
+Moyenne : 81.87 années
+Minimum : 76.5 années
+Maximum : 84.5 années
+</code></pre>
+</details></section>
+
+<section id="exercice-8" class="exercice">
+<h2>Exercice 8 — Premier graphique avec matplotlib</h2>
+<p><strong>Objectif.</strong> Enregistrer un premier graphique en barres.</p>
+<details><summary>Afficher la solution : exercice 8</summary>
+<h3>Démarche de résolution</h3><p>Les pays fournissent les étiquettes et les valeurs donnent la hauteur des barres. Incliner les noms et ajuster la mise en page évite qu’ils se chevauchent.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">import matplotlib.pyplot as plt
+
+plt.figure()
+plt.bar(pays, esperance_vie)
+plt.ylabel(&quot;Années&quot;)
+plt.title(&quot;Espérance de vie de sept pays - extrait OWID&quot;)
+plt.xticks(rotation=45, ha=&quot;right&quot;)
+plt.tight_layout()
+plt.savefig(&quot;esperance_vie_td1.png&quot;, dpi=300)
+plt.show()
+plt.close()
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Le fichier esperance_vie_td1.png contient sept barres. Le Japon a la valeur la plus élevée ; la Pologne la plus faible.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><figure><img loading="lazy" src="supports/corr/figures/td1-exercice-8-1.png" alt="Enregistrer un premier graphique en barres."><figcaption>Enregistrer un premier graphique en barres. Résultat de l’exécution de référence.</figcaption></figure>
+<div class="callout"><strong>Point de vigilance.</strong> Si matplotlib manque, installer la bibliothèque dans le même Python que celui qui exécute le script : python3 -m pip install matplotlib.</div></details></section>
+
+<section id="exercice-9" class="exercice">
+<h2>Exercice 9 — Modifier le graphique sans changer les données</h2>
+<p><strong>Objectif.</strong> Changer la présentation en conservant les données.</p>
+<details><summary>Afficher la solution : exercice 9</summary>
+<h3>Démarche de résolution</h3><p>Créer une nouvelle figure et changer seulement le titre, le texte de l’axe et le fichier de sortie.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">plt.figure()
+plt.bar(pays, esperance_vie)
+plt.ylabel(&quot;Espérance de vie en années&quot;)
+plt.title(&quot;Comparaison de sept pays : extrait pédagogique&quot;)
+plt.xticks(rotation=45, ha=&quot;right&quot;)
+plt.tight_layout()
+plt.savefig(&quot;esperance_vie_td1_version2.png&quot;, dpi=300)
+plt.show()
+plt.close()
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Deux fichiers PNG distincts existent ; les hauteurs des barres sont identiques.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><figure><img loading="lazy" src="supports/corr/figures/td1-exercice-9-1.png" alt="Changer la présentation en conservant les données."><figcaption>Changer la présentation en conservant les données. Résultat de l’exécution de référence.</figcaption></figure>
+</details></section>
+
+<section id="exercice-10" class="exercice">
+<h2>Exercice 10 — Pourcentage d&#x27;évolution</h2>
+<p><strong>Objectif.</strong> Distinguer variation en années et taux d’évolution.</p>
+<details><summary>Afficher la solution : exercice 10</summary>
+<h3>Démarche de résolution</h3><p>Soustraire la valeur initiale de la valeur finale. Pour le pourcentage, diviser cette différence par la valeur initiale, puis multiplier par 100.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">france_2000 = 79.1
+france_2021 = 82.5
+variation = france_2021 - france_2000
+taux_evolution = variation / france_2000 * 100
+print(f&quot;Variation : {variation:.2f} années&quot;)
+print(f&quot;Taux d&#x27;évolution : {taux_evolution:.2f} %&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Variation : 3.40 années ; taux d’évolution : 4.30 %. Le taux n’est pas 3.40 % : les unités et les opérations diffèrent.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Variation : 3.40 années
+Taux d&#x27;évolution : 4.30 %
+</code></pre>
+</details></section>
+
+<section id="exercice-11" class="exercice">
+<h2>Exercice 11 — Phrase d&#x27;interprétation</h2>
+<p><strong>Objectif.</strong> Écrire les trois phrases d’interprétation demandées.</p>
+<details><summary>Afficher la solution : exercice 11</summary>
+<h3>Démarche de résolution</h3><p>Utiliser la moyenne réellement calculée après l’exercice 6 et comparer 82.5 à cette valeur.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python"># La moyenne simple de cet extrait de sept pays est de 81,87 années.
+# La France, avec 82,5 années, se situe environ 0,63 année au-dessus.
+# Ces sept pays choisis ne représentent pas le monde ; la moyenne n&#x27;est
+# pas pondérée par la population et dépend de la sélection.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>L’énoncé mentionne encore six pays dans sa limite, mais l’exercice 6 en ajoute un septième. L’interprétation retient les sept pays effectivement présents.</p>
+
+</details></section>
+
+<section id="exercice-12" class="exercice">
+<h2>Exercice 12 — Contrôle final du script</h2>
+<p><strong>Objectif.</strong> Vérifier les éléments du rendu final.</p>
+<details><summary>Afficher la solution : exercice 12</summary>
+<h3>Démarche de résolution</h3><p>Relire les exercices 1 à 11 puis relancer le fichier entier depuis un terminal neuf. Contrôler aussi les deux images dans le dossier courant.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python"># str : les noms de pays ; int : annee ; float : france_2021.
+# list : esperance_vie ; moyenne : exercice 7 ; f-strings : exercices 2 et 7.
+# Graphiques : exercices 8 et 9 ; évolution : exercice 10.
+# Trois phrases d&#x27;interprétation : exercice 11.
+print(&quot;Contrôle final : les exercices obligatoires du TD1 sont exécutés.&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Le script complet se termine sans erreur et produit les deux figures. Aucun fragment volontairement fautif n’est exécuté.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Contrôle final : les exercices obligatoires du TD1 sont exécutés.
+</code></pre>
+</details></section>
+
+<section id="facultatif"><h2>Entraînement facultatif</h2><p>Ces dix questions sont également corrigées. Elles se lisent après le parcours obligatoire, dans l’ordre.</p></section>
+<section id="extension-1" class="exercice">
+<h2>Question facultative 1 — Ajouter le Japon une seule fois.</h2>
+<p><strong>Objectif.</strong> Ajouter le Japon une seule fois.</p>
+<details><summary>Afficher la solution : question facultative 1</summary>
+<h3>Démarche de résolution</h3><p>L’ajout demandé a déjà été réalisé à l’exercice 6. Vérifier le dernier couple plutôt que dupliquer l’observation.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">print(pays[-1], esperance_vie[-1])
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Japan 84.5. Ajouter le Japon une deuxième fois lui donnerait un poids double.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Japan 84.5
+</code></pre>
+</details></section>
+
+<section id="extension-2" class="exercice">
+<h2>Question facultative 2 — Créer une liste de populations documentées.</h2>
+<p><strong>Objectif.</strong> Créer une liste de populations documentées.</p>
+<details><summary>Afficher la solution : question facultative 2</summary>
+<h3>Démarche de résolution</h3><p>L’énoncé ne donne pas ces nombres. On utilise les effectifs de 2021 du CSV population.csv du dépôt, convertis en millions et rangés dans le même ordre que les pays. Ce fichier source est fourni avec le corrigé.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python"># Source : population.csv du dépôt, année 2021 ; valeurs en millions.
+populations_millions = [
+    66.083547, 83.697080, 47.735670, 59.729353,
+    38.040303, 10.416134, 125.679342
+]
+print(&quot;Populations en millions :&quot;, populations_millions)
+print(&quot;Longueurs identiques :&quot;, len(pays) == len(populations_millions))
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Sept valeurs alignées de France à Japan. Le CSV donne 66.083547 millions pour la France ; cette série diffère de la valeur pédagogique 67.7 de l’exercice 2 et ne la remplace pas.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Populations en millions : [66.083547, 83.69708, 47.73567, 59.729353, 38.040303, 10.416134, 125.679342]
+Longueurs identiques : True
+</code></pre>
+</details></section>
+
+<section id="extension-3" class="exercice">
+<h2>Question facultative 3 — Calculer la population totale de l’extrait.</h2>
+<p><strong>Objectif.</strong> Calculer la population totale de l’extrait.</p>
+<details><summary>Afficher la solution : question facultative 3</summary>
+<h3>Démarche de résolution</h3><p>Additionner les sept populations exprimées dans la même unité.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">population_totale = sum(populations_millions)
+print(f&quot;Population totale : {population_totale:.3f} millions&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Le total porte sur ces sept pays en 2021 ; la sortie ci-dessous donne sa valeur calculée.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Population totale : 431.381 millions
+</code></pre>
+</details></section>
+
+<section id="extension-4" class="exercice">
+<h2>Question facultative 4 — Calculer la part de la France dans le total.</h2>
+<p><strong>Objectif.</strong> Calculer la part de la France dans le total.</p>
+<details><summary>Afficher la solution : question facultative 4</summary>
+<h3>Démarche de résolution</h3><p>La France est à l’indice 0. Diviser sa population par le total puis multiplier par 100.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">part_france = populations_millions[0] / population_totale * 100
+print(f&quot;Part de la France : {part_france:.2f} %&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Ce pourcentage concerne la population de l’extrait, pas la population mondiale.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Part de la France : 15.32 %
+</code></pre>
+</details></section>
+
+<section id="extension-5" class="exercice">
+<h2>Question facultative 5 — Afficher un couple pays-valeur.</h2>
+<p><strong>Objectif.</strong> Afficher un couple pays-valeur.</p>
+<details><summary>Afficher la solution : question facultative 5</summary>
+<h3>Démarche de résolution</h3><p>Utiliser le même indice dans les deux listes.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">print(f&quot;{pays[0]} : {esperance_vie[0]} années&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>France : 82.5 années.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>France : 82.5 années
+</code></pre>
+</details></section>
+
+<section id="extension-6" class="exercice">
+<h2>Question facultative 6 — Interpréter un booléen.</h2>
+<p><strong>Objectif.</strong> Interpréter un booléen.</p>
+<details><summary>Afficher la solution : question facultative 6</summary>
+<h3>Démarche de résolution</h3><p>Le signe &gt; pose une question : la valeur dépasse-t-elle 80 ?</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">print(esperance_vie[0] &gt; 80)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>True : 82.5 est strictement supérieur à 80.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>True
+</code></pre>
+</details></section>
+
+<section id="extension-7" class="exercice">
+<h2>Question facultative 7 — Observer l’effet d’un faux zéro.</h2>
+<p><strong>Objectif.</strong> Observer l’effet d’un faux zéro.</p>
+<details><summary>Afficher la solution : question facultative 7</summary>
+<h3>Démarche de résolution</h3><p>Faire une copie avec [:] pour préserver la liste originale, puis remplacer la valeur française par 0 uniquement dans cette expérience demandée.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">valeurs_test = esperance_vie[:]
+valeurs_test[0] = 0  # Faux zéro : expérience de l&#x27;énoncé, pas donnée OWID.
+print(f&quot;Moyenne avec faux zéro : {sum(valeurs_test) / len(valeurs_test):.2f} années&quot;)
+print(f&quot;Moyenne initiale conservée : {moyenne:.2f} années&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>La moyenne tombe à 70.09 années. Un zéro est traité comme une observation réelle ; il ne représente pas une valeur manquante.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Moyenne avec faux zéro : 70.09 années
+Moyenne initiale conservée : 81.87 années
+</code></pre>
+</details></section>
+
+<section id="extension-8" class="exercice">
+<h2>Question facultative 8 — Nommer la source.</h2>
+<p><strong>Objectif.</strong> Nommer la source.</p>
+<details><summary>Afficher la solution : question facultative 8</summary>
+<h3>Démarche de résolution</h3><p>Conserver le nom dans une chaîne et l’inclure dans une f-string.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">source = &quot;Our World in Data&quot;
+print(f&quot;Source des extraits pédagogiques : {source}&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Source des extraits pédagogiques : Our World in Data.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Source des extraits pédagogiques : Our World in Data
+</code></pre>
+</details></section>
+
+<section id="extension-9" class="exercice">
+<h2>Question facultative 9 — Arrondir la moyenne.</h2>
+<p><strong>Objectif.</strong> Arrondir la moyenne.</p>
+<details><summary>Afficher la solution : question facultative 9</summary>
+<h3>Démarche de résolution</h3><p>round renvoie un nombre arrondi ; le calcul précédent reste conservé dans moyenne.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">print(round(moyenne, 1))
+</code></pre>
+<h3>Résultat et interprétation</h3><p>81.9.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>81.9
+</code></pre>
+</details></section>
+
+<section id="extension-10" class="exercice">
+<h2>Question facultative 10 — Expliquer le rôle des unités.</h2>
+<p><strong>Objectif.</strong> Expliquer le rôle des unités.</p>
+<details><summary>Afficher la solution : question facultative 10</summary>
+<h3>Démarche de résolution</h3><p>Un résultat chiffré a besoin de son unité pour être compris et comparé.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python"># Une espérance de vie se mesure en années ; une population peut être en
+# habitants ou en millions : mélanger ces unités fausse les comparaisons.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Toujours préciser l’unité dans les axes, les phrases et les tableaux.</p>
+
+</details></section>
+
+<section><h2>Sources et fichiers de référence</h2><p>Les extraits des TD1 à TD4 sont ceux des énoncés. Les CSV complémentaires sont des copies des fichiers du dépôt, dont la date de téléchargement initial n’est pas documentée.
+<a href="supports/corr/data/provenance.json">Consulter les sources et empreintes SHA-256 des CSV</a>.</p>
+<p>Extension sur les populations : <a href="supports/corr/data/population.csv" download>population.csv</a> ; source <a href="https://ourworldindata.org/grapher/population">Our World in Data — Population</a>.</p>
+</section><nav class="pager" aria-label="Navigation entre corrigés"><a href="corriges.html">Tous les corrigés</a>
+<a href="td2-corrige.html">Corrigé suivant</a>
+</nav></main><footer class="footer"><div class="footer-inner">
+Python pour économistes - Université de Lille - L2 ESM
+</div></footer></body></html>

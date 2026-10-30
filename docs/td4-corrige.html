@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Corrigé TD4 - Python pour économistes</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+<header class="site-header"><nav class="nav" aria-label="Navigation principale">
+  <a class="brand" href="index.html">Python pour économistes</a>
+  <div class="nav-links">
+    <a href="index.html">Accueil</a><a href="index.html#seances">TD</a>
+    <a href="corriges.html">Corrigés</a><a href="index.html#cours">Cours</a>
+  </div>
+</nav></header>
+<main id="contenu" class="corrige">
+
+<p class="eyebrow">Corrigé TD4</p><h1>Graphiques et simulation simple à partir d’OWID</h1>
+<p class="lead">Les dix valeurs sont celles de l’énoncé. World est un agrégat déjà inclus avec neuf pays : leur moyenne simple n’est donc pas le taux mondial. Dans le parcours obligatoire, les tirages restent aléatoires ; les résultats affichés correspondent à une exécution, pas à des valeurs à retrouver exactement.</p>
+<div class="link-row">
+<a class="resource-link" href="td4.html">Énoncé du TD4</a>
+<a class="resource-link" href="supports/corr/TD4_corrige.ipynb" download>Notebook .ipynb</a>
+<a class="resource-link" href="supports/corr/TD4_corrige.py" download>Script .py</a>
+<a class="resource-link" href="supports/corr/TD4_complet.zip" download>Dossier complet .zip</a>
+</div>
+<p>Les exercices se suivent. Utiliser <kbd>Tab</kbd> puis <kbd>Entrée</kbd> ou <kbd>Espace</kbd> pour ouvrir une solution au clavier. Les zones de code peuvent défiler horizontalement.</p>
+<p>Les sorties ci-dessous proviennent du code exécuté. Les simulations du TD4 peuvent changer à chaque exécution.</p>
+<nav aria-label="Sommaire du corrigé"><h2>Sommaire</h2><ol>
+<li><a href="#exercice-1">Créer l&#x27;extrait OWID</a></li>
+<li><a href="#exercice-2">Observer clés et valeurs</a></li>
+<li><a href="#exercice-3">Graphique en barres</a></li>
+<li><a href="#exercice-4">Modifier un paramètre graphique</a></li>
+<li><a href="#exercice-5">Interpréter le graphique</a></li>
+<li><a href="#exercice-6">Un tirage aléatoire</a></li>
+<li><a href="#exercice-7">Prédire le rôle de range</a></li>
+<li><a href="#exercice-8">Moyenne de plusieurs tirages</a></li>
+<li><a href="#exercice-9">Stabilisation de la moyenne</a></li>
+<li><a href="#exercice-10">Graphique de stabilisation</a></li>
+<li><a href="#exercice-11">Interprétation économique</a></li>
+</ol><a href="#facultatif">Les dix questions facultatives</a></nav>
+<details id="pseudo-1"><summary>Démarche en pseudo-code 1 — Visualiser puis simuler</summary><pre tabindex="0"><code># Objectif : observer une distribution puis simuler des tirages
+# Entree : liste de taux de fecondite
+# 1. Calculer la moyenne observee
+# 2. Tracer un graphique en barres
+# 3. Tirer au hasard une valeur dans la liste
+# 4. Repeter le tirage plusieurs fois
+# 5. Calculer la moyenne des tirages
+# 6. Observer si la moyenne se stabilise quand n augmente</code></pre><p>Les exercices ci-dessous mettent en œuvre ce plan.</p></details>
+<details id="pseudo-2"><summary>Démarche en pseudo-code 2 — Passer des tirages à une courbe</summary><pre tabindex="0"><code># Objectif : voir si la moyenne simulee se stabilise
+# Entree : plusieurs tailles de simulation
+# 1. Creer une liste vide pour les moyennes
+# 2. Pour chaque taille n :
+#       faire n tirages
+#       calculer la moyenne des tirages
+#       ajouter cette moyenne a la liste
+# 3. Tracer tailles en abscisse et moyennes en ordonnee
+# Sortie : graphique de stabilisation</code></pre><p>Les exercices ci-dessous mettent en œuvre ce plan.</p></details>
+<section id="exercice-1" class="exercice">
+<h2>Exercice 1 — Créer l&#x27;extrait OWID</h2>
+<p><strong>Objectif.</strong> Créer l’extrait et calculer sa moyenne simple.</p>
+<details><summary>Afficher la solution : exercice 1</summary>
+<h3>Démarche de résolution</h3><p>Les valeurs du dictionnaire deviennent une liste ; leur moyenne servira de référence dans la simulation.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">fertilite = {
+    &quot;World&quot;: 2.3,
+    &quot;France&quot;: 1.8,
+    &quot;United States&quot;: 1.6,
+    &quot;Japan&quot;: 1.2,
+    &quot;India&quot;: 2.0,
+    &quot;Nigeria&quot;: 4.5,
+    &quot;Niger&quot;: 6.1,
+    &quot;Brazil&quot;: 1.6,
+    &quot;Ethiopia&quot;: 3.9,
+    &quot;China&quot;: 1.0
+}
+valeurs = list(fertilite.values())
+moyenne_initiale = sum(valeurs) / len(valeurs)
+print(&quot;Nombre d&#x27;observations :&quot;, len(valeurs))
+print(f&quot;Moyenne simple : {moyenne_initiale:.2f} enfants par femme&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>10 observations ; 2.60 enfants par femme. La référence World de l’extrait vaut 2.3 : ce sont deux calculs différents.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Nombre d&#x27;observations : 10
+Moyenne simple : 2.60 enfants par femme
+</code></pre>
+</details></section>
+
+<section id="exercice-2" class="exercice">
+<h2>Exercice 2 — Observer clés et valeurs</h2>
+<p><strong>Objectif.</strong> Observer les listes de clés et de valeurs.</p>
+<details><summary>Afficher la solution : exercice 2</summary>
+<h3>Démarche de résolution</h3><p>keys et values suivent le même ordre d’insertion. La tranche [:3] conserve les trois premiers éléments.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">pays = list(fertilite.keys())
+valeurs = list(fertilite.values())
+print(pays[:3])
+print(valeurs[:3])
+print(len(pays) == len(valeurs))
+# Chaque barre doit avoir à la fois une étiquette et une hauteur.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>[&#x27;World&#x27;, &#x27;France&#x27;, &#x27;United States&#x27;] ; [2.3, 1.8, 1.6] ; True.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>[&#x27;World&#x27;, &#x27;France&#x27;, &#x27;United States&#x27;]
+[2.3, 1.8, 1.6]
+True
+</code></pre>
+</details></section>
+
+<section id="exercice-3" class="exercice">
+<h2>Exercice 3 — Graphique en barres</h2>
+<p><strong>Objectif.</strong> Tracer les taux de fécondité.</p>
+<details><summary>Afficher la solution : exercice 3</summary>
+<h3>Démarche de résolution</h3><p>Utiliser les noms sur l’axe horizontal et les valeurs sur l’axe vertical. Garder le zéro comme origine des barres.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">import matplotlib.pyplot as plt
+
+plt.figure()
+plt.bar(pays, valeurs)
+plt.xticks(rotation=45, ha=&quot;right&quot;)
+plt.ylabel(&quot;Enfants par femme&quot;)
+plt.title(&quot;Taux de fécondité - extrait OWID&quot;)
+plt.tight_layout()
+plt.savefig(&quot;fertilite_barres.png&quot;, dpi=300)
+plt.show()
+plt.close()
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Une figure de dix barres : Niger est la plus haute, China la plus basse. World est une référence agrégée.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><figure><img loading="lazy" src="supports/corr/figures/td4-exercice-3-1.png" alt="Tracer les taux de fécondité."><figcaption>Tracer les taux de fécondité. Résultat de l’exécution de référence.</figcaption></figure>
+</details></section>
+
+<section id="exercice-4" class="exercice">
+<h2>Exercice 4 — Modifier un paramètre graphique</h2>
+<p><strong>Objectif.</strong> Modifier le titre et le nom de fichier.</p>
+<details><summary>Afficher la solution : exercice 4</summary>
+<h3>Démarche de résolution</h3><p>Reprendre les mêmes données et les mêmes paramètres graphiques ; changer seulement ces deux éléments.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">plt.figure()
+plt.bar(pays, valeurs)
+plt.xticks(rotation=45, ha=&quot;right&quot;)
+plt.ylabel(&quot;Enfants par femme&quot;)
+plt.title(&quot;Taux de fécondité - extrait pédagogique arrondi&quot;)
+plt.tight_layout()
+plt.savefig(&quot;fertilite_barres_version2.png&quot;, dpi=300)
+plt.show()
+plt.close()
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Les deux fichiers fertilite_barres.png et fertilite_barres_version2.png existent avec les mêmes hauteurs de barres.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><figure><img loading="lazy" src="supports/corr/figures/td4-exercice-4-1.png" alt="Modifier le titre et le nom de fichier."><figcaption>Modifier le titre et le nom de fichier. Résultat de l’exécution de référence.</figcaption></figure>
+</details></section>
+
+<section id="exercice-5" class="exercice">
+<h2>Exercice 5 — Interpréter le graphique</h2>
+<p><strong>Objectif.</strong> Interpréter les extrêmes et la lisibilité.</p>
+<details><summary>Afficher la solution : exercice 5</summary>
+<h3>Démarche de résolution</h3><p>Lire les deux barres extrêmes puis expliquer ce que la représentation facilite.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python"># Niger a le taux le plus élevé dans l&#x27;extrait : 6,1 enfants par femme.
+# China a le taux le plus faible : 1,0 enfant par femme.
+# Les hauteurs des barres facilitent la comparaison des niveaux et des écarts,
+# à condition de conserver des axes et des unités lisibles.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Les conclusions portent sur cet extrait arrondi, pas sur l’ensemble des pays.</p>
+
+</details></section>
+
+<section id="exercice-6" class="exercice">
+<h2>Exercice 6 — Un tirage aléatoire</h2>
+<p><strong>Objectif.</strong> Tirer une valeur au hasard.</p>
+<details><summary>Afficher la solution : exercice 6</summary>
+<h3>Démarche de résolution</h3><p>random fait partie de Python. choice choisit un élément de la liste ; les valeurs peuvent être tirées à nouveau lors des appels suivants.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">import random
+
+tirage = random.choice(valeurs)
+print(&quot;Un tirage :&quot;, tirage)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>La valeur appartient à la liste et peut changer à chaque exécution. Deux exécutions peuvent aussi donner le même résultat.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Un tirage : 1.6
+</code></pre>
+<div class="callout"><strong>Point de vigilance.</strong> Les dix positions ont le même poids. La valeur 1.6 apparaît deux fois et a donc deux chances sur dix d’être tirée.</div></details></section>
+
+<section id="exercice-7" class="exercice">
+<h2>Exercice 7 — Prédire le rôle de range</h2>
+<p><strong>Objectif.</strong> Comprendre le nombre de répétitions avec range.</p>
+<details><summary>Afficher la solution : exercice 7</summary>
+<h3>Démarche de résolution</h3><p>range(3) fournit 0, 1 et 2 ; la borne finale 3 est exclue.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">for i in range(3):
+    print(i)
+for i in range(1):
+    print(&quot;tirage&quot;)
+# range(20) fournit vingt entiers, de 0 à 19 : vingt tours de boucle.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Trois lignes (0, 1, 2), puis une ligne tirage.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>0
+1
+2
+tirage
+</code></pre>
+</details></section>
+
+<section id="exercice-8" class="exercice">
+<h2>Exercice 8 — Moyenne de plusieurs tirages</h2>
+<p><strong>Objectif.</strong> Calculer la moyenne de vingt tirages et corriger une boucle.</p>
+<details><summary>Afficher la solution : exercice 8</summary>
+<h3>Démarche de résolution</h3><p>Ajouter une valeur à la liste à chaque tour puis calculer la moyenne hors de la boucle.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">tirages = []
+for i in range(20):
+    tirages.append(random.choice(valeurs))
+moyenne_tirages = sum(tirages) / len(tirages)
+print(&quot;Nombre de tirages :&quot;, len(tirages))
+print(f&quot;Moyenne des tirages : {moyenne_tirages:.3f}&quot;)
+print(f&quot;Référence de la liste : {moyenne_initiale:.3f}&quot;)
+# Sans : à la fin de for, Python signale SyntaxError.
+# Sans indentation du corps de for, Python signale IndentationError.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>20 tirages ; leur moyenne fluctue autour de 2.60 et peut être au-dessus ou au-dessous. Les deux-points et l’indentation sont obligatoires.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Nombre de tirages : 20
+Moyenne des tirages : 2.490
+Référence de la liste : 2.600
+</code></pre>
+</details></section>
+
+<section id="exercice-9" class="exercice">
+<h2>Exercice 9 — Stabilisation de la moyenne</h2>
+<p><strong>Objectif.</strong> Comparer quatre tailles de simulation.</p>
+<details><summary>Afficher la solution : exercice 9</summary>
+<h3>Démarche de résolution</h3><p>La liste tirages doit être remise à zéro pour chaque taille. Les simulations sont distinctes, et non les préfixes d’un seul tirage de 1000 valeurs.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">tailles = [5, 20, 100, 1000]
+for n in tailles:
+    tirages = []
+    for i in range(n):
+        tirages.append(random.choice(valeurs))
+    print(f&quot;Pour {n} tirages : moyenne {sum(tirages) / len(tirages):.3f}&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Quatre moyennes simulées, généralement plus proches de 2.60 aux grandes tailles. La distance ne diminue pas nécessairement à chaque étape.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Pour 5 tirages : moyenne 2.760
+Pour 20 tirages : moyenne 2.665
+Pour 100 tirages : moyenne 2.450
+Pour 1000 tirages : moyenne 2.598
+</code></pre>
+</details></section>
+
+<section id="exercice-10" class="exercice">
+<h2>Exercice 10 — Graphique de stabilisation</h2>
+<p><strong>Objectif.</strong> Tracer les moyennes simulées et leur référence.</p>
+<details><summary>Afficher la solution : exercice 10</summary>
+<h3>Démarche de résolution</h3><p>Conserver une moyenne par taille dans une deuxième liste. La ligne horizontale représente la moyenne connue de la liste de départ.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">tailles = [5, 20, 100, 1000]
+moyennes_simulees = []
+for n in tailles:
+    tirages = []
+    for i in range(n):
+        tirages.append(random.choice(valeurs))
+    moyenne_n = sum(tirages) / len(tirages)
+    moyennes_simulees.append(moyenne_n)
+print(&quot;Moyennes représentées :&quot;, moyennes_simulees)
+
+plt.figure()
+plt.plot(tailles, moyennes_simulees, marker=&quot;o&quot;, label=&quot;Simulations&quot;)
+plt.axhline(moyenne_initiale, linestyle=&quot;--&quot;, label=&quot;Moyenne de l&#x27;extrait : 2,60&quot;)
+plt.xlabel(&quot;Nombre de tirages&quot;)
+plt.ylabel(&quot;Moyenne simulée (enfants par femme)&quot;)
+plt.title(&quot;Moyennes de tirages dans l&#x27;extrait pédagogique&quot;)
+plt.legend()
+plt.tight_layout()
+plt.savefig(&quot;simulation_moyenne.png&quot;, dpi=300)
+plt.show()
+plt.close()
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Quatre points et une ligne de référence à 2.60. Cette figure utilise de nouveaux tirages : les moyennes peuvent différer de celles de l’exercice 9.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Moyennes représentées : [2.7600000000000002, 2.9, 2.6609999999999996, 2.5806]
+</code></pre>
+<figure><img loading="lazy" src="supports/corr/figures/td4-exercice-10-1.png" alt="Tracer les moyennes simulées et leur référence."><figcaption>Tracer les moyennes simulées et leur référence. Résultat de l’exécution de référence.</figcaption></figure>
+</details></section>
+
+<section id="exercice-11" class="exercice">
+<h2>Exercice 11 — Interprétation économique</h2>
+<p><strong>Objectif.</strong> Distinguer simulation et interprétation économique.</p>
+<details><summary>Afficher la solution : exercice 11</summary>
+<h3>Démarche de résolution</h3><p>La simulation reproduit la liste choisie avec le même poids pour chaque position ; elle ne crée pas de nouvelles observations sur la population mondiale.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python"># La moyenne de 2,60 résume les dix valeurs sélectionnées, sans pondération.
+# Avec davantage de tirages indépendants, la moyenne fluctue généralement moins
+# autour de la moyenne de cette liste, sans rapprochement nécessaire à chaque étape.
+# Cette liste mêle un agrégat World et neuf pays, sans poids démographiques :
+# la simulation ne mesure donc pas directement le taux mondial de fécondité.
+# Changer les pays ou leurs poids change la distribution de départ et sa moyenne.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>La stabilisation concerne ce mécanisme de tirage dans une liste, et non une tendance démographique observée.</p>
+
+</details></section>
+
+<section id="facultatif"><h2>Entraînement facultatif</h2><p>Ces dix questions sont également corrigées. Elles se lisent après le parcours obligatoire, dans l’ordre.</p></section>
+<section id="extension-1" class="exercice">
+<h2>Question facultative 1 — Fixer et répéter une graine.</h2>
+<p><strong>Objectif.</strong> Fixer et répéter une graine.</p>
+<details><summary>Afficher la solution : question facultative 1</summary>
+<h3>Démarche de résolution</h3><p>Replacer la même graine avant deux séries identiques reproduit la même suite dans le même environnement Python. Un seul seed au début n’oblige pas tous les tirages à être identiques.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">random.seed(123)
+serie_a = []
+for i in range(5):
+    serie_a.append(random.choice(valeurs))
+random.seed(123)
+serie_b = []
+for i in range(5):
+    serie_b.append(random.choice(valeurs))
+print(serie_a)
+print(serie_b)
+print(&quot;Séries identiques :&quot;, serie_a == serie_b)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>True. La graine est introduite ici, comme dans la progression de l’énoncé.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>[2.3, 2.0, 1.8, 6.1, 2.0]
+[2.3, 2.0, 1.8, 6.1, 2.0]
+Séries identiques : True
+</code></pre>
+</details></section>
+
+<section id="extension-2" class="exercice">
+<h2>Question facultative 2 — Comparer dix moyennes de vingt tirages.</h2>
+<p><strong>Objectif.</strong> Comparer dix moyennes de vingt tirages.</p>
+<details><summary>Afficher la solution : question facultative 2</summary>
+<h3>Démarche de résolution</h3><p>La boucle extérieure représente les simulations ; la boucle intérieure représente les tirages d’une simulation.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">moyennes_20 = []
+for simulation in range(10):
+    tirages_20 = []
+    for i in range(20):
+        tirages_20.append(random.choice(valeurs))
+    moyennes_20.append(sum(tirages_20) / len(tirages_20))
+print(moyennes_20)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Dix moyennes qui varient autour de 2.60 ; elles ne doivent pas nécessairement être toutes différentes.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>[3.275, 2.43, 3.11, 2.9, 2.5949999999999998, 3.3, 3.2449999999999997, 3.225, 3.1100000000000003, 2.46]
+</code></pre>
+</details></section>
+
+<section id="extension-3" class="exercice">
+<h2>Question facultative 3 — Tracer un histogramme de mille tirages.</h2>
+<p><strong>Objectif.</strong> Tracer un histogramme de mille tirages.</p>
+<details><summary>Afficher la solution : question facultative 3</summary>
+<h3>Démarche de résolution</h3><p>Conserver les mille valeurs pour représenter leur distribution, puis compter les observations par classe avec hist.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">tirages_1000 = []
+for i in range(1000):
+    tirages_1000.append(random.choice(valeurs))
+plt.figure()
+plt.hist(tirages_1000, bins=10, edgecolor=&quot;black&quot;)
+plt.xlabel(&quot;Valeur tirée (enfants par femme)&quot;)
+plt.ylabel(&quot;Nombre de tirages&quot;)
+plt.title(&quot;Distribution de 1000 tirages dans l&#x27;extrait&quot;)
+plt.tight_layout()
+plt.savefig(&quot;histogramme_tirages.png&quot;, dpi=300)
+plt.show()
+plt.close()
+</code></pre>
+<h3>Résultat et interprétation</h3><p>L’histogramme reflète les valeurs possibles de la liste. Les classes regroupent les tirages ; il ne décrit pas la distribution réelle des populations.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><figure><img loading="lazy" src="supports/corr/figures/td4-extension-3-1.png" alt="Tracer un histogramme de mille tirages."><figcaption>Tracer un histogramme de mille tirages. Résultat de l’exécution de référence.</figcaption></figure>
+</details></section>
+
+<section id="extension-4" class="exercice">
+<h2>Question facultative 4 — Recalculer la moyenne sans Niger.</h2>
+<p><strong>Objectif.</strong> Recalculer la moyenne sans Niger.</p>
+<details><summary>Afficher la solution : question facultative 4</summary>
+<h3>Démarche de résolution</h3><p>Créer une nouvelle liste en excluant la clé Niger ; préserver les données de la simulation initiale.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">valeurs_sans_niger = []
+for pays_test in fertilite:
+    if pays_test != &quot;Niger&quot;:
+        valeurs_sans_niger.append(fertilite[pays_test])
+moyenne_sans_niger = sum(valeurs_sans_niger) / len(valeurs_sans_niger)
+print(f&quot;Sans Niger : {moyenne_sans_niger:.3f} enfants par femme&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>19.9/9 = 2.211… au lieu de 2.600. Retirer une grande valeur abaisse la moyenne.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Sans Niger : 2.211 enfants par femme
+</code></pre>
+</details></section>
+
+<section id="extension-5" class="exercice">
+<h2>Question facultative 5 — Ajouter la médiane à la figure de simulation.</h2>
+<p><strong>Objectif.</strong> Ajouter la médiane à la figure de simulation.</p>
+<details><summary>Afficher la solution : question facultative 5</summary>
+<h3>Démarche de résolution</h3><p>Trier les dix valeurs et faire la moyenne des deux valeurs centrales aux indices 4 et 5.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">valeurs_triees = sorted(valeurs)
+mediane_initiale = (valeurs_triees[4] + valeurs_triees[5]) / 2
+print(&quot;Médiane de l&#x27;extrait :&quot;, mediane_initiale)
+plt.figure()
+plt.plot(tailles, moyennes_simulees, marker=&quot;o&quot;, label=&quot;Moyennes simulées&quot;)
+plt.axhline(moyenne_initiale, linestyle=&quot;--&quot;, label=&quot;Moyenne : 2,60&quot;)
+plt.axhline(mediane_initiale, color=&quot;green&quot;, linestyle=&quot;:&quot;, label=&quot;Médiane : 1,90&quot;)
+plt.xlabel(&quot;Nombre de tirages&quot;)
+plt.ylabel(&quot;Enfants par femme&quot;)
+plt.title(&quot;Moyennes simulées, moyenne et médiane de l&#x27;extrait&quot;)
+plt.legend()
+plt.tight_layout()
+plt.savefig(&quot;simulation_mediane.png&quot;, dpi=300)
+plt.show()
+plt.close()
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Médiane 1.9. La moyenne simulée tend vers la moyenne 2.6, pas vers la médiane : la ligne verte est une autre statistique de référence.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Médiane de l&#x27;extrait : 1.9
+</code></pre>
+<figure><img loading="lazy" src="supports/corr/figures/td4-extension-5-1.png" alt="Ajouter la médiane à la figure de simulation."><figcaption>Ajouter la médiane à la figure de simulation. Résultat de l’exécution de référence.</figcaption></figure>
+</details></section>
+
+<section id="extension-6" class="exercice">
+<h2>Question facultative 6 — Créer une fonction moyenne_tirages(n).</h2>
+<p><strong>Objectif.</strong> Créer une fonction moyenne_tirages(n).</p>
+<details><summary>Afficher la solution : question facultative 6</summary>
+<h3>Démarche de résolution</h3><p>Initialiser la liste à l’intérieur de la fonction pour que chaque appel crée une nouvelle simulation. n doit être un entier strictement positif.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">def moyenne_tirages(n):
+    valeurs_tirees = []
+    for i in range(n):
+        valeurs_tirees.append(random.choice(valeurs))
+    return sum(valeurs_tirees) / len(valeurs_tirees)
+
+print(&quot;Moyenne de 20 tirages :&quot;, moyenne_tirages(20))
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Une moyenne aléatoire de vingt valeurs ; n = 0 provoquerait une division par zéro.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Moyenne de 20 tirages : 2.1399999999999997
+</code></pre>
+</details></section>
+
+<section id="extension-7" class="exercice">
+<h2>Question facultative 7 — Tester de nouvelles tailles.</h2>
+<p><strong>Objectif.</strong> Tester de nouvelles tailles.</p>
+<details><summary>Afficher la solution : question facultative 7</summary>
+<h3>Démarche de résolution</h3><p>Réutiliser la fonction précédente sans changer le mécanisme de tirage.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">tailles_extension = [10, 50, 500, 5000]
+moyennes_extension = []
+for n in tailles_extension:
+    moyenne_n = moyenne_tirages(n)
+    moyennes_extension.append(moyenne_n)
+    print(n, moyenne_n)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Quatre nouvelles moyennes. Les grandes tailles réduisent généralement les fluctuations.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>10 2.66
+50 2.7539999999999996
+500 2.5008000000000004
+5000 2.5528
+</code></pre>
+</details></section>
+
+<section id="extension-8" class="exercice">
+<h2>Question facultative 8 — Mesurer la distance à la moyenne initiale.</h2>
+<p><strong>Objectif.</strong> Mesurer la distance à la moyenne initiale.</p>
+<details><summary>Afficher la solution : question facultative 8</summary>
+<h3>Démarche de résolution</h3><p>L’écart signé indique le côté de la référence ; abs donne une distance positive. Reprendre les simulations conservées, sans effectuer un nouveau tirage.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">for i in range(len(tailles_extension)):
+    ecart = moyennes_extension[i] - moyenne_initiale
+    print(f&quot;n={tailles_extension[i]} : écart {ecart:.4f}, distance {abs(ecart):.4f}&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Un écart positif signifie une moyenne simulée supérieure à 2.60 ; un écart négatif signifie l’inverse.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>n=10 : écart 0.0600, distance 0.0600
+n=50 : écart 0.1540, distance 0.1540
+n=500 : écart -0.0992, distance 0.0992
+n=5000 : écart -0.0472, distance 0.0472
+</code></pre>
+</details></section>
+
+<section id="extension-9" class="exercice">
+<h2>Question facultative 9 — Expliquer intuitivement la stabilisation.</h2>
+<p><strong>Objectif.</strong> Expliquer intuitivement la stabilisation.</p>
+<details><summary>Afficher la solution : question facultative 9</summary>
+<h3>Démarche de résolution</h3><p>Les écarts des tirages se compensent davantage lorsqu’ils sont nombreux.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python"># Stabiliser signifie que la moyenne des tirages se concentre davantage
+# autour de la moyenne de la liste quand le nombre de tirages augmente.
+# Cela ne garantit ni l&#x27;égalité exacte, ni une distance décroissante à chaque n.
+</code></pre>
+<h3>Résultat et interprétation</h3><p>La loi des grands nombres concerne des répétitions selon le même mécanisme ; elle ne corrige pas une sélection de pays non représentative.</p>
+
+</details></section>
+
+<section id="extension-10" class="exercice">
+<h2>Question facultative 10 — Construire l’intervalle avancé demandé.</h2>
+<p><strong>Objectif.</strong> Construire l’intervalle avancé demandé.</p>
+<details><summary>Afficher la solution : question facultative 10</summary>
+<h3>Démarche de résolution</h3><p>L’énoncé donne la forme moyenne ± 2 × écart-type / racine(n), sans préciser l’écart-type. On utilise ici celui de la distribution de tirage connue : dix positions équiprobables, division par 10. L’intervalle est une approximation pour la moyenne de ce mécanisme.</p>
+<h3>Code Python commenté</h3><pre tabindex="0"><code class="language-python">somme_carres = 0
+for valeur in valeurs:
+    somme_carres = somme_carres + (valeur - moyenne_initiale) ** 2
+ecart_type = (somme_carres / len(valeurs)) ** 0.5
+n_intervalle = len(tirages_1000)
+moyenne_intervalle = sum(tirages_1000) / n_intervalle
+marge = 2 * ecart_type / n_intervalle ** 0.5
+borne_basse = moyenne_intervalle - marge
+borne_haute = moyenne_intervalle + marge
+print(f&quot;Intervalle approximatif : [{borne_basse:.3f} ; {borne_haute:.3f}]&quot;)
+print(f&quot;Marge : {marge:.3f} enfants par femme&quot;)
+</code></pre>
+<h3>Résultat et interprétation</h3><p>Pour 1000 tirages, la marge vaut environ 0.100. Sous l’approximation normale, le facteur 2 correspond à une couverture proche de 95 %, sans garantie pour chaque simulation. Ce n’est pas un intervalle pour le taux mondial.</p>
+<p class="execution-label">Sortie de l’exécution de référence :</p><pre tabindex="0"><code>Intervalle approximatif : [2.531 ; 2.732]
+Marge : 0.100 enfants par femme
+</code></pre>
+</details></section>
+
+<section><h2>Sources et fichiers de référence</h2><p>Les extraits des TD1 à TD4 sont ceux des énoncés. Les CSV complémentaires sont des copies des fichiers du dépôt, dont la date de téléchargement initial n’est pas documentée.
+<a href="supports/corr/data/provenance.json">Consulter les sources et empreintes SHA-256 des CSV</a>.</p>
+</section><nav class="pager" aria-label="Navigation entre corrigés"><a href="corriges.html">Tous les corrigés</a>
+<a href="td3-corrige.html">Corrigé précédent</a>
+<a href="td5-corrige.html">Corrigé suivant</a>
+</nav></main><footer class="footer"><div class="footer-inner">
+Python pour économistes - Université de Lille - L2 ESM
+</div></footer></body></html>
